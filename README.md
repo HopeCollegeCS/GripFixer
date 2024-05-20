@@ -1,6 +1,6 @@
 # grip_fixer
 
-A new Flutter project.
+This is the coolest grip tension measuring app out there (it's probably the only ne).
 
 ## Getting Started
 
