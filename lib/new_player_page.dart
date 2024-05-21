@@ -67,6 +67,7 @@ class _NewPlayer extends State<NewPlayerPage> {
           const SizedBox(width: 28),
         ],
       ),
+      SizedBox(height: 10),
       Row(
         mainAxisAlignment: MainAxisAlignment.start, // Align to the left
         children: [
@@ -75,7 +76,7 @@ class _NewPlayer extends State<NewPlayerPage> {
             'Last Name',
             style: TextStyle(fontSize: 25),
           ),
-          const SizedBox(width: 17),
+          const SizedBox(width: 19),
           Expanded(
             child: SizedBox(
               height: 32, // Adjust this value to change the height
@@ -97,6 +98,7 @@ class _NewPlayer extends State<NewPlayerPage> {
           const SizedBox(width: 28),
         ],
       ),
+      SizedBox(height: 10),
       Row(
         mainAxisAlignment: MainAxisAlignment.start, // Align to the left
         children: [
@@ -105,7 +107,7 @@ class _NewPlayer extends State<NewPlayerPage> {
             'Age',
             style: TextStyle(fontSize: 25),
           ),
-          const SizedBox(width: 17),
+          const SizedBox(width: 93),
           Expanded(
             child: SizedBox(
               height: 32, // Adjust this value to change the height
@@ -125,6 +127,100 @@ class _NewPlayer extends State<NewPlayerPage> {
             ),
           ),
           const SizedBox(width: 28),
+        ],
+      ),
+      SizedBox(height: 10),
+      Row(
+          mainAxisAlignment: MainAxisAlignment.start, // Align to the left
+          children: [
+            SizedBox(width: 28),
+            const Text(
+              'Gender',
+              style: TextStyle(fontSize: 25),
+            ),
+            Column(
+              children: [
+                Row(
+                  children: [
+                    const SizedBox(
+                        width: 45.0), // Move the radio button to the left
+                    Radio(
+                      value: 'Male',
+                      groupValue: gender,
+                      onChanged: (value) {
+                        setState(() {
+                          gender = 'Male';
+                        });
+                      },
+                    ),
+                    const Text('Male'),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const SizedBox(
+                        width: 59.0), // Move the radio button to the left
+                    Radio(
+                      value: 'Female',
+                      groupValue: gender,
+                      onChanged: (value) {
+                        setState(() {
+                          gender = 'Female';
+                        });
+                      },
+                    ),
+                    const Text('Female'),
+                  ],
+                ),
+              ],
+            )
+          ]),
+      SizedBox(height: 8),
+      Center(
+          child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Radio(
+            value: 'Left',
+            groupValue: hand,
+            onChanged: (value) {
+              setState(() {
+                hand = 'Left';
+              });
+            },
+          ),
+          const Text('Left Handed'),
+          const SizedBox(width: 20.0),
+          Radio(
+            value: 'Right',
+            groupValue: hand,
+            onChanged: (value) {
+              setState(() {
+                hand = 'Right';
+              });
+            },
+          ),
+          const Text('Right Handed'),
+        ],
+      )),
+      const SizedBox(height: 20),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(width: 20.0), // Add some spacing
+          ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.zero, // Make the button square
+              ),
+            ),
+            child: const Text(
+              'Measure Grip Strength',
+              style:
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+            ),
+          )
         ],
       ),
     ])));
