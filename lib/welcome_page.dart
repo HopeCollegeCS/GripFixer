@@ -47,8 +47,8 @@ class _WelcomePage extends State<WelcomePage> {
                       SizedBox(
                           width: 10.0), // Move the radio button to the left
                       Radio(
-                        value: 1,
-                        groupValue: 1, // Set the initial value
+                        value: 0,
+                        groupValue: 0, // Set the initial value
                         onChanged: null, // Disable the radio button for now
                       ),
                       Text('Start a hitting session'),
@@ -63,8 +63,8 @@ class _WelcomePage extends State<WelcomePage> {
                       SizedBox(
                           width: 10.0), // Move the radio button to the left
                       Radio(
-                        value: 1,
-                        groupValue: 1, // Set the initial value
+                        value: 0,
+                        groupValue: 0, // Set the initial value
                         onChanged: null, // Disable the radio button for now
                       ),
                       Text('Analyze a previous session'),
@@ -79,8 +79,8 @@ class _WelcomePage extends State<WelcomePage> {
                       SizedBox(
                           width: 10.0), // Move the radio button to the left
                       Radio(
-                        value: 1,
-                        groupValue: 1, // Set the initial value
+                        value: 0,
+                        groupValue: 0, // Set the initial value
                         onChanged: null, // Disable the radio button for now
                       ),
                       Text('Practice hitting target grip tensions'),
