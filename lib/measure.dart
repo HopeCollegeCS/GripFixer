@@ -29,9 +29,18 @@ class MeasureScreen extends StatelessWidget {
               style: TextStyle(fontSize: 18),
             ),
           ),
-          TextButton(
+          ElevatedButton(
             onPressed: () {},
-            child: const Text('Start'),
+            style: ElevatedButton.styleFrom(
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.zero, // Make the button square
+              ),
+            ),
+            child: const Text(
+              'Let\'s Hit!',
+              style:
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+            ),
           ),
           const SizedBox(height: 16.0),
           const Icon(
