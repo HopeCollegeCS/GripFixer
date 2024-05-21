@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-// SPACE BETWEEN RADIOLISTTLE's IS TOO BIG
-
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
 
@@ -36,30 +34,60 @@ class _WelcomePage extends State<WelcomePage> {
               ),
             ],
           ),
-          const SizedBox(height: 10.0), // Add some spacing
-          const Column(mainAxisSize: MainAxisSize.min, children: [
-            RadioListTile(
-              title: Text('Start a hitting session'),
-              value: 1,
-              groupValue: 1, // Set the initial value
-              onChanged: null, // Disable the radio button for now
-            ),
-            SizedBox(height: 2), // Reduced spacing
-            RadioListTile(
-              title: Text('Analyze a previous session'),
-              value: 2,
-              groupValue: 1, // Set the initial value
-              onChanged: null, // Disable the radio button for now
-            ),
-            SizedBox(height: 2), // Reduced spacing
-            RadioListTile(
-              title: Text('Practice hitting target grip tensions'),
-              value: 3,
-              groupValue: 1, // Set the initial value
-              onChanged: null, // Disable the radio button for now
-            ),
-          ]),
-          const SizedBox(height: 5.0), // Add some spacing
+          const SizedBox(height: 16.0), // Add some spacing
+          const Column(
+              crossAxisAlignment:
+                  CrossAxisAlignment.start, // Align the column to the start
+              children: [
+                SizedBox(
+                  height: 20,
+                  child: Row(
+                    children: [
+                      SizedBox(
+                          width: 10.0), // Move the radio button to the left
+                      Radio(
+                        value: 1,
+                        groupValue: 1, // Set the initial value
+                        onChanged: null, // Disable the radio button for now
+                      ),
+                      Text('Start a hitting session'),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 5.0), // Add some spacing
+                SizedBox(
+                  height: 20,
+                  child: Row(
+                    children: [
+                      SizedBox(
+                          width: 10.0), // Move the radio button to the left
+                      Radio(
+                        value: 1,
+                        groupValue: 1, // Set the initial value
+                        onChanged: null, // Disable the radio button for now
+                      ),
+                      Text('Analyze a previous session'),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 5.0), // Add some spacing
+                SizedBox(
+                  height: 20,
+                  child: Row(
+                    children: [
+                      SizedBox(
+                          width: 10.0), // Move the radio button to the left
+                      Radio(
+                        value: 1,
+                        groupValue: 1, // Set the initial value
+                        onChanged: null, // Disable the radio button for now
+                      ),
+                      Text('Practice hitting target grip tensions'),
+                    ],
+                  ),
+                ),
+              ]),
+          const SizedBox(height: 16.0), // Add some spacing
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
