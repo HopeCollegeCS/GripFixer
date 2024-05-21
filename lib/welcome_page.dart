@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -93,7 +94,7 @@ class _WelcomePage extends State<WelcomePage> {
             children: [
               const SizedBox(width: 20.0), // Add some spacing
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () => context.go("/ShotSelectionPage"),
                 style: ElevatedButton.styleFrom(
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.zero, // Make the button square
