@@ -7,6 +7,7 @@ class PlayerSelection extends StatefulWidget {
   State<PlayerSelection> createState() => _PlayerSelection();
 }
 
+//PLACEHOLDER ENUM FOR ACTUAL PLAYERS
 enum Players {
   blue('Blue', Colors.blue),
   pink('Pink', Colors.pink),
@@ -18,9 +19,17 @@ enum Players {
   final String label;
   final Color color;
 }
+//END OF PLACEHOLDER
 
 class _PlayerSelection extends State<PlayerSelection> {
-  String? selectedPlayer;
+  Players? selectedPlayer;
+
+  final List<DropdownMenuItem<Players>> playerItems = Players.values
+      .map((Players player) => DropdownMenuItem<Players>(
+            value: player,
+            child: Text(player.label),
+          ))
+      .toList();
 
   @override
   Widget build(BuildContext context) {
@@ -32,26 +41,46 @@ class _PlayerSelection extends State<PlayerSelection> {
         'Grip Strength Tool',
         style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
       ),
-      SizedBox(height: 20.0),
+      const SizedBox(height: 20.0),
       const Icon(
         Icons.sports_tennis,
         size: 130,
       ),
       const SizedBox(height: 20.0),
-      const Row(children: [
-        SizedBox(width: 28.0),
-        Text(
+      Row(children: [
+        const SizedBox(width: 28.0),
+        const Text(
           'Player',
           style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
-        SizedBox(width: 30.0), // Add some spacing between the text and dropdown
-        //DROP DOWN BOX
+        const SizedBox(
+            width: 30.0), // Add some spacing between the text and dropdown
+        //Drop down menu
+        Container(
+          width: 250,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(4.0),
+          ),
+          child: DropdownButton<Players>(
+            value: selectedPlayer,
+            onChanged: (Players? newValue) {
+              setState(() {
+                selectedPlayer = newValue;
+              });
+            },
+            items: playerItems,
+            isExpanded: true, // Expand the dropdown to fill the available width
+            underline: const SizedBox(), // Remove the underline
+          ),
+        )
       ]),
       const SizedBox(height: 30.0),
       Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const SizedBox(width: 20.0), // Add some spacing
+          const SizedBox(width: 125.0), // Add some spacing
           ElevatedButton(
             onPressed: () {},
             style: ElevatedButton.styleFrom(
