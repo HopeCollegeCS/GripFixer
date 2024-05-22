@@ -8,7 +8,17 @@ class WelcomePage extends StatefulWidget {
   State<WelcomePage> createState() => _WelcomePage();
 }
 
+String getButtonPath(int? value) {
+  if (value == 1) {
+    return "/RacketSelectPage";
+  } else if (value == 2) {
+    return "/MeasurePage";
+  }
+  return "/RacketSelectPage";
+}
+
 class _WelcomePage extends State<WelcomePage> {
+  int? _selectedValue = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +46,7 @@ class _WelcomePage extends State<WelcomePage> {
             ],
           ),
           const SizedBox(height: 16.0), // Add some spacing
-          const Column(
+          Column(
               crossAxisAlignment:
                   CrossAxisAlignment.start, // Align the column to the start
               children: [
@@ -44,46 +54,64 @@ class _WelcomePage extends State<WelcomePage> {
                   height: 20,
                   child: Row(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                           width: 10.0), // Move the radio button to the left
                       Radio(
-                        value: 0,
-                        groupValue: 0, // Set the initial value
-                        onChanged: null, // Disable the radio button for now
+                        value: 1, // Assign a value of 1 to this option
+                        groupValue:
+                            _selectedValue, // Use _selectedValue to track the selected option
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedValue =
+                                value!; // Update _selectedValue when option 1 is selected
+                          });
+                        },
                       ),
-                      Text('Start a hitting session'),
+                      const Text('Start a hitting session'),
                     ],
                   ),
                 ),
-                SizedBox(height: 5.0), // Add some spacing
+                const SizedBox(height: 5.0), // Add some spacing
                 SizedBox(
                   height: 20,
                   child: Row(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                           width: 10.0), // Move the radio button to the left
                       Radio(
-                        value: 0,
-                        groupValue: 0, // Set the initial value
-                        onChanged: null, // Disable the radio button for now
+                        value: 2, // Assign a value of 1 to this option
+                        groupValue:
+                            _selectedValue, // Use _selectedValue to track the selected option
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedValue =
+                                value!; // Update _selectedValue when option 1 is selected
+                          });
+                        }, // Disable the radio button for now
                       ),
-                      Text('Analyze a previous session'),
+                      const Text('Analyze a previous session'),
                     ],
                   ),
                 ),
-                SizedBox(height: 5.0), // Add some spacing
+                const SizedBox(height: 5.0), // Add some spacing
                 SizedBox(
                   height: 20,
                   child: Row(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                           width: 10.0), // Move the radio button to the left
                       Radio(
-                        value: 0,
-                        groupValue: 0, // Set the initial value
-                        onChanged: null, // Disable the radio button for now
+                        value: 3, // Assign a value of 1 to this option
+                        groupValue:
+                            _selectedValue, // Use _selectedValue to track the selected option
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedValue =
+                                value!; // Update _selectedValue when option 1 is selected
+                          });
+                        }, // Disable the radio button for now
                       ),
-                      Text('Practice hitting target grip tensions'),
+                      const Text('Practice hitting target grip tensions'),
                     ],
                   ),
                 ),
@@ -94,7 +122,7 @@ class _WelcomePage extends State<WelcomePage> {
             children: [
               const SizedBox(width: 20.0), // Add some spacing
               ElevatedButton(
-                onPressed: () => context.go("/ShotSelectionPage"),
+                onPressed: () => context.go(getButtonPath(_selectedValue)),
                 style: ElevatedButton.styleFrom(
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.zero, // Make the button square
