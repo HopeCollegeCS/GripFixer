@@ -20,6 +20,11 @@ class MeasureScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
               ),
             ),
+            const SizedBox(height: 20.0),
+            const Icon(
+              Icons.sports_tennis,
+              size: 130,
+            ),
             const Align(
               alignment: Alignment.topLeft,
               child: Text(
