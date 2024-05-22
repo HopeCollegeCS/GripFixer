@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-// HAVE NOT IMPLEMENTED THE AVAILABLE SENSORS
+//PLACEHOLDER ENUM FOR AVAILABLE SENSORS
+enum AvailableSensors { sensor1, sensor2, sensor3 }
 
 class ConnectToSensor extends StatefulWidget {
   const ConnectToSensor({super.key});
@@ -10,6 +11,8 @@ class ConnectToSensor extends StatefulWidget {
 }
 
 class _ConnectToSensor extends State<ConnectToSensor> {
+  AvailableSensors? _selectedSensor;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,6 +47,18 @@ class _ConnectToSensor extends State<ConnectToSensor> {
               ),
             ),
             // AVAILABLE SENSORS GO HERE
+            ...AvailableSensors.values.map((sensor) => ListTile(
+                title: Text(sensor.toString()),
+                leading: Radio<AvailableSensors>(
+                  value: sensor,
+                  groupValue: _selectedSensor,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedSensor = value;
+                    });
+                  },
+                ))),
+            // END OF AVAILABLE SENSORS
             const SizedBox(height: 10.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
