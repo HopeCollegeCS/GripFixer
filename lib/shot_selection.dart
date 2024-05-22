@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 // SPACE BETWEEN RADIOLISTTLE's IS TOO BIG
 
@@ -118,7 +119,7 @@ class ShotSelection extends State<ShotSelectionPage> {
             children: [
               const SizedBox(width: 20.0), // Add some spacing
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () => context.go("/RecordingPage"),
                 style: ElevatedButton.styleFrom(
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.zero, // Make the button square

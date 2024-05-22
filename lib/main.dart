@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:grip_fixer/measure.dart';
+import 'package:grip_fixer/player_selection.dart';
 import 'welcome_page.dart';
 import 'shot_selection.dart';
 import 'connect_to_sensor.dart';
 import 'package:go_router/go_router.dart';
+import 'new_player_page.dart';
+import 'recording_screen.dart';
 
 final _router = GoRouter(
   initialLocation: '/WelcomePage',
@@ -23,6 +26,22 @@ final _router = GoRouter(
     GoRoute(
       path: "/RacketSelectPage",
       builder: (context, state) => const ConnectToSensor(),
+    ),
+    GoRoute(
+      path: "/PlayerSelectPage",
+      builder: (context, state) => const PlayerSelection(),
+    ),
+    GoRoute(
+      path: "/NewPlayerPage",
+      builder: (context, state) => const NewPlayerPage(),
+    ),
+    GoRoute(
+      path: "/ShotSelectionPage",
+      builder: (context, state) => const ShotSelectionPage(),
+    ),
+    GoRoute(
+      path: "/RecordingPage",
+      builder: (context, state) => const RecordingScreen(),
     ),
   ],
 );

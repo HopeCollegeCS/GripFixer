@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class NewPlayerPage extends StatefulWidget {
   const NewPlayerPage({super.key});
@@ -208,7 +209,7 @@ class _NewPlayer extends State<NewPlayerPage> {
         children: [
           const SizedBox(width: 20.0), // Add some spacing
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () => context.go("/MeasurePage"),
             style: ElevatedButton.styleFrom(
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.zero, // Make the button square

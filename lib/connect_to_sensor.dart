@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 //PLACEHOLDER ENUM FOR AVAILABLE SENSORS
 enum AvailableSensors { sensor1, sensor2, sensor3 }
@@ -65,7 +66,8 @@ class _ConnectToSensor extends State<ConnectToSensor> {
               children: [
                 const SizedBox(width: 20.0), // Add some spacing
                 ElevatedButton(
-                  onPressed: () {}, // Call the method
+                  onPressed: () =>
+                      context.go("/PlayerSelectPage"), // Call the method
                   style: ElevatedButton.styleFrom(
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.zero, // Make the button square

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class MeasureScreen extends StatelessWidget {
   const MeasureScreen({super.key});
+
+//fix formatting
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +33,7 @@ class MeasureScreen extends StatelessWidget {
             ),
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () => context.go("/ShotSelectionPage"),
             style: ElevatedButton.styleFrom(
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.zero, // Make the button square

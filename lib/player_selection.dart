@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class PlayerSelection extends StatefulWidget {
   const PlayerSelection({super.key});
@@ -82,7 +83,7 @@ class _PlayerSelection extends State<PlayerSelection> {
         children: [
           const SizedBox(width: 125.0), // Add some spacing
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () => context.go("/NewPlayerPage"),
             style: ElevatedButton.styleFrom(
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.zero, // Make the button square
