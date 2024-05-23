@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:grip_fixer/main.dart';
+import 'package:provider/provider.dart';
 
 class NewPlayerPage extends StatefulWidget {
   const NewPlayerPage({super.key});
@@ -8,13 +10,26 @@ class NewPlayerPage extends StatefulWidget {
   State<NewPlayerPage> createState() => _NewPlayer();
 }
 
-class _NewPlayer extends State<NewPlayerPage> {
-  String firstName = "";
-  String lastName = "";
-  String age = "";
-  String gender = "";
-  String hand = "";
+String firstName = "";
+String lastName = "";
+String age = "";
+String gender = "";
+String hand = "";
 
+void buttonAction(BuildContext context) {
+  var player = Provider.of<Person>(context, listen: false);
+
+  Person newPerson = Person(
+      firstName: firstName,
+      lastName: lastName,
+      age: age,
+      gender: gender,
+      hand: hand);
+
+  player.setPerson(newPerson);
+}
+
+class _NewPlayer extends State<NewPlayerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -175,7 +190,7 @@ class _NewPlayer extends State<NewPlayerPage> {
               ],
             )
           ]),
-      SizedBox(height: 8),
+      const SizedBox(height: 8),
       Center(
           child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -209,7 +224,10 @@ class _NewPlayer extends State<NewPlayerPage> {
         children: [
           const SizedBox(width: 20.0), // Add some spacing
           ElevatedButton(
-            onPressed: () => context.go("/MeasurePage"),
+            onPressed: () {
+              context.go("/MeasurePage");
+              buttonAction(context);
+            },
             style: ElevatedButton.styleFrom(
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.zero, // Make the button square
