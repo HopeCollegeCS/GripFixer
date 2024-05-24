@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:grip_fixer/state.dart';
+import 'package:provider/provider.dart';
 
 // SPACE BETWEEN RADIOLISTTLE's IS TOO BIG
 
@@ -10,8 +12,15 @@ class ShotSelectionPage extends StatefulWidget {
   State<ShotSelectionPage> createState() => ShotSelection();
 }
 
+String _selectedValue = 'Forehand Groundstroke';
+
+void selectShot(BuildContext context) {
+  var state = Provider.of<AppState>(context, listen: false);
+
+  state.setShot(_selectedValue);
+}
+
 class ShotSelection extends State<ShotSelectionPage> {
-  int _selectedValue = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,12 +54,11 @@ class ShotSelection extends State<ShotSelectionPage> {
               width: 15,
               child: Row(children: [
                 Radio(
-                  value: 1,
+                  value: 'Forehand Groundstroke',
                   groupValue: _selectedValue, // Set the initial value
                   onChanged: (value) {
                     setState(() {
-                      _selectedValue =
-                          value!; // Update _selectedValue when option 1 is selected
+                      _selectedValue = 'Forehand Groundstroke';
                     });
                   }, // Disable the radio button for now
                 ),
@@ -62,14 +70,13 @@ class ShotSelection extends State<ShotSelectionPage> {
               width: 15,
               child: Row(children: [
                 Radio(
-                  value: 1,
+                  value: 'Backhand Groundstroke',
                   groupValue: _selectedValue, // Set the initial value
                   onChanged: (value) {
                     setState(() {
-                      _selectedValue =
-                          value!; // Update _selectedValue when option 1 is selected
+                      _selectedValue = 'Backhand Groundstroke';
                     });
-                  }, // Disable the radio button for now
+                  },
                 ),
                 const Text('Backhand Groundstroke'),
               ]),
@@ -79,12 +86,11 @@ class ShotSelection extends State<ShotSelectionPage> {
               width: 15,
               child: Row(children: [
                 Radio(
-                  value: 1,
+                  value: 'Forehand Volley',
                   groupValue: _selectedValue, // Set the initial value
                   onChanged: (value) {
                     setState(() {
-                      _selectedValue =
-                          value!; // Update _selectedValue when option 1 is selected
+                      _selectedValue = 'Forehand Volley';
                     });
                   }, // Disable the radio button for now
                 ),
@@ -96,12 +102,11 @@ class ShotSelection extends State<ShotSelectionPage> {
               width: 15,
               child: Row(children: [
                 Radio(
-                  value: 1,
+                  value: 'Backhand Volley',
                   groupValue: _selectedValue, // Set the initial value
                   onChanged: (value) {
                     setState(() {
-                      _selectedValue =
-                          value!; // Update _selectedValue when option 1 is selected
+                      _selectedValue = 'Backhand Volley';
                     });
                   }, // Disable the radio button for now
                 ),
@@ -113,12 +118,11 @@ class ShotSelection extends State<ShotSelectionPage> {
               width: 15,
               child: Row(children: [
                 Radio(
-                  value: 1,
+                  value: 'Serve',
                   groupValue: _selectedValue, // Set the initial value
                   onChanged: (value) {
                     setState(() {
-                      _selectedValue =
-                          value!; // Update _selectedValue when option 1 is selected
+                      _selectedValue = 'Serve';
                     });
                   }, // Disable the radio button for now
                 ),
@@ -130,12 +134,11 @@ class ShotSelection extends State<ShotSelectionPage> {
               width: 15,
               child: Row(children: [
                 Radio(
-                  value: 1,
+                  value: 'Other',
                   groupValue: _selectedValue, // Set the initial value
                   onChanged: (value) {
                     setState(() {
-                      _selectedValue =
-                          value!; // Update _selectedValue when option 1 is selected
+                      _selectedValue = 'Other';
                     });
                   }, // Disable the radio button for now
                 ),
@@ -148,7 +151,10 @@ class ShotSelection extends State<ShotSelectionPage> {
             children: [
               const SizedBox(width: 20.0), // Add some spacing
               ElevatedButton(
-                onPressed: () => context.go("/RecordingPage"),
+                onPressed: () {
+                  context.go("/RecordingPage");
+                  selectShot(context);
+                },
                 style: ElevatedButton.styleFrom(
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.zero, // Make the button square

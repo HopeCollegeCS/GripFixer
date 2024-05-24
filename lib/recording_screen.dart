@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:grip_fixer/state.dart';
+import 'package:provider/provider.dart';
 
 class RecordingScreen extends StatelessWidget {
   const RecordingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var state = Provider.of<AppState>(context);
     return Scaffold(
       body: Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -22,13 +25,13 @@ class RecordingScreen extends StatelessWidget {
           ),
           Container(
             margin: const EdgeInsets.only(left: 12),
-            child: const Row(
+            child: Row(
               children: [
-                Text('Practicing',
+                const Text('Practicing',
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                SizedBox(width: 10.0),
-                Text('Forehands', style: TextStyle(fontSize: 18))
+                const SizedBox(width: 10.0),
+                Text('${state.shot}', style: const TextStyle(fontSize: 18))
               ],
             ),
           ),
