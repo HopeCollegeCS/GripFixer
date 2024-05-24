@@ -11,6 +11,7 @@ class ShotSelectionPage extends StatefulWidget {
 }
 
 class ShotSelection extends State<ShotSelectionPage> {
+  int _selectedValue = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,82 +39,110 @@ class ShotSelection extends State<ShotSelectionPage> {
             ],
           ),
           const SizedBox(height: 10.0), // Add some spacing
-          const Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                SizedBox(
-                  height: 20,
-                  width: 15,
-                  child: Row(children: [
-                    Radio(
-                      value: 1,
-                      groupValue: 1, // Set the initial value
-                      onChanged: null, // Disable the radio button for now
-                    ),
-                    Text('Forehand Groundstroke'),
-                  ]),
+          Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            SizedBox(
+              height: 20,
+              width: 15,
+              child: Row(children: [
+                Radio(
+                  value: 1,
+                  groupValue: _selectedValue, // Set the initial value
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedValue =
+                          value!; // Update _selectedValue when option 1 is selected
+                    });
+                  }, // Disable the radio button for now
                 ),
-                SizedBox(
-                  height: 20,
-                  width: 15,
-                  child: Row(children: [
-                    Radio(
-                      value: 1,
-                      groupValue: 1, // Set the initial value
-                      onChanged: null, // Disable the radio button for now
-                    ),
-                    Text('Backhand Groundstroke'),
-                  ]),
-                ),
-                SizedBox(
-                  height: 20,
-                  width: 15,
-                  child: Row(children: [
-                    Radio(
-                      value: 1,
-                      groupValue: 1, // Set the initial value
-                      onChanged: null, // Disable the radio button for now
-                    ),
-                    Text('Forehand Volley'),
-                  ]),
-                ),
-                SizedBox(
-                  height: 20,
-                  width: 15,
-                  child: Row(children: [
-                    Radio(
-                      value: 1,
-                      groupValue: 1, // Set the initial value
-                      onChanged: null, // Disable the radio button for now
-                    ),
-                    Text('Backhand Volley'),
-                  ]),
-                ),
-                SizedBox(
-                  height: 20,
-                  width: 15,
-                  child: Row(children: [
-                    Radio(
-                      value: 1,
-                      groupValue: 1, // Set the initial value
-                      onChanged: null, // Disable the radio button for now
-                    ),
-                    Text('Serve'),
-                  ]),
-                ),
-                SizedBox(
-                  height: 20,
-                  width: 15,
-                  child: Row(children: [
-                    Radio(
-                      value: 1,
-                      groupValue: 1, // Set the initial value
-                      onChanged: null, // Disable the radio button for now
-                    ),
-                    Text('Other'),
-                  ]),
-                ),
+                const Text('Forehand Groundstroke'),
               ]),
+            ),
+            SizedBox(
+              height: 20,
+              width: 15,
+              child: Row(children: [
+                Radio(
+                  value: 1,
+                  groupValue: _selectedValue, // Set the initial value
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedValue =
+                          value!; // Update _selectedValue when option 1 is selected
+                    });
+                  }, // Disable the radio button for now
+                ),
+                const Text('Backhand Groundstroke'),
+              ]),
+            ),
+            SizedBox(
+              height: 20,
+              width: 15,
+              child: Row(children: [
+                Radio(
+                  value: 1,
+                  groupValue: _selectedValue, // Set the initial value
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedValue =
+                          value!; // Update _selectedValue when option 1 is selected
+                    });
+                  }, // Disable the radio button for now
+                ),
+                const Text('Forehand Volley'),
+              ]),
+            ),
+            SizedBox(
+              height: 20,
+              width: 15,
+              child: Row(children: [
+                Radio(
+                  value: 1,
+                  groupValue: _selectedValue, // Set the initial value
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedValue =
+                          value!; // Update _selectedValue when option 1 is selected
+                    });
+                  }, // Disable the radio button for now
+                ),
+                const Text('Backhand Volley'),
+              ]),
+            ),
+            SizedBox(
+              height: 20,
+              width: 15,
+              child: Row(children: [
+                Radio(
+                  value: 1,
+                  groupValue: _selectedValue, // Set the initial value
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedValue =
+                          value!; // Update _selectedValue when option 1 is selected
+                    });
+                  }, // Disable the radio button for now
+                ),
+                const Text('Serve'),
+              ]),
+            ),
+            SizedBox(
+              height: 20,
+              width: 15,
+              child: Row(children: [
+                Radio(
+                  value: 1,
+                  groupValue: _selectedValue, // Set the initial value
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedValue =
+                          value!; // Update _selectedValue when option 1 is selected
+                    });
+                  }, // Disable the radio button for now
+                ),
+                const Text('Other'),
+              ]),
+            ),
+          ]),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [

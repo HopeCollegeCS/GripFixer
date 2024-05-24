@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:grip_fixer/state.dart';
+import 'package:provider/provider.dart';
 
 class MeasureScreen extends StatelessWidget {
   const MeasureScreen({super.key});
@@ -8,6 +10,7 @@ class MeasureScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var state = Provider.of<AppState>(context);
     return Scaffold(
       body: Center(
         child: Container(
@@ -25,11 +28,12 @@ class MeasureScreen extends StatelessWidget {
               Icons.sports_tennis,
               size: 130,
             ),
-            const Align(
+            Align(
               alignment: Alignment.topLeft,
               child: Text(
-                "Measure Grip Strength",
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                "Measure ${state.person?.firstName}'s strength",
+                style:
+                    const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
             ),
             const Align(

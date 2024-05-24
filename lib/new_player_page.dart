@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:grip_fixer/main.dart';
+import 'package:grip_fixer/person.dart';
+import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
 
 class NewPlayerPage extends StatefulWidget {
@@ -17,7 +18,7 @@ String gender = "";
 String hand = "";
 
 void buttonAction(BuildContext context) {
-  var player = Provider.of<Person>(context, listen: false);
+  var state = Provider.of<AppState>(context, listen: false);
 
   Person newPerson = Person(
       firstName: firstName,
@@ -26,7 +27,7 @@ void buttonAction(BuildContext context) {
       gender: gender,
       hand: hand);
 
-  player.setPerson(newPerson);
+  state.setPerson(newPerson);
 }
 
 class _NewPlayer extends State<NewPlayerPage> {
