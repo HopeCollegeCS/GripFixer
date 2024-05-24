@@ -22,4 +22,23 @@ class Person {
 
     return this;
   }
+
+  // Convert a Dog into a Map. The keys must correspond to the names of the
+  // columns in the database.
+  Map<String, Object?> toMap() {
+    return {
+      'firstName': firstName,
+      'lastName': lastName,
+      'age': age,
+      'gender': gender,
+      'hand': hand,
+    };
+  }
+
+  // Implement toString to make it easier to see information about
+  // each dog when using the print statement.
+  @override
+  String toString() {
+    return 'Dog{firstName: $firstName, lastName: $lastName, age: $age, gender: $gender, hand: $hand}';
+  }
 }

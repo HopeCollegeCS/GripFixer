@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grip_fixer/measure.dart';
 import 'package:grip_fixer/player_selection.dart';
+import 'package:grip_fixer/sqflite.dart';
 import 'welcome_page.dart';
 import 'shot_selection.dart';
 import 'connect_to_sensor.dart';
@@ -49,6 +50,7 @@ final _router = GoRouter(
 );
 
 void main() {
+  mainDatabase();
   var state = AppState();
   runApp(
     //create person object for all user profiles
