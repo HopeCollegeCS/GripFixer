@@ -23,7 +23,7 @@ class Person {
     return this;
   }
 
-  // Convert a Dog into a Map. The keys must correspond to the names of the
+  // Convert a Person into a Map. The keys must correspond to the names of the
   // columns in the database.
   Map<String, Object?> toMap() {
     return {
@@ -36,9 +36,9 @@ class Person {
   }
 
   // Implement toString to make it easier to see information about
-  // each dog when using the print statement.
+  // each player when using the print statement.
   @override
   String toString() {
-    return 'Dog{firstName: $firstName, lastName: $lastName, age: $age, gender: $gender, hand: $hand}';
+    return 'Person{firstName: $firstName, lastName: $lastName, age: $age, gender: $gender, hand: $hand}';
   }
 }
