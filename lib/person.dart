@@ -1,12 +1,12 @@
 class Person {
-  String? firstName;
+  String firstName;
   String? lastName;
   String? age;
   String? gender;
   String? hand;
 
   Person({
-    this.firstName,
+    required this.firstName,
     this.lastName,
     this.age,
     this.gender,
