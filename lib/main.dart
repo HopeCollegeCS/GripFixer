@@ -11,6 +11,9 @@ import 'recording_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:grip_fixer/state.dart';
 
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+
 final _router = GoRouter(
   initialLocation: '/WelcomePage',
   routes: [
@@ -49,9 +52,29 @@ final _router = GoRouter(
   ],
 );
 
-void main() {
-  mainDatabase();
+void main() async {
+  // database
+  WidgetsFlutterBinding.ensureInitialized();
+  // Open the database and store the reference.
+  var database = await openDatabase(
+    // Set the path to the database. Note: Using the `join` function from the
+    // `path` package is best practice to ensure the path is correctly
+    // constructed for each platform.
+    join(await getDatabasesPath(), 'player_database.db'),
+    // When the database is first created, create a table to store players.
+    onCreate: (db, version) {
+      // Run the CREATE TABLE statement on the database.
+      return db.execute(
+        'CREATE TABLE players(firstName STRING PRIMARY KEY, lastName STRING, age STRING, gender STRING, hand STRING)',
+      );
+    },
+    // Set the version. This executes the onCreate function and provides a
+    // path to perform database upgrades and downgrades.
+    version: 1,
+  );
   var state = AppState();
+  var sqlLite = SqfliteClass(database: database);
+
   runApp(
     //create person object for all user profiles
     ChangeNotifierProvider(

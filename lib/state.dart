@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:grip_fixer/person.dart';
+import 'package:grip_fixer/sqflite.dart';
 
 class AppState extends ChangeNotifier {
+  SqfliteClass? sqfl;
   Person? person;
   String? shot;
 
   AppState({
+    this.sqfl,
     this.person,
     this.shot,
   });

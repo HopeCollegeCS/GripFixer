@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:grip_fixer/person.dart';
-import 'package:grip_fixer/sqflite.dart';
+import 'package:grip_fixer/state.dart';
+import 'package:provider/provider.dart';
 
 class PlayerSelection extends StatefulWidget {
   const PlayerSelection({super.key});
@@ -12,28 +13,33 @@ class PlayerSelection extends StatefulWidget {
 
 class _PlayerSelection extends State<PlayerSelection> {
   Person? selectedPlayer;
-  final List<Person> players =
-      []; // // is not connected to the database, only an empty array
-
-  @override
-  void initState() {
-    super.initState();
-    final playerList = players;
-    // ... (the spread operator) to create a new list that includes all the elements from playerList and New Player... at the end
-    final newPlayersList = [
-      ...playerList,
-      Person(firstName: 'Chris'),
-      Person(firstName: 'New Player...')
-    ];
-    // Re does the list every time so players arent continuously re added when the app is restarted
-    setState(() {
-      players.clear();
-      players.addAll(newPlayersList);
-    });
-  }
+  List<Person> newPlayersList = [];
+  bool playersLoaded = false;
 
   @override
   Widget build(BuildContext context) {
+    if (!playersLoaded) {
+      // getting the state
+      var state = Provider.of<AppState>(context);
+      // getting the database from the state
+      var db = state.sqfl;
+      // getting the list from the database
+      final playerList = db?.players();
+      // ???
+      db?.players().then((<List<Person>>)) {
+        /// works
+        final newPlayersList = [
+           // ... (the spread operator) to create a new list that includes all the elements from playerList and New Player... at the end
+          ...playerList,
+          Person(firstName: 'Chris'),
+          Person(firstName: 'New Player...')
+        ];
+        setState(() {
+          this.newPlayersList = newPlayersList;
+          playersLoaded = true;
+        });
+      };
+    }
     return Scaffold(
       body: Center(
         child: Column(
@@ -72,7 +78,7 @@ class _PlayerSelection extends State<PlayerSelection> {
                       });
                     },
                     // has all the players in the DropDownMenuiTEM
-                    items: players.map((player) {
+                    items: newPlayersList.map((player) {
                       return DropdownMenuItem<Person>(
                         value: player,
                         child: Text(player.firstName),
