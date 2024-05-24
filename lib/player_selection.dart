@@ -12,15 +12,20 @@ class PlayerSelection extends StatefulWidget {
 
 class _PlayerSelection extends State<PlayerSelection> {
   Person? selectedPlayer;
-  final List<Person> players = [];
+  final List<Person> players =
+      []; // // is not connected to the database, only an empty array
 
   @override
   void initState() {
     super.initState();
     final playerList = players;
     // ... (the spread operator) to create a new list that includes all the elements from playerList and New Player... at the end
-    final newPlayersList = [...playerList, Person(firstName: 'New Player...')];
-    // Re does the list every time so players arent continuously readded when the app is restarted
+    final newPlayersList = [
+      ...playerList,
+      Person(firstName: 'Chris'),
+      Person(firstName: 'New Player...')
+    ];
+    // Re does the list every time so players arent continuously re added when the app is restarted
     setState(() {
       players.clear();
       players.addAll(newPlayersList);
@@ -66,7 +71,7 @@ class _PlayerSelection extends State<PlayerSelection> {
                         selectedPlayer = newValue;
                       });
                     },
-                    // I think this will have all the "players" in the DropDownMenuiTEM
+                    // has all the players in the DropDownMenuiTEM
                     items: players.map((player) {
                       return DropdownMenuItem<Person>(
                         value: player,
