@@ -10,15 +10,14 @@ class PlayerSelection extends StatefulWidget {
 
 //PLACEHOLDER ENUM FOR ACTUAL PLAYERS
 enum Players {
-  blue('Blue', Colors.blue),
-  pink('Pink', Colors.pink),
-  green('Green', Colors.green),
-  yellow('Orange', Colors.orange),
-  grey('Grey', Colors.grey);
+  blue('Blue'),
+  pink('Pink'),
+  green('Green'),
+  yellow('Orange'),
+  newPlayer('New Player...');
 
-  const Players(this.label, this.color);
-  final String label;
-  final Color color;
+  const Players(this.firstName);
+  final String firstName;
 }
 //END OF PLACEHOLDER
 
@@ -28,7 +27,7 @@ class _PlayerSelection extends State<PlayerSelection> {
   final List<DropdownMenuItem<Players>> playerItems = Players.values
       .map((Players player) => DropdownMenuItem<Players>(
             value: player,
-            child: Text(player.label),
+            child: Text(player.firstName),
           ))
       .toList();
 
@@ -83,7 +82,11 @@ class _PlayerSelection extends State<PlayerSelection> {
         children: [
           const SizedBox(width: 125.0), // Add some spacing
           ElevatedButton(
-            onPressed: () => context.go("/NewPlayerPage"),
+            onPressed: selectedPlayer == Players.newPlayer
+                ? () => context.go("/NewPlayerPage")
+                : selectedPlayer != null
+                    ? () => context.go("/MeasurePage")
+                    : null,
             style: ElevatedButton.styleFrom(
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.zero, // Make the button square

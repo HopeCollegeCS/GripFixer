@@ -83,7 +83,7 @@ class _NewPlayer extends State<NewPlayerPage> {
           const SizedBox(width: 28),
         ],
       ),
-      SizedBox(height: 10),
+      const SizedBox(height: 10),
       Row(
         mainAxisAlignment: MainAxisAlignment.start, // Align to the left
         children: [
@@ -118,7 +118,7 @@ class _NewPlayer extends State<NewPlayerPage> {
       Row(
         mainAxisAlignment: MainAxisAlignment.start, // Align to the left
         children: [
-          const SizedBox(width: 28),
+          const SizedBox(width: 32),
           const Text(
             'Age',
             style: TextStyle(fontSize: 25),
