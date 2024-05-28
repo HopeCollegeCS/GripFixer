@@ -1,7 +1,7 @@
 class Person {
   String firstName;
   String? lastName;
-  String? age;
+  int? age;
   String? gender;
   String? hand;
 

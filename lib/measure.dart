@@ -11,6 +11,7 @@ class MeasureScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var state = Provider.of<AppState>(context);
+    //var db = state.sqfl;
     return Scaffold(
       body: Center(
         child: Container(

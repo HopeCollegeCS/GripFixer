@@ -65,6 +65,7 @@ void main() async {
     onCreate: (db, version) {
       // Run the CREATE TABLE statement on the database.
       return db.execute(
+        //make id to be int primary key
         'CREATE TABLE players(firstName STRING PRIMARY KEY, lastName STRING, age STRING, gender STRING, hand STRING)',
       );
     },

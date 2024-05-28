@@ -13,7 +13,7 @@ class NewPlayerPage extends StatefulWidget {
 
 String firstName = "";
 String lastName = "";
-String age = "";
+int age = 0;
 String gender = "";
 String hand = "";
 
@@ -116,7 +116,7 @@ class _NewPlayer extends State<NewPlayerPage> {
           const SizedBox(width: 28),
         ],
       ),
-      SizedBox(height: 10),
+      const SizedBox(height: 10),
       Row(
         mainAxisAlignment: MainAxisAlignment.start, // Align to the left
         children: [
@@ -131,7 +131,7 @@ class _NewPlayer extends State<NewPlayerPage> {
               height: 32, // Adjust this value to change the height
               child: TextField(
                 onChanged: (text) {
-                  age = text;
+                  age = int.tryParse(text)!;
                 },
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
@@ -147,11 +147,11 @@ class _NewPlayer extends State<NewPlayerPage> {
           const SizedBox(width: 28),
         ],
       ),
-      SizedBox(height: 10),
+      const SizedBox(height: 10),
       Row(
           mainAxisAlignment: MainAxisAlignment.start, // Align to the left
           children: [
-            SizedBox(width: 28),
+            const SizedBox(width: 28),
             const Text(
               'Gender',
               style: TextStyle(fontSize: 25),

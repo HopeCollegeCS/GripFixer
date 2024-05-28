@@ -32,7 +32,7 @@ class SqfliteClass {
       for (final {
             'firstName': firstName as String,
             'lastName': lastName as String,
-            'age': age as String,
+            'age': age as int,
             'gender': gender as String,
             'hand': hand as String,
           } in playerMaps)
