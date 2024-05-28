@@ -74,7 +74,7 @@ void main() async {
   );
   var state = AppState();
   var sqlLite = SqfliteClass(database: database);
-
+  state.sqfl = sqlLite;
   runApp(
     //create person object for all user profiles
     ChangeNotifierProvider(

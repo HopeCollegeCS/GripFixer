@@ -226,6 +226,7 @@ class _NewPlayer extends State<NewPlayerPage> {
           const SizedBox(width: 20.0), // Add some spacing
           ElevatedButton(
             onPressed: () {
+              //use SQFlite class to insert new player, async so call .then and context.go goes inside
               context.go("/MeasurePage");
               buttonAction(context);
             },

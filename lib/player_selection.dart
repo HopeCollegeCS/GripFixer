@@ -23,22 +23,22 @@ class _PlayerSelection extends State<PlayerSelection> {
       var state = Provider.of<AppState>(context);
       // getting the database from the state
       var db = state.sqfl;
-      // getting the list from the database
-      final playerList = db?.players();
+      // // getting the list from the database
+      // final playerList = db?.players();
       // ???
-      db?.players().then((<List<Person>>)) {
+      db?.players().then((playerList) {
         /// works
         final newPlayersList = [
-           // ... (the spread operator) to create a new list that includes all the elements from playerList and New Player... at the end
+          // ... (the spread operator) to create a new list that includes all the elements from playerList and New Player... at the end
           ...playerList,
-          Person(firstName: 'Chris'),
-          Person(firstName: 'New Player...')
+          //Person(firstName: 'Chris'),
+          Person(firstName: 'New Player')
         ];
         setState(() {
           this.newPlayersList = newPlayersList;
           playersLoaded = true;
         });
-      };
+      });
     }
     return Scaffold(
       body: Center(
