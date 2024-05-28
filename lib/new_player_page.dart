@@ -28,6 +28,8 @@ void buttonAction(BuildContext context) {
       hand: hand);
 
   state.setPerson(newPerson);
+  var db = state.sqfl;
+  db?.insertPlayer(newPerson);
 }
 
 class _NewPlayer extends State<NewPlayerPage> {
