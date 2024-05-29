@@ -11,6 +11,7 @@ class MeasureScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var state = Provider.of<AppState>(context);
+    String strength;
     //var db = state.sqfl;
     return Scaffold(
       body: Center(
@@ -44,8 +45,25 @@ class MeasureScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 18),
               ),
             ),
+            //text box
+            TextField(
+              onChanged: (text) {
+                strength = text;
+              },
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.zero,
+                  borderSide: BorderSide(color: Colors.black, width: 5.0),
+                ),
+                contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
+              ),
+              style: const TextStyle(fontSize: 20.0),
+            ),
             ElevatedButton(
-              onPressed: () => context.go("/ShotSelectionPage"),
+              onPressed: () {
+                context.go("/ShotSelectionPage");
+                //set the strength part of person equal to strength in here
+              },
               style: ElevatedButton.styleFrom(
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.zero, // Make the button square

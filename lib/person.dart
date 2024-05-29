@@ -1,5 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
+//Add a field called strength which will hold the grip strength of the player. Changes every time
+
 class Person {
   int? player_id;
   String firstName;
@@ -8,7 +10,6 @@ class Person {
   String? gender;
   String? hand;
 
-//add an id column
   Person({
     this.player_id,
     required this.firstName,

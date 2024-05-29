@@ -7,7 +7,7 @@ class SqfliteClass {
   final Database database;
   SqfliteClass({required this.database});
 
-  // Define a function that ins<erts players into the database
+  // Define a function that inserts players into the database
   Future<int> insertPlayer(Person player) async {
     // Get a reference to the database.
     final db = await database;

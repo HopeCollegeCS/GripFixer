@@ -6,7 +6,6 @@ class Session {
   int? session_date;
   String? shot_type;
 
-//add an id column
   Session({
     this.session_id,
     this.player_id,
