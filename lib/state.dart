@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:grip_fixer/person.dart';
+import 'package:grip_fixer/session.dart';
 import 'package:grip_fixer/sqflite.dart';
 
 class AppState extends ChangeNotifier {
-  SqfliteClass? sqfl;
+  late SqfliteClass sqfl;
   Person? person;
-  String? shot;
+  Session? session;
 
   AppState({
-    this.sqfl,
     this.person,
-    this.shot,
+    this.session,
   });
 
   setPerson(Person newPerson) {
@@ -21,7 +21,11 @@ class AppState extends ChangeNotifier {
     }
   }
 
-  setShot(String shot) {
-    this.shot = shot;
+  setSession(Session newSession) {
+    if (session == null) {
+      session = newSession;
+    } else {
+      session?.setSession(newSession);
+    }
   }
 }

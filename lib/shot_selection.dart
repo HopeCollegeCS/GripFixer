@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:grip_fixer/session.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
 
@@ -12,13 +13,39 @@ class ShotSelectionPage extends StatefulWidget {
   State<ShotSelectionPage> createState() => ShotSelection();
 }
 
+int? session_id;
+int player_id = 0;
+int? session_date = 1;
+String shot_type = "";
+
+int? now = DateTime.now().millisecondsSinceEpoch;
+
 String _selectedValue = 'Forehand Groundstroke';
 
-void selectShot(BuildContext context) {
+Future<int> buttonAction(BuildContext context) {
   var state = Provider.of<AppState>(context, listen: false);
 
-  state.setShot(_selectedValue);
+  player_id = state.person!.player_id!;
+  session_date = now;
+  shot_type = _selectedValue;
+
+  Session newSession = Session(
+    session_id: session_id,
+    player_id: player_id,
+    session_date: session_date,
+    shot_type: shot_type,
+  );
+
+  state.setSession(newSession);
+  var db = state.sqfl;
+  return db.insertSession(newSession);
 }
+
+// void selectShot(BuildContext context) {
+//   var state = Provider.of<AppState>(context, listen: false);
+
+//   state.setShot(_selectedValue);
+// }
 
 class ShotSelection extends State<ShotSelectionPage> {
   @override
@@ -152,8 +179,13 @@ class ShotSelection extends State<ShotSelectionPage> {
               const SizedBox(width: 20.0), // Add some spacing
               ElevatedButton(
                 onPressed: () {
-                  context.go("/RecordingPage");
-                  selectShot(context);
+                  //use SQFlite class to insert new player, async so call .then and context.go goes inside
+                  buttonAction(context).then((newSessionId) {
+                    var appState =
+                        Provider.of<AppState>(context, listen: false);
+                    appState.session?.session_id = newSessionId;
+                    context.go("/RecordingPage");
+                  });
                 },
                 style: ElevatedButton.styleFrom(
                   shape: const RoundedRectangleBorder(

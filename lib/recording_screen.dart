@@ -31,7 +31,8 @@ class RecordingScreen extends StatelessWidget {
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(width: 10.0),
-                Text('${state.shot}', style: const TextStyle(fontSize: 18))
+                Text('${state.session?.shot_type}',
+                    style: const TextStyle(fontSize: 18))
               ],
             ),
           ),
@@ -56,7 +57,9 @@ class RecordingScreen extends StatelessWidget {
             ),
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              print(state.session.toString());
+            },
             style: ElevatedButton.styleFrom(
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.zero, // Make the button square

@@ -62,12 +62,18 @@ void main() async {
     // constructed for each platform.
     join(await getDatabasesPath(), 'player_database.db'),
     // When the database is first created, create a table to store players.
-    onCreate: (db, version) {
+    onCreate: (db, version) async {
       // Run the CREATE TABLE statement on the database.
-      return db.execute(
-        //make id to be int primary key
-        'CREATE TABLE players(firstName STRING PRIMARY KEY, lastName STRING, age STRING, gender STRING, hand STRING)',
+      var batch = db.batch();
+      //add grip strength field
+      batch.execute(
+        'CREATE TABLE players(player_id INTEGER PRIMARY KEY AUTOINCREMENT, firstName STRING, lastName STRING, age INTEGER, gender STRING, hand STRING)',
       );
+      //Session ID incrementing is not relative to player (so you can't have 2 session 1s). Problem?
+      batch.execute(
+        'CREATE TABLE sessions(session_id INTEGER PRIMARY KEY AUTOINCREMENT, player_id INTEGER, session_date INTEGER, shot_type STRING)',
+      );
+      await batch.commit();
     },
     // Set the version. This executes the onCreate function and provides a
     // path to perform database upgrades and downgrades.
@@ -76,6 +82,7 @@ void main() async {
   var state = AppState();
   var sqlLite = SqfliteClass(database: database);
   state.sqfl = sqlLite;
+  //deleteDatabase(join(await getDatabasesPath(), 'player_database.db'));
   runApp(
     //create person object for all user profiles
     ChangeNotifierProvider(

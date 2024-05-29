@@ -11,16 +11,18 @@ class NewPlayerPage extends StatefulWidget {
   State<NewPlayerPage> createState() => _NewPlayer();
 }
 
+int? player_id;
 String firstName = "";
 String lastName = "";
 int age = 0;
 String gender = "";
 String hand = "";
 
-void buttonAction(BuildContext context) {
+Future<int> buttonAction(BuildContext context) {
   var state = Provider.of<AppState>(context, listen: false);
 
   Person newPerson = Person(
+      player_id: player_id,
       firstName: firstName,
       lastName: lastName,
       age: age,
@@ -29,7 +31,7 @@ void buttonAction(BuildContext context) {
 
   state.setPerson(newPerson);
   var db = state.sqfl;
-  db?.insertPlayer(newPerson);
+  return db.insertPlayer(newPerson);
 }
 
 class _NewPlayer extends State<NewPlayerPage> {
@@ -229,8 +231,11 @@ class _NewPlayer extends State<NewPlayerPage> {
           ElevatedButton(
             onPressed: () {
               //use SQFlite class to insert new player, async so call .then and context.go goes inside
-              context.go("/MeasurePage");
-              buttonAction(context);
+              buttonAction(context).then((newPlayerId) {
+                var appState = Provider.of<AppState>(context, listen: false);
+                appState.person?.player_id = newPlayerId;
+                context.go("/MeasurePage");
+              });
             },
             style: ElevatedButton.styleFrom(
               shape: const RoundedRectangleBorder(
