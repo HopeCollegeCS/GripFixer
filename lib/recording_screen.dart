@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
 class RecordingScreen extends StatelessWidget {
   const RecordingScreen({super.key});
@@ -23,6 +24,7 @@ class RecordingScreen extends StatelessWidget {
             Icons.sports_tennis,
             size: 130,
           ),
+          const SizedBox(height: 15),
           Container(
             margin: const EdgeInsets.only(left: 12),
             child: Row(
@@ -36,6 +38,7 @@ class RecordingScreen extends StatelessWidget {
               ],
             ),
           ),
+          const SizedBox(height: 6),
           Container(
             margin: const EdgeInsets.only(left: 12),
             child: const Row(
@@ -48,6 +51,7 @@ class RecordingScreen extends StatelessWidget {
               ],
             ),
           ),
+          const SizedBox(height: 15),
           Container(
             margin: const EdgeInsets.only(left: 12, right: 12),
             child: const Text(
@@ -56,17 +60,17 @@ class RecordingScreen extends StatelessWidget {
               textAlign: TextAlign.left,
             ),
           ),
+          const SizedBox(height: 6),
+          // CAMERA GOES HERE
           ElevatedButton(
-            onPressed: () {
-              print(state.session.toString());
-            },
+            onPressed: () => context.go("/WelcomePage"),
             style: ElevatedButton.styleFrom(
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.zero, // Make the button square
               ),
             ),
             child: const Text(
-              'Start',
+              'Done',
               style:
                   TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
             ),

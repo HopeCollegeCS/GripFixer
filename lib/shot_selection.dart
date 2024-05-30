@@ -15,7 +15,7 @@ class ShotSelectionPage extends StatefulWidget {
 
 int? session_id;
 int player_id = 0;
-int? session_date = 1;
+int session_date = 1;
 String shot_type = "";
 
 int? now = DateTime.now().millisecondsSinceEpoch;
@@ -26,7 +26,7 @@ Future<int> buttonAction(BuildContext context) {
   var state = Provider.of<AppState>(context, listen: false);
 
   player_id = state.person!.player_id!;
-  session_date = now;
+  session_date = now!;
   shot_type = _selectedValue;
 
   Session newSession = Session(

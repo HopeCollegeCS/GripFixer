@@ -1,15 +1,18 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:grip_fixer/sqflite.dart';
+import 'package:sqflite/sqflite.dart';
+
 class Session {
   int? session_id;
   int? player_id;
-  int? session_date;
+  int session_date;
   String? shot_type;
 
   Session({
     this.session_id,
     this.player_id,
-    this.session_date,
+    required this.session_date,
     this.shot_type,
   });
 

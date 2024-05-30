@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:grip_fixer/measure.dart';
 import 'package:grip_fixer/player_selection.dart';
+import 'package:grip_fixer/select_session.dart';
 import 'package:grip_fixer/sqflite.dart';
 import 'welcome_page.dart';
 import 'shot_selection.dart';
@@ -49,6 +50,10 @@ final _router = GoRouter(
       path: "/RecordingPage",
       builder: (context, state) => const RecordingScreen(),
     ),
+    GoRoute(
+      path: "/SelectSession",
+      builder: (context, state) => const SelectSession(),
+    )
   ],
 );
 
