@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
 
@@ -59,7 +60,7 @@ class RecordingScreen extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              print(state.person.toString());
+              context.go('/AnalyzePage');
             },
             style: ElevatedButton.styleFrom(
               shape: const RoundedRectangleBorder(

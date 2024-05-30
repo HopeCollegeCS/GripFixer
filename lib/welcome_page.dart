@@ -12,7 +12,7 @@ String getButtonPath(int? value) {
   if (value == 1) {
     return "/RacketSelectPage";
   } else if (value == 2) {
-    return "/MeasurePage";
+    return "/AnalyzePage";
   }
   return "/MatchingPage";
 }
