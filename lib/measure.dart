@@ -11,7 +11,7 @@ class MeasureScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var state = Provider.of<AppState>(context);
-    int? strength = 0;
+    int strength = 0;
     //var db = state.sqfl;
     return Scaffold(
       body: Center(
@@ -48,7 +48,7 @@ class MeasureScreen extends StatelessWidget {
             //text box
             TextField(
               onChanged: (text) {
-                strength = int.tryParse(text);
+                strength = int.tryParse(text)!;
               },
               decoration: const InputDecoration(
                 border: OutlineInputBorder(

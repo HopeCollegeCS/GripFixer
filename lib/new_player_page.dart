@@ -17,7 +17,7 @@ String lastName = "";
 int age = 0;
 String gender = "";
 String hand = "";
-int? strength;
+int strength = 0;
 
 Future<int> buttonAction(BuildContext context) {
   var state = Provider.of<AppState>(context, listen: false);
