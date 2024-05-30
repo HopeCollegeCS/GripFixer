@@ -17,6 +17,7 @@ String lastName = "";
 int age = 0;
 String gender = "";
 String hand = "";
+int? strength;
 
 Future<int> buttonAction(BuildContext context) {
   var state = Provider.of<AppState>(context, listen: false);
@@ -27,7 +28,8 @@ Future<int> buttonAction(BuildContext context) {
       lastName: lastName,
       age: age,
       gender: gender,
-      hand: hand);
+      hand: hand,
+      strength: strength);
 
   state.setPerson(newPerson);
   var db = state.sqfl;

@@ -24,7 +24,9 @@ class _PlayerSelection extends State<PlayerSelection> {
       // getting the database from the state
       var db = state.sqfl;
       // // getting the list from the database
-      db?.players().then((playerList) {
+      // final playerList = db?.players();
+      // ???
+      db.players().then((playerList) {
         /// works
         final newPlayersList = [
           // ... (the spread operator) to create a new list that includes all the elements from playerList and New Player... at the end

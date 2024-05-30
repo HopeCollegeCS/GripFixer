@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
@@ -41,13 +42,14 @@ class RecordingScreen extends StatelessWidget {
           const SizedBox(height: 6),
           Container(
             margin: const EdgeInsets.only(left: 12),
-            child: const Row(
+            child: Row(
               children: [
-                Text('Target Grip Strength',
+                const Text('Target Grip Strength',
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                SizedBox(width: 10.0),
-                Text('6/10', style: TextStyle(fontSize: 18))
+                const SizedBox(width: 10.0),
+                Text('${state.person?.strength}',
+                    style: const TextStyle(fontSize: 18))
               ],
             ),
           ),

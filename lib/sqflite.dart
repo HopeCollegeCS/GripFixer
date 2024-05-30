@@ -49,6 +49,7 @@ class SqfliteClass {
             'age': age as int,
             'gender': gender as String,
             'hand': hand as String,
+            'strength': strength as int,
           } in playerMaps)
         Person(
             player_id: player_id,
@@ -56,7 +57,8 @@ class SqfliteClass {
             lastName: lastName,
             age: age,
             gender: gender,
-            hand: hand),
+            hand: hand,
+            strength: strength),
     ];
   }
 

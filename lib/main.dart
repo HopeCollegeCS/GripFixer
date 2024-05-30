@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:grip_fixer/analyze.dart';
+import 'package:grip_fixer/matching.dart';
 import 'package:grip_fixer/measure.dart';
 import 'package:grip_fixer/player_selection.dart';
 import 'package:grip_fixer/select_session.dart';
@@ -51,6 +53,14 @@ final _router = GoRouter(
       builder: (context, state) => const RecordingScreen(),
     ),
     GoRoute(
+      path: "/MatchingPage",
+      builder: (context, state) => const MatchingScreen(),
+    ),
+    GoRoute(
+      path: "/AnalyzePage",
+      builder: (context, state) => const AnalyzeScreen(),
+    ),
+    GoRoute(
       path: "/SelectSession",
       builder: (context, state) => const SelectSession(),
     )
@@ -72,7 +82,7 @@ void main() async {
       var batch = db.batch();
       //add grip strength field
       batch.execute(
-        'CREATE TABLE players(player_id INTEGER PRIMARY KEY AUTOINCREMENT, firstName STRING, lastName STRING, age INTEGER, gender STRING, hand STRING)',
+        'CREATE TABLE players(player_id INTEGER PRIMARY KEY AUTOINCREMENT, firstName STRING, lastName STRING, age INTEGER, gender STRING, hand STRING, strength INTEGER)',
       );
       //Session ID incrementing is not relative to player (so you can't have 2 session 1s). Problem?
       batch.execute(
