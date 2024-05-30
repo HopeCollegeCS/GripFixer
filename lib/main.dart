@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grip_fixer/matching.dart';
 import 'package:grip_fixer/measure.dart';
 import 'package:grip_fixer/player_selection.dart';
 import 'package:grip_fixer/sqflite.dart';
@@ -48,6 +49,10 @@ final _router = GoRouter(
     GoRoute(
       path: "/RecordingPage",
       builder: (context, state) => const RecordingScreen(),
+    ),
+    GoRoute(
+      path: "/MatchingPage",
+      builder: (context, state) => const MatchingScreen(),
     ),
   ],
 );
