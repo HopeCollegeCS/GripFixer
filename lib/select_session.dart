@@ -26,7 +26,7 @@ class _SelectSession extends State<SelectSession> {
       var db = state.sqfl;
       // // getting the list from the database
 
-      db?.sessions().then((sessionList) {
+      db.sessions().then((sessionList) {
         final sessions = [
           // ... (the spread operator) to create a new list that includes all the elements from playerList and New Player... at the end
           ...sessionList,
