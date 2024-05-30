@@ -38,13 +38,14 @@ class RecordingScreen extends StatelessWidget {
           ),
           Container(
             margin: const EdgeInsets.only(left: 12),
-            child: const Row(
+            child: Row(
               children: [
-                Text('Target Grip Strength',
+                const Text('Target Grip Strength',
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                SizedBox(width: 10.0),
-                Text('6/10', style: TextStyle(fontSize: 18))
+                const SizedBox(width: 10.0),
+                Text('${state.person?.strength}',
+                    style: const TextStyle(fontSize: 18))
               ],
             ),
           ),
@@ -58,7 +59,7 @@ class RecordingScreen extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              print(state.session.toString());
+              print(state.person.toString());
             },
             style: ElevatedButton.styleFrom(
               shape: const RoundedRectangleBorder(
