@@ -5,6 +5,7 @@ import 'package:grip_fixer/measure.dart';
 import 'package:grip_fixer/player_selection.dart';
 import 'package:grip_fixer/select_session.dart';
 import 'package:grip_fixer/sqflite.dart';
+import 'package:grip_fixer/video_recording.dart';
 import 'welcome_page.dart';
 import 'shot_selection.dart';
 import 'connect_to_sensor.dart';
@@ -63,7 +64,17 @@ final _router = GoRouter(
     GoRoute(
       path: "/SelectSession",
       builder: (context, state) => const SelectSession(),
-    )
+    ),
+    GoRoute(
+      path: "/VideoRecording",
+      builder: (context, state) => const VideoRecorderScreen(),
+    ),
+    // GoRoute(
+    //   path: "/VideoPlaying",
+    //   builder: (context, state) => const VideoPlayerScreen(
+    //     videoPath: '',
+    //   ),
+    // ),
   ],
 );
 
@@ -97,6 +108,7 @@ void main() async {
   var state = AppState();
   var sqlLite = SqfliteClass(database: database);
   state.sqfl = sqlLite;
+
   //deleteDatabase(join(await getDatabasesPath(), 'player_database.db'));
   runApp(
     //create person object for all user profiles

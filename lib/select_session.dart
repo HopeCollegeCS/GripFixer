@@ -64,6 +64,8 @@ class _SelectSession extends State<SelectSession> {
                 SizedBox(width: 16.0),
               ],
             ),
+
+            //start on video stuff
             SizedBox(
                 height: 80,
                 child: ListView.builder(

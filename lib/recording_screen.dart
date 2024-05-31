@@ -64,7 +64,7 @@ class RecordingScreen extends StatelessWidget {
           const SizedBox(height: 6),
           // CAMERA GOES HERE
           ElevatedButton(
-            onPressed: () => context.go("/WelcomePage"),
+            onPressed: () => context.go("/VideoRecording"),
             style: ElevatedButton.styleFrom(
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.zero, // Make the button square
