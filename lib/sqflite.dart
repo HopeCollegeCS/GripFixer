@@ -96,13 +96,13 @@ class SqfliteClass {
       'players',
       player.toMap(),
       // Ensure that the Person has a matching id.
-      where: 'firstName = ?',
+      where: 'player_id = ?',
       // Pass the Person's id as a whereArg to prevent SQL injection.
-      whereArgs: [player.firstName],
+      whereArgs: [player.player_id],
     );
   }
 
-  Future<void> deletePlayer(String firstName) async {
+  Future<void> deletePlayer(int player_id) async {
     // Get a reference to the database.
     final db = await database;
 
@@ -110,9 +110,9 @@ class SqfliteClass {
     await db.delete(
       'players',
       // Use a `where` clause to delete a specific player.
-      where: 'firstName = ?',
+      where: 'player_id = ?',
       // Pass the Person's id as a whereArg to prevent SQL injection.
-      whereArgs: [firstName],
+      whereArgs: [player_id],
     );
   }
 }
