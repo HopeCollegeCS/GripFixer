@@ -1,9 +1,12 @@
 import 'dart:io';
-//import 'package:file_saver/file_saver.dart';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
+import 'dart:async';
+import 'package:path_provider/path_provider.dart';
+
 import 'package:video_player/video_player.dart';
 
 class VideoPage extends StatefulWidget {
@@ -43,14 +46,13 @@ class _VideoPageState extends State<VideoPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.check),
-            onPressed: () {
-              File(widget.filePath).rename(
-                  "gripfixer.${state.person?.player_id}.${state.session?.session_id}");
-              //name the file and put it in a folder
-              //if folder doesn't exist create folder with create()
-              //then stick the file in the folder
-              //be able to access it later somehow?
-              print('saved!');
+            onPressed: () async {
+              //if directory doesn't exist create folder with create()
+              final directory = await getApplicationDocumentsDirectory();
+              //name the file and put it in a directory
+              await File(widget.filePath).rename(
+                  "${directory.path}/${state.person?.player_id}.${state.session?.session_id}");
+              context.go("/WelcomePage");
             },
           )
         ],

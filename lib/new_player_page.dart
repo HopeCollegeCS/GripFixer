@@ -15,6 +15,7 @@ int? player_id;
 String firstName = "";
 String lastName = "";
 int age = 0;
+String placeholderAge = "";
 String gender = "";
 String hand = "";
 int strength = 0;
@@ -135,7 +136,8 @@ class _NewPlayer extends State<NewPlayerPage> {
               height: 32, // Adjust this value to change the height
               child: TextField(
                 onChanged: (text) {
-                  age = int.tryParse(text)!;
+                  //age = int.tryParse(text)!;
+                  placeholderAge = text;
                 },
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
@@ -232,6 +234,7 @@ class _NewPlayer extends State<NewPlayerPage> {
           const SizedBox(width: 20.0), // Add some spacing
           ElevatedButton(
             onPressed: () {
+              age = int.tryParse(placeholderAge)!;
               //use SQFlite class to insert new player, async so call .then and context.go goes inside
               buttonAction(context).then((newPlayerId) {
                 var appState = Provider.of<AppState>(context, listen: false);
