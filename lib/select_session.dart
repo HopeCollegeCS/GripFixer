@@ -67,37 +67,48 @@ class _SelectSession extends State<SelectSession> {
 
             //start on video stuff
             SizedBox(
-                height: 80,
-                child: ListView.builder(
-                  itemCount: sessions?.length,
-                  itemBuilder: (context, index) {
-                    final formattedDate = sessions![index].session_date != null
-                        ? DateFormat('MMM d').format(
-                            DateTime.fromMillisecondsSinceEpoch(
-                                sessions![index].session_date),
-                          )
-                        : 'N/A';
-                    return Row(
-                      children: [
-                        const SizedBox(width: 20),
-                        Radio(
-                          value: index,
-                          groupValue: selectedValue,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedValue = value;
-                            });
-                          },
-                        ),
-                        Text(formattedDate),
-                        const SizedBox(width: 10),
-                        Text('${sessions?[index].player_id}'),
-                        const SizedBox(width: 10),
-                        Text('${sessions?[index].shot_type}'),
-                      ],
-                    );
-                  },
-                )),
+              child: DataTable(
+                columnSpacing: 13,
+                columns: const [
+                  DataColumn(label: SizedBox(width: 20)),
+                  DataColumn(label: Text('Session Date')),
+                  DataColumn(label: Text('Player')),
+                  DataColumn(label: Text('Shot')),
+                ],
+                border: TableBorder.all(),
+                rows: sessions?.map((session) {
+                      final formattedDate = session.session_date != null
+                          ? DateFormat('MMM d').format(
+                              DateTime.fromMillisecondsSinceEpoch(
+                                  session.session_date),
+                            )
+                          : 'N/A';
+                      return DataRow(
+                        cells: [
+                          DataCell(
+                            SizedBox(
+                              width: 3,
+                              child: Radio(
+                                value: sessions?.indexOf(session),
+                                groupValue: selectedValue,
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedValue =
+                                        selectedValue == value ? null : value;
+                                  });
+                                },
+                              ),
+                            ),
+                          ),
+                          DataCell(Text(formattedDate)),
+                          DataCell(Text('${session.player_id}')),
+                          DataCell(Text('${session.shot_type}')),
+                        ],
+                      );
+                    }).toList() ??
+                    [],
+              ),
+            ),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
