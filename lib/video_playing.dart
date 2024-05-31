@@ -44,7 +44,11 @@ class _VideoPageState extends State<VideoPage> {
           IconButton(
             icon: const Icon(Icons.check),
             onPressed: () {
+              File(widget.filePath).rename(
+                  "gripfixer.${state.person?.player_id}.${state.session?.session_id}");
               //name the file and put it in a folder
+              //if folder doesn't exist create folder with create()
+              //then stick the file in the folder
               //be able to access it later somehow?
               print('saved!');
             },
