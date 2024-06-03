@@ -50,15 +50,18 @@ class SqfliteClass {
             'gender': gender as String,
             'hand': hand as String,
             'strength': strength as int,
+            'forehandGrip': forehandGrip as String,
           } in playerMaps)
         Person(
-            player_id: player_id,
-            firstName: firstName,
-            lastName: lastName,
-            age: age,
-            gender: gender,
-            hand: hand,
-            strength: strength),
+          player_id: player_id,
+          firstName: firstName,
+          lastName: lastName,
+          age: age,
+          gender: gender,
+          hand: hand,
+          strength: strength,
+          forehandGrip: forehandGrip,
+        ),
     ];
   }
 

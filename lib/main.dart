@@ -93,7 +93,7 @@ void main() async {
       var batch = db.batch();
       //add grip strength field
       batch.execute(
-        'CREATE TABLE players(player_id INTEGER PRIMARY KEY AUTOINCREMENT, firstName STRING, lastName STRING, age INTEGER, gender STRING, hand STRING, strength INTEGER)',
+        'CREATE TABLE players(player_id INTEGER PRIMARY KEY AUTOINCREMENT, firstName STRING, lastName STRING, age INTEGER, gender STRING, hand STRING, strength INTEGER, forehandGrip STRING)',
       );
       //Session ID incrementing is not relative to player (so you can't have 2 session 1s). Problem?
       batch.execute(
@@ -109,7 +109,7 @@ void main() async {
   var sqlLite = SqfliteClass(database: database);
   state.sqfl = sqlLite;
 
-  //deleteDatabase(join(await getDatabasesPath(), 'player_database.db'));
+  // deleteDatabase(join(await getDatabasesPath(), 'player_database.db'));
   runApp(
     //create person object for all user profiles
     ChangeNotifierProvider(
