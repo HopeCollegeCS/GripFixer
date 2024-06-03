@@ -10,6 +10,7 @@ class Person {
   String? gender;
   String? hand;
   int? strength;
+  String? forehandGrip;
 
   Person({
     this.player_id,
@@ -19,6 +20,7 @@ class Person {
     this.gender,
     this.hand,
     this.strength,
+    this.forehandGrip,
   });
 
   Person setPerson(Person person) {
@@ -29,6 +31,7 @@ class Person {
     gender = person.gender;
     hand = person.hand;
     strength = person.strength;
+    forehandGrip = person.forehandGrip;
     return this;
   }
 
@@ -43,6 +46,7 @@ class Person {
       'gender': gender,
       'hand': hand,
       'strength': strength,
+      'forehandGrip': forehandGrip,
     };
   }
 
@@ -50,6 +54,6 @@ class Person {
   // each player when using the print statement.
   @override
   String toString() {
-    return 'Person{player_id: $player_id, firstName: $firstName, lastName: $lastName, age: $age, gender: $gender, hand: $hand, strength: $strength}';
+    return 'Person{player_id: $player_id, firstName: $firstName, lastName: $lastName, age: $age, gender: $gender, hand: $hand, strength: $strength, forehandGrip: $forehandGrip}';
   }
 }

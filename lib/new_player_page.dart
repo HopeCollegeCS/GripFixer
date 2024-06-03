@@ -19,18 +19,21 @@ String placeholderAge = "";
 String gender = "";
 String hand = "";
 int strength = 0;
+String forehandGrip = "";
 
 Future<int> buttonAction(BuildContext context) {
   var state = Provider.of<AppState>(context, listen: false);
 
   Person newPerson = Person(
-      player_id: player_id,
-      firstName: firstName,
-      lastName: lastName,
-      age: age,
-      gender: gender,
-      hand: hand,
-      strength: strength);
+    player_id: player_id,
+    firstName: firstName,
+    lastName: lastName,
+    age: age,
+    gender: gender,
+    hand: hand,
+    strength: strength,
+    forehandGrip: forehandGrip,
+  );
 
   state.setPerson(newPerson);
   var db = state.sqfl;
@@ -227,7 +230,44 @@ class _NewPlayer extends State<NewPlayerPage> {
           const Text('Right Handed'),
         ],
       )),
-      const SizedBox(height: 20),
+      Center(
+          child: Row(
+        children: [
+          Radio(
+            value: 'Eastern',
+            groupValue: forehandGrip,
+            onChanged: (value) {
+              setState(() {
+                forehandGrip = 'Eastern';
+              });
+            },
+          ),
+          const Text('Eastern'),
+          const SizedBox(width: 20.0),
+          Radio(
+            value: 'Semi-Western',
+            groupValue: forehandGrip,
+            onChanged: (value) {
+              setState(() {
+                forehandGrip = 'Semi-Western';
+              });
+            },
+          ),
+          const Text('Semi-Western'),
+          const SizedBox(width: 20.0),
+          Radio(
+            value: 'Continental',
+            groupValue: forehandGrip,
+            onChanged: (value) {
+              setState(() {
+                forehandGrip = 'Continental';
+              });
+            },
+          ),
+          const Text('Continental'),
+        ],
+      )),
+      const SizedBox(height: 8),
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
