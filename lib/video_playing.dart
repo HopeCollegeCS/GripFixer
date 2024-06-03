@@ -50,6 +50,8 @@ class _VideoPageState extends State<VideoPage> {
               //if directory doesn't exist create folder with create()
               final directory = await getApplicationDocumentsDirectory();
               //name the file and put it in a directory
+              //how to find files?
+              ///data/user/0/com.example.grip_fixer/app_flutter
               await File(widget.filePath).rename(
                   "${directory.path}/${state.person?.player_id}.${state.session?.session_id}");
               context.go("/WelcomePage");
