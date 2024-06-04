@@ -109,7 +109,7 @@ void main() async {
   var sqlLite = SqfliteClass(database: database);
   state.sqfl = sqlLite;
 
-  // deleteDatabase(join(await getDatabasesPath(), 'player_database.db'));
+  //deleteDatabase(join(await getDatabasesPath(), 'player_database.db'));
   runApp(
     //create person object for all user profiles
     ChangeNotifierProvider(

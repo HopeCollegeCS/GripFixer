@@ -39,7 +39,7 @@ class _SelectSession extends State<SelectSession> {
     }
 
     return Scaffold(
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -115,7 +115,7 @@ class _SelectSession extends State<SelectSession> {
               children: [
                 const SizedBox(width: 20),
                 ElevatedButton(
-                  onPressed: () => context.go("/PlayerSelectPage"),
+                  onPressed: () => context.go("/AnalyzePage"),
                   style: ElevatedButton.styleFrom(
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.zero,

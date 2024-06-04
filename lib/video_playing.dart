@@ -53,8 +53,9 @@ class _VideoPageState extends State<VideoPage> {
               //how to find files?
               // /data/user/0/com.example.grip_fixer/app_flutter
               await File(widget.filePath).rename(
-                  "${directory.path}/${state.person?.player_id}.${state.session?.session_id}");
-              File(widget.filePath).delete();
+                  //how do we want to name files?
+                  "${directory.path}/${state.session?.session_id}");
+              //await File(widget.filePath).delete();
               //navigate to next page
               context.go("/WelcomePage");
             },
