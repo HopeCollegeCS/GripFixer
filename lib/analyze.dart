@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
@@ -54,26 +56,24 @@ Future<void> showMyDialog(BuildContext context) async {
 class _AnalyzeScreen extends State<AnalyzeScreen> {
   bool light = false;
   late VideoPlayerController _controller;
-  late Future<void> _initializeVideoPlayerFuture;
+  //late Future<void> _initializeVideoPlayerFuture;
+  //final file = File("file:///data/user/0/com.example.grip_fixer/app_flutter/6");
+  //bool exists = file.exists();
 
   @override
   void initState() {
     super.initState();
+  }
 
-    // Create and store the VideoPlayerController. The VideoPlayerController
-    // offers several different constructors to play videos from assets, files,
-    // or the internet.
-    _controller = VideoPlayerController.networkUrl(
-      Uri.parse(
-        'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-      ),
-    );
-
-    // Initialize the controller and store the Future for later use.
-    _initializeVideoPlayerFuture = _controller.initialize();
-
-    // Use the controller to loop the video.
-    _controller.setLooping(true);
+  Future _initVideoPlayer() async {
+    _controller = VideoPlayerController.file(File(
+        "/data/user/0/com.example.grip_fixer/cache/REC5397142690328285895.temp"));
+    _controller.initialize();
+    // .then((value) {
+    //   setState(() {
+    //     _controller.play();
+    //   });
+    // });
   }
 
   @override
@@ -156,7 +156,7 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
 // Use a FutureBuilder to display a loading spinner while waiting for the
           // VideoPlayerController to finish initializing.
           FutureBuilder(
-            future: _initializeVideoPlayerFuture,
+            future: _initVideoPlayer(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 // If the VideoPlayerController has finished initialization, use
@@ -179,15 +179,13 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
             onPressed: () {
               // Wrap the play or pause in a call to `setState`. This ensures the
               // correct icon is shown.
-              setState(() {
-                // If the video is playing, pause it.
-                if (_controller.value.isPlaying) {
-                  _controller.pause();
-                } else {
-                  // If the video is paused, play it.
-                  _controller.play();
-                }
-              });
+              // If the video is playing, pause it.
+              if (_controller.value.isPlaying) {
+                _controller.pause();
+              } else {
+                // If the video is paused, play it.
+                _controller.play();
+              }
             },
             // Display the correct icon depending on the state of the player.
             child: Icon(
@@ -197,7 +195,7 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
 
           ElevatedButton(
             onPressed: () {
-              print(state.session.toString());
+              print("here");
             },
             style: ElevatedButton.styleFrom(
               shape: const RoundedRectangleBorder(
