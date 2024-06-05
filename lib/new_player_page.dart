@@ -183,6 +183,7 @@ class _NewPlayer extends State<NewPlayerPage> {
                     const Text('Male'),
                   ],
                 ),
+                const SizedBox(height: 2),
                 Row(
                   children: [
                     const SizedBox(
@@ -202,7 +203,6 @@ class _NewPlayer extends State<NewPlayerPage> {
               ],
             )
           ]),
-      const SizedBox(height: 8),
       Center(
           child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -243,7 +243,7 @@ class _NewPlayer extends State<NewPlayerPage> {
             },
           ),
           const Text('Eastern'),
-          const SizedBox(width: 20.0),
+          const SizedBox(width: 8.0),
           Radio(
             value: 'Semi-Western',
             groupValue: forehandGrip,
@@ -254,7 +254,7 @@ class _NewPlayer extends State<NewPlayerPage> {
             },
           ),
           const Text('Semi-Western'),
-          const SizedBox(width: 20.0),
+          const SizedBox(width: 8.0),
           Radio(
             value: 'Continental',
             groupValue: forehandGrip,

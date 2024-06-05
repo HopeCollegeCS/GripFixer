@@ -1,18 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:go_router/go_router.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
 
-class MeasureScreen extends StatelessWidget {
+class MeasureScreen extends StatefulWidget {
   const MeasureScreen({super.key});
 
-//fix formatting
+  @override
+  State<MeasureScreen> createState() => _MeasureScreenState();
+}
+
+class _MeasureScreenState extends State<MeasureScreen> {
+  late int strength;
+  late AppState state;
+
+  @override
+  void initState() {
+    super.initState();
+    strength = 0;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    state = Provider.of<AppState>(context);
+    BluetoothDevice? device = state.bluetoothDevice;
+    if (device != null) {
+      subscribeToCharacteristic(device);
+    } else {
+      print("Bluetooth device is null");
+    }
+  }
+
+  void subscribeToCharacteristic(BluetoothDevice device) {
+    device.discoverServices().then((services) {
+      var service = services
+          .where((s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214"))
+          .first;
+      var characteristic = service.characteristics
+          .where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216"))
+          .first;
+      characteristic.onValueReceived.listen((value) {
+        setState(() {
+          strength = value[0];
+        });
+      });
+      characteristic.setNotifyValue(true);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     var state = Provider.of<AppState>(context);
-    int strength = 0;
-    //var db = state.sqfl;
     return Scaffold(
       body: Center(
         child: Container(
@@ -45,7 +85,26 @@ class MeasureScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 18),
               ),
             ),
-            //text box
+            ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.zero,
+                ),
+              ),
+              child: const Text(
+                'Start',
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+              ),
+            ),
+            // DISPLAY THE STRENGTH
+
+            Text(
+              'Strength: $strength',
+              style: const TextStyle(fontSize: 18),
+            ),
+            // END OF STRENGTH DISPLAY
             TextField(
               onChanged: (text) {
                 strength = int.tryParse(text)!;
@@ -67,7 +126,7 @@ class MeasureScreen extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.zero, // Make the button square
+                  borderRadius: BorderRadius.zero,
                 ),
               ),
               child: const Text(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-//PLACEHOLDER ENUM FOR AVAILABLE SENSORS
-enum AvailableSensors { sensor1, sensor2, sensor3 }
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:grip_fixer/state.dart';
+import 'package:provider/provider.dart';
 
 class ConnectToSensor extends StatefulWidget {
   const ConnectToSensor({super.key});
@@ -12,10 +12,87 @@ class ConnectToSensor extends StatefulWidget {
 }
 
 class _ConnectToSensor extends State<ConnectToSensor> {
-  AvailableSensors? _selectedSensor;
+  BluetoothDevice? _selectedDevice;
+  List<BluetoothDevice> _discoveredDevices = [];
+
+  //initializes the Bluetooth state
+  @override
+  void initState() {
+    super.initState();
+    initBluetoothState().then((_) => startScan());
+  }
+
+  // checks if the Bluetooth adapter is on
+  Future<void> initBluetoothState() async {
+    bool isOn =
+        await FlutterBluePlus.adapterState.first == BluetoothAdapterState.on;
+    if (!isOn) {
+      await FlutterBluePlus.turnOn();
+    }
+    //sets the log level for the flutter_blue_plus package and checks if Bluetooth is supported on the device
+    FlutterBluePlus.setLogLevel(LogLevel.debug);
+    bool isAvailable = await FlutterBluePlus.isSupported;
+    if (!isAvailable) {
+      return; //Bluetooth's not available
+    }
+  }
+
+  // initiates a Bluetooth scan for 5 seconds and updates the state to trigger a rebuild
+  void startScan() {
+    FlutterBluePlus.startScan(
+      timeout: const Duration(seconds: 5),
+      withServices: <Guid>[Guid("19b10000-e8f2-537e-4f6c-d104768a1214")],
+    );
+
+    FlutterBluePlus.scanResults.listen((results) {
+      setState(() {
+        _discoveredDevices = results.map((result) => result.device).toList();
+      });
+    }).onDone(() {
+      print('Scan finished');
+    });
+  }
+
+  // when the tile is clicked, this method is called and the device connects
+  void connectToDevice(BluetoothDevice device) async {
+    try {
+      device.connect(timeout: const Duration(seconds: 30), mtu: null).then((s) {
+        device.discoverServices(timeout: 30).then((services) {
+          // Discover services and characteristics
+          //List<BluetoothService> services = await device.discoverServices();
+          var service = services
+              .where(
+                  (s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214"))
+              .first;
+          var characteristic = service.characteristics
+              .where(
+                  (s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216"))
+              .first;
+          final subscription = characteristic.onValueReceived.listen((value) {
+            // onValueReceived is updated:
+            //   - anytime read() is called
+            //   - anytime a notification arrives (if subscribed)
+            // DIALOG BOX WAS HERE
+          });
+          // cleanup: cancel subscription when disconnected
+          device.cancelWhenDisconnected(subscription);
+          // subscribe
+          // Note: If a characteristic supports both **notifications** and **indications**,
+          // it will default to **notifications**. This matches how CoreBluetooth works on iOS.
+          characteristic.setNotifyValue(true);
+        });
+      });
+      setState(() {
+        _selectedDevice = device;
+      });
+    } catch (exception) {
+      print(exception);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    AppState state = Provider.of<AppState>(context);
     return Scaffold(
       body: Center(
         child: Column(
@@ -48,17 +125,19 @@ class _ConnectToSensor extends State<ConnectToSensor> {
               ),
             ),
             // AVAILABLE SENSORS GO HERE
-            ...AvailableSensors.values.map((sensor) => ListTile(
-                title: Text(sensor.toString()),
-                leading: Radio<AvailableSensors>(
-                  value: sensor,
-                  groupValue: _selectedSensor,
+            ...(_discoveredDevices.map((device) => ListTile(
+                title: Text(device.platformName),
+                leading: Radio<BluetoothDevice>(
+                  value: device,
+                  groupValue: _selectedDevice,
                   onChanged: (value) {
                     setState(() {
-                      _selectedSensor = value;
+                      _selectedDevice = value;
+                      state.bluetoothDevice = _selectedDevice;
+                      connectToDevice(device);
                     });
                   },
-                ))),
+                )))),
             // END OF AVAILABLE SENSORS
             const SizedBox(height: 10.0),
             Row(
