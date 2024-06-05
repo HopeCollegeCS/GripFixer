@@ -69,7 +69,8 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
   Future _initVideoPlayer() async {
     var directory = await getApplicationDocumentsDirectory();
     var path = directory.path;
-    var filename = '$path/3.mp4';
+    var state = Provider.of<AppState>(context, listen: false);
+    var filename = '$path/${state.session?.session_id}.mp4';
     File file = File(filename);
     _controller = VideoPlayerController.file(file);
     _controller.initialize();
