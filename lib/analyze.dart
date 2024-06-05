@@ -69,7 +69,7 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
   Future _initVideoPlayer() async {
     var directory = await getApplicationDocumentsDirectory();
     var path = directory.path;
-    var filename = '$path/1.mp4';
+    var filename = '$path/3.mp4';
     File file = File(filename);
     _controller = VideoPlayerController.file(file);
     _controller.initialize();
@@ -91,7 +91,7 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
   Widget build(BuildContext context) {
     var state = Provider.of<AppState>(context);
     return Scaffold(
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           const Align(
             alignment: Alignment.center,

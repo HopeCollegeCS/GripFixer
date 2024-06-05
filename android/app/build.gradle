@@ -28,7 +28,6 @@ android {
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
-android:usesCleartextTraffic="true"
 
 
     compileOptions {
