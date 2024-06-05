@@ -11,9 +11,7 @@ import 'package:video_player/video_player.dart';
 
 class VideoPage extends StatefulWidget {
   final String filePath;
-
   const VideoPage({Key? key, required this.filePath}) : super(key: key);
-
   @override
   _VideoPageState createState() => _VideoPageState();
 }
@@ -52,9 +50,11 @@ class _VideoPageState extends State<VideoPage> {
               //name the file and put it in a directory
               //how to find files?
               // /data/user/0/com.example.grip_fixer/app_flutter
+              // "/data/user/0/com.example.grip_fixer/cache/REC1546865709558824649.temp"
+
               await File(widget.filePath).rename(
                   //how do we want to name files?
-                  "${directory.path}/${state.session?.session_id}");
+                  "${directory.path}/${state.session?.session_id}.mp4");
               //await File(widget.filePath).delete();
               //navigate to next page
               context.go("/WelcomePage");

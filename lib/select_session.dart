@@ -115,7 +115,13 @@ class _SelectSession extends State<SelectSession> {
               children: [
                 const SizedBox(width: 20),
                 ElevatedButton(
-                  onPressed: () => context.go("/AnalyzePage"),
+                  onPressed: () {
+                    context.go("/AnalyzePage");
+                    var state = Provider.of<AppState>(context, listen: false);
+                    int value = selectedValue!;
+                    state.session = sessions?[value];
+                    //check if video exists?
+                  },
                   style: ElevatedButton.styleFrom(
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.zero,
