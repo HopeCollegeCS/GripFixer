@@ -102,10 +102,7 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
             ),
           ),
           const SizedBox(height: 20.0),
-          const Icon(
-            Icons.sports_tennis,
-            size: 130,
-          ),
+
           Container(
             margin: const EdgeInsets.only(left: 12),
             child: Row(
@@ -160,25 +157,28 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
           ),
 // Use a FutureBuilder to display a loading spinner while waiting for the
           // VideoPlayerController to finish initializing.
-          FutureBuilder(
-            future: _initVideoPlayer(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                // If the VideoPlayerController has finished initialization, use
-                // the data it provides to limit the aspect ratio of the video.
-                return AspectRatio(
-                  aspectRatio: _controller.value.aspectRatio,
-                  // Use the VideoPlayer widget to display the video.
-                  child: VideoPlayer(_controller),
-                );
-              } else {
-                // If the VideoPlayerController is still initializing, show a
-                // loading spinner.
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            },
+          AspectRatio(
+            aspectRatio: 4 / 7,
+            child: FutureBuilder(
+              future: _initVideoPlayer(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  // If the VideoPlayerController has finished initialization, use
+                  // the data it provides to limit the aspect ratio of the video.
+                  return AspectRatio(
+                    aspectRatio: _controller.value.aspectRatio,
+                    // Use the VideoPlayer widget to display the video.
+                    child: VideoPlayer(_controller),
+                  );
+                } else {
+                  // If the VideoPlayerController is still initializing, show a
+                  // loading spinner.
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            ),
           ),
           FloatingActionButton(
             onPressed: () {
@@ -193,7 +193,7 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
               }
             },
             // Display the correct icon depending on the state of the player.
-            child: Icon(
+            child: const Icon(
                 // _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
                 Icons.play_arrow),
           ),

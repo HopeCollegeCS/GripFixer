@@ -63,15 +63,28 @@ class _VideoPageState extends State<VideoPage> {
         ],
       ),
       extendBodyBehindAppBar: true,
-      body: FutureBuilder(
-        future: _initVideoPlayer(),
-        builder: (context, state) {
-          if (state.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else {
-            return VideoPlayer(_videoPlayerController);
-          }
-        },
+      body: Center(
+        child: Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            AspectRatio(
+              aspectRatio: 4 / 7,
+              child: FutureBuilder(
+                future: _initVideoPlayer(),
+                builder: (context, state) {
+                  if (state.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else {
+                    return VideoPlayer(_videoPlayerController);
+                  }
+                },
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(25),
+            ),
+          ],
+        ),
       ),
     );
   }
