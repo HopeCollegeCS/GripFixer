@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import 'package:video_player/video_player.dart';
+import 'package:path_provider/path_provider.dart';
 
 class AnalyzeScreen extends StatefulWidget {
   const AnalyzeScreen({super.key});
@@ -54,26 +57,28 @@ Future<void> showMyDialog(BuildContext context) async {
 class _AnalyzeScreen extends State<AnalyzeScreen> {
   bool light = false;
   late VideoPlayerController _controller;
-  late Future<void> _initializeVideoPlayerFuture;
+  //late Future<void> _initializeVideoPlayerFuture;
+  //final file = File("file:///data/user/0/com.example.grip_fixer/app_flutter/6");
+  //bool exists = file.exists();
 
   @override
   void initState() {
     super.initState();
+  }
 
-    // Create and store the VideoPlayerController. The VideoPlayerController
-    // offers several different constructors to play videos from assets, files,
-    // or the internet.
-    _controller = VideoPlayerController.networkUrl(
-      Uri.parse(
-        'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-      ),
-    );
-
-    // Initialize the controller and store the Future for later use.
-    _initializeVideoPlayerFuture = _controller.initialize();
-
-    // Use the controller to loop the video.
-    _controller.setLooping(true);
+  Future _initVideoPlayer() async {
+    var directory = await getApplicationDocumentsDirectory();
+    var path = directory.path;
+    var state = Provider.of<AppState>(context, listen: false);
+    var filename = '$path/${state.session?.session_id}.mp4';
+    File file = File(filename);
+    _controller = VideoPlayerController.file(file);
+    _controller.initialize();
+    // .then((value) {
+    //   setState(() {
+    //     _controller.play();
+    //   });
+    // });
   }
 
   @override
@@ -87,7 +92,7 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
   Widget build(BuildContext context) {
     var state = Provider.of<AppState>(context);
     return Scaffold(
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           const Align(
             alignment: Alignment.center,
@@ -156,7 +161,7 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
 // Use a FutureBuilder to display a loading spinner while waiting for the
           // VideoPlayerController to finish initializing.
           FutureBuilder(
-            future: _initializeVideoPlayerFuture,
+            future: _initVideoPlayer(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 // If the VideoPlayerController has finished initialization, use
@@ -179,25 +184,23 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
             onPressed: () {
               // Wrap the play or pause in a call to `setState`. This ensures the
               // correct icon is shown.
-              setState(() {
-                // If the video is playing, pause it.
-                if (_controller.value.isPlaying) {
-                  _controller.pause();
-                } else {
-                  // If the video is paused, play it.
-                  _controller.play();
-                }
-              });
+              // If the video is playing, pause it.
+              if (_controller.value.isPlaying) {
+                _controller.pause();
+              } else {
+                // If the video is paused, play it.
+                _controller.play();
+              }
             },
             // Display the correct icon depending on the state of the player.
             child: Icon(
-              _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-            ),
+                // _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+                Icons.play_arrow),
           ),
 
           ElevatedButton(
             onPressed: () {
-              print(state.session.toString());
+              print("here");
             },
             style: ElevatedButton.styleFrom(
               shape: const RoundedRectangleBorder(
