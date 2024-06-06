@@ -38,15 +38,19 @@ class _MeasureScreenState extends State<MeasureScreen> {
       var service = services
           .where((s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214"))
           .first;
-      var characteristic = service.characteristics
+      var requestCharacteristic = service.characteristics
+          .where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1215"))
+          .first;
+      var responseCharacteristic = service.characteristics
           .where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216"))
           .first;
-      characteristic.onValueReceived.listen((value) {
+      responseCharacteristic.onValueReceived.listen((value) {
         setState(() {
           strength = value[0];
         });
       });
-      characteristic.setNotifyValue(true);
+      responseCharacteristic.setNotifyValue(true);
+      requestCharacteristic.write([1]);
     });
   }
 
@@ -99,7 +103,6 @@ class _MeasureScreenState extends State<MeasureScreen> {
               ),
             ),
             // DISPLAY THE STRENGTH
-
             Text(
               'Strength: $strength',
               style: const TextStyle(fontSize: 18),
