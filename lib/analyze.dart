@@ -94,6 +94,8 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          const SizedBox(height: 40.0),
+
           const Align(
             alignment: Alignment.center,
             child: Text(
@@ -101,7 +103,7 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
               style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
             ),
           ),
-          const SizedBox(height: 20.0),
+          const SizedBox(height: 10.0),
 
           Container(
             margin: const EdgeInsets.only(left: 12),
@@ -157,27 +159,30 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
           ),
 // Use a FutureBuilder to display a loading spinner while waiting for the
           // VideoPlayerController to finish initializing.
-          AspectRatio(
-            aspectRatio: 4 / 7,
-            child: FutureBuilder(
-              future: _initVideoPlayer(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  // If the VideoPlayerController has finished initialization, use
-                  // the data it provides to limit the aspect ratio of the video.
-                  return AspectRatio(
-                    aspectRatio: _controller.value.aspectRatio,
-                    // Use the VideoPlayer widget to display the video.
-                    child: VideoPlayer(_controller),
-                  );
-                } else {
-                  // If the VideoPlayerController is still initializing, show a
-                  // loading spinner.
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              },
+          SizedBox(
+            height: 550.0,
+            child: AspectRatio(
+              aspectRatio: 9 / 16,
+              child: FutureBuilder(
+                future: _initVideoPlayer(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    // If the VideoPlayerController has finished initialization, use
+                    // the data it provides to limit the aspect ratio of the video.
+                    return AspectRatio(
+                      aspectRatio: _controller.value.aspectRatio,
+                      // Use the VideoPlayer widget to display the video.
+                      child: VideoPlayer(_controller),
+                    );
+                  } else {
+                    // If the VideoPlayerController is still initializing, show a
+                    // loading spinner.
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
+              ),
             ),
           ),
           FloatingActionButton(
