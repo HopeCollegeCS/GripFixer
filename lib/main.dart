@@ -11,7 +11,7 @@ import 'shot_selection.dart';
 import 'connect_to_sensor.dart';
 import 'package:go_router/go_router.dart';
 import 'new_player_page.dart';
-import 'recording_screen.dart';
+import 'record_practice_session.dart';
 import 'package:provider/provider.dart';
 import 'package:grip_fixer/state.dart';
 

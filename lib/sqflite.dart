@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:grip_fixer/session.dart';
+import 'package:grip_fixer/session_measurements.dart';
 import 'package:sqflite/sqflite.dart';
 import 'person.dart';
 
@@ -86,6 +87,29 @@ class SqfliteClass {
           player_id: player_id,
           session_date: session_date,
           shot_type: shot_type,
+        ),
+    ];
+  }
+
+  Future<List<SessionMeasurements>> sessionMeasurements() async {
+    // Get a reference to the database.
+    final db = await database;
+
+    // Query the table for all the players.
+    final List<Map<String, Object?>> sessionMeasurementMaps =
+        await db.query('sessionMeasurements');
+
+    // Convert the list of each player's fields into a list of `Person` objects.
+    return [
+      for (final {
+            'session_id': session_id as int,
+            'timestamp': timestamp as int,
+            'value': value as int,
+          } in sessionMeasurementMaps)
+        SessionMeasurements(
+          session_id: session_id,
+          timestamp: timestamp,
+          value: value,
         ),
     ];
   }
