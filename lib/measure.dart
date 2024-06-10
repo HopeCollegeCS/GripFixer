@@ -27,7 +27,7 @@ class _MeasureScreenState extends State<MeasureScreen> {
   void initState() {
     super.initState();
     strength = 0;
-    remainingTime = 5; // Set the initial value to 5 seconds
+    remainingTime = 5;
     isConnectedToBluetooth = false;
     timerStarted = false;
   }
@@ -59,10 +59,6 @@ class _MeasureScreenState extends State<MeasureScreen> {
       bool averageCalculated = false;
 
       responseCharacteristic!.onValueReceived.listen((value) {
-        /*if (!timerStarted) {
-          timerStarted = true;
-          startCountdownTimer();
-        }*/
         if (!averageCalculated) {
           values.add(value[0]);
         }
