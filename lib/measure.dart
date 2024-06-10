@@ -22,6 +22,7 @@ class _MeasureScreenState extends State<MeasureScreen> {
   BluetoothCharacteristic? responseCharacteristic;
   late bool isConnectedToBluetooth;
   late bool timerStarted;
+  //late int sum;
 
   @override
   void initState() {
@@ -30,6 +31,7 @@ class _MeasureScreenState extends State<MeasureScreen> {
     remainingTime = 5;
     isConnectedToBluetooth = false;
     timerStarted = false;
+    //sum = 0;
   }
 
   @override
@@ -60,7 +62,10 @@ class _MeasureScreenState extends State<MeasureScreen> {
 
       responseCharacteristic!.onValueReceived.listen((value) {
         if (!averageCalculated) {
-          values.add(value[0]);
+          values.add(value[0] & 0xFF |
+              ((value[1] & 0xFF) << 8) |
+              ((value[2] & 0xFF) << 16) |
+              ((value[3] & 0xFF) << 24));
         }
       });
       responseCharacteristic!.setNotifyValue(true);
@@ -78,8 +83,10 @@ class _MeasureScreenState extends State<MeasureScreen> {
           remainingTime--;
         } else {
           timer.cancel();
-          strength = (values.reduce((a, b) => a + b) / values.length).round();
-          values.clear();
+          //sum = values.reduce((a, b) => a + b);
+          strength = (values.reduce((a, b) => a + b) / values.length)
+              .round(); // a = the sum of all the elements in the list
+          //values.clear();
           responseCharacteristic!.setNotifyValue(false);
         }
       });
@@ -92,104 +99,108 @@ class _MeasureScreenState extends State<MeasureScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          //if (isConnectedToBluetooth)
-          Center(
-            child: Container(
-              margin: const EdgeInsets.only(left: 12, right: 12, top: 20),
+          if (isConnectedToBluetooth)
+            Center(
+              child: Container(
+                margin: const EdgeInsets.only(left: 12, right: 12, top: 20),
+                child: Column(
+                  children: [
+                    const Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "Grip Strength Tool",
+                        style: TextStyle(
+                            fontSize: 42, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "Measure ${state.person?.firstName}'s strength",
+                        style: const TextStyle(
+                            fontSize: 30, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    const Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "When you click Start, the player should grip the racket with their dominant hand as tightly as possible for a period of 5 seconds.",
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ),
+                    const SizedBox(height: 12.0),
+                    ElevatedButton(
+                      onPressed: () {
+                        timerStarted = true;
+                        startCountdownTimer(); // start the countdown timer when the button is pressed
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero,
+                        ),
+                      ),
+                      child: const Text(
+                        'Start',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.black),
+                      ),
+                    ),
+                    const SizedBox(height: 12.0),
+                    const Icon(
+                      Icons.access_time_outlined,
+                      size: 130,
+                    ),
+                    const SizedBox(height: 12.0),
+                    /*Text(
+                      'values: $values',
+                      style: const TextStyle(fontSize: 18),
+                    ),*/
+                    Text(
+                      'Strength: $strength',
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                    Text(
+                      'Remaining Time: $remainingTime seconds',
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                    const SizedBox(height: 30),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.go("/ShotSelectionPage");
+                        state.person?.strength = strength;
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero,
+                        ),
+                      ),
+                      child: const Text(
+                        'Let\'s Hit!',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.black),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          if (!isConnectedToBluetooth)
+            const Center(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "Grip Strength Tool",
-                      style:
-                          TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "Measure ${state.person?.firstName}'s strength",
-                      style: const TextStyle(
-                          fontSize: 30, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  const Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "When you click Start, the player should grip the racket with their dominant hand as tightly as possible for a period of 5 seconds.",
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  ),
-                  const SizedBox(height: 12.0),
-                  ElevatedButton(
-                    onPressed: () {
-                      timerStarted = true;
-                      startCountdownTimer(); // start the countdown timer when the button is pressed
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero,
-                      ),
-                    ),
-                    child: const Text(
-                      'Start',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.black),
-                    ),
-                  ),
-                  const SizedBox(height: 12.0),
-                  const Icon(
-                    Icons.access_time_outlined,
-                    size: 130,
-                  ),
-                  const SizedBox(height: 12.0),
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16.0),
                   Text(
-                    'Strength: $strength',
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                  Text(
-                    'Remaining Time: $remainingTime seconds',
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                  const SizedBox(height: 30),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.go("/ShotSelectionPage");
-                      state.person?.strength = strength;
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero,
-                      ),
-                    ),
-                    child: const Text(
-                      'Let\'s Hit!',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.black),
+                    'Connecting to Bluetooth...',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-          // if (!isConnectedToBluetooth)
-          //   const Center(
-          //     child: Column(
-          //       mainAxisAlignment: MainAxisAlignment.center,
-          //       children: [
-          //         CircularProgressIndicator(),
-          //         SizedBox(height: 16.0),
-          //         Text(
-          //           'Connecting to Bluetooth...',
-          //           style: TextStyle(
-          //             fontSize: 16.0,
-          //             fontWeight: FontWeight.bold,
-          //           ),
-          //         ),
-          //      ],
-          //     ),
-          //  ),
         ],
       ),
     );
