@@ -57,9 +57,6 @@ Future<void> showMyDialog(BuildContext context) async {
 class _AnalyzeScreen extends State<AnalyzeScreen> {
   bool light = false;
   late VideoPlayerController _controller;
-  //late Future<void> _initializeVideoPlayerFuture;
-  //final file = File("file:///data/user/0/com.example.grip_fixer/app_flutter/6");
-  //bool exists = file.exists();
 
   @override
   void initState() {
@@ -74,11 +71,6 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
     File file = File(filename);
     _controller = VideoPlayerController.file(file);
     _controller.initialize();
-    // .then((value) {
-    //   setState(() {
-    //     _controller.play();
-    //   });
-    // });
   }
 
   @override
@@ -146,12 +138,24 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
                     // This is called when the user toggles the switch.
                     setState(() {
                       light = value;
+                      //if on, jump forward 10 seconds
+                      if (value == true) {
+                        Duration currentPosition = _controller.value.position;
+                        Duration targetPosition =
+                            currentPosition + const Duration(seconds: 10);
+                        _controller.seekTo(targetPosition);
+                      }
                     });
                   },
                 ),
                 IconButton(
                     onPressed: () {
-                      showMyDialog(context);
+                      //  showMyDialog(context);
+
+                      Duration currentPosition = _controller.value.position;
+                      Duration targetPosition =
+                          currentPosition + const Duration(seconds: 10);
+                      _controller.seekTo(targetPosition);
                     },
                     icon: const Icon(Icons.settings)),
               ],
@@ -169,11 +173,10 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
                   if (snapshot.connectionState == ConnectionState.done) {
                     // If the VideoPlayerController has finished initialization, use
                     // the data it provides to limit the aspect ratio of the video.
-                    return AspectRatio(
-                      aspectRatio: _controller.value.aspectRatio,
-                      // Use the VideoPlayer widget to display the video.
-                      child: VideoPlayer(_controller),
-                    );
+                    // return AspectRatio(
+                    //   aspectRatio: _controller.value.aspectRatio,
+                    // Use the VideoPlayer widget to display the video.
+                    return VideoPlayer(_controller);
                   } else {
                     // If the VideoPlayerController is still initializing, show a
                     // loading spinner.
