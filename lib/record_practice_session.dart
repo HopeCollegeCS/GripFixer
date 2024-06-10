@@ -1,10 +1,43 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:grip_fixer/session_measurements.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
 
-class RecordingScreen extends StatelessWidget {
+class RecordingScreen extends StatefulWidget {
   const RecordingScreen({super.key});
+
+  @override
+  RecordingScreenState createState() => RecordingScreenState();
+}
+
+class RecordingScreenState extends State<RecordingScreen> {
+  Timer? timer;
+
+  SessionMeasurements createSessionMeasurements(int sessionID) {
+    return SessionMeasurements(
+      session_id: sessionID,
+      timestamp: DateTime.now().millisecondsSinceEpoch,
+      value: null,
+    );
+  }
+
+  void startRecording(AppState state) {
+    int counter = 0;
+    int id = state.session?.session_id ?? 0;
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (counter < 60) {
+        SessionMeasurements sessionMeasurements = createSessionMeasurements(id);
+        // save the sessionMeasurements somehwere
+        counter++;
+      } else {
+        timer.cancel();
+        context.go("/VideoRecording");
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,10 +97,13 @@ class RecordingScreen extends StatelessWidget {
           const SizedBox(height: 6),
           // CAMERA GOES HERE
           ElevatedButton(
-            onPressed: () => context.go("/VideoRecording"),
+            onPressed: () {
+              startRecording(state);
+              context.go("/VideoRecording"); // just to make it run
+            },
             style: ElevatedButton.styleFrom(
               shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.zero, // Make the button square
+                borderRadius: BorderRadius.zero,
               ),
             ),
             child: const Text(
