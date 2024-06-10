@@ -15,6 +15,7 @@ class AnalyzeScreen extends StatefulWidget {
 
 int excess = 0;
 int seconds = 0;
+List numbers = [20, 40, 50];
 
 Future<void> showMyDialog(BuildContext context) async {
   return showDialog<void>(
@@ -130,32 +131,25 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
                 const Text('Show violations only',
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                Switch(
-                  // This bool value toggles the switch.
-                  value: light,
-                  activeColor: Colors.black,
-                  onChanged: (value) {
-                    // This is called when the user toggles the switch.
-                    setState(() {
-                      light = value;
-                      //if on, jump forward 10 seconds
-                      if (value == true) {
-                        Duration currentPosition = _controller.value.position;
-                        Duration targetPosition =
-                            currentPosition + const Duration(seconds: 10);
-                        _controller.seekTo(targetPosition);
+                TextButton(
+                  onPressed: () {
+                    Duration currentPosition = _controller.value.position;
+                    late int newTime;
+                    for (int i = 0; i < numbers.length; i++) {
+                      if (numbers[i] > currentPosition.inSeconds) {
+                        newTime = numbers[i];
+                        break;
                       }
-                    });
+                      newTime = _controller.value.duration.inSeconds;
+                    }
+                    Duration targetPosition = Duration(seconds: newTime);
+                    _controller.seekTo(targetPosition);
                   },
+                  child: const Text("Watch next violation"),
                 ),
                 IconButton(
                     onPressed: () {
-                      //  showMyDialog(context);
-
-                      Duration currentPosition = _controller.value.position;
-                      Duration targetPosition =
-                          currentPosition + const Duration(seconds: 10);
-                      _controller.seekTo(targetPosition);
+                      showMyDialog(context);
                     },
                     icon: const Icon(Icons.settings)),
               ],

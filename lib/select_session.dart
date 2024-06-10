@@ -13,7 +13,7 @@ class SelectSession extends StatefulWidget {
 }
 
 class _SelectSession extends State<SelectSession> {
-  int? selectedValue = 1;
+  int? selectedValue = 0;
   List<Session>? sessions = []; // stores the list of sessions
   bool isLoaded = false;
 
