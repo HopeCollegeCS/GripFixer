@@ -15,7 +15,7 @@ class AnalyzeScreen extends StatefulWidget {
 
 int excess = 0;
 int seconds = 0;
-List numbers = [20, 40, 50];
+List numbers = [10, 20, 30, 40, 50];
 
 Future<void> showMyDialog(BuildContext context) async {
   return showDialog<void>(
@@ -131,55 +131,86 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
                 const Text('Show violations only',
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                TextButton(
-                  onPressed: () {
-                    Duration currentPosition = _controller.value.position;
-                    late int newTime;
-                    for (int i = 0; i < numbers.length; i++) {
-                      if (numbers[i] > currentPosition.inSeconds) {
-                        newTime = numbers[i];
-                        break;
-                      }
-                      newTime = _controller.value.duration.inSeconds;
-                    }
-                    Duration targetPosition = Duration(seconds: newTime);
-                    _controller.seekTo(targetPosition);
+                Switch(
+                  // This bool value toggles the switch.
+                  value: light,
+                  activeColor: Colors.black,
+                  onChanged: (value) {
+                    // This is called when the user toggles the switch.
+                    setState(() {
+                      light = value;
+                    });
                   },
-                  child: const Text("Watch next violation"),
                 ),
                 IconButton(
                     onPressed: () {
-                      showMyDialog(context);
+                      final snackBar = SnackBar(
+                        content: const Text('Yay! A SnackBar!'),
+                        action: SnackBarAction(
+                          label: 'Undo',
+                          onPressed: () {
+                            // Some code to undo the change.
+                          },
+                        ),
+                      );
+
+                      // Find the ScaffoldMessenger in the widget tree
+                      // and use it to show a SnackBar.
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     },
                     icon: const Icon(Icons.settings)),
               ],
             ),
           ),
-          TextButton(
-            onPressed: () {
-              Duration currentPosition = _controller.value.position;
-              late int newTime;
-
-              for (int i = 0; i < numbers.length; i++) {
-                if (currentPosition.inSeconds > numbers[numbers.length - 1]) {
-                  newTime = numbers[numbers.length - 1];
-                  break;
-                }
-                if ((numbers[i] > currentPosition.inSeconds)) {
-                  if (i >= 2) {
-                    newTime = numbers[i - 2];
-                    break;
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () {
+                  _controller.play();
+                  Duration currentPosition = _controller.value.position;
+                  late int newTime;
+                  for (int i = 0; i < numbers.length; i++) {
+                    if (currentPosition.inSeconds >=
+                        numbers[numbers.length - 1]) {
+                      newTime = numbers[numbers.length - 2];
+                      break;
+                    }
+                    if ((numbers[i] > currentPosition.inSeconds)) {
+                      if (i >= 2) {
+                        newTime = numbers[i - 2];
+                        break;
+                      }
+                      newTime = 0;
+                      break;
+                    }
+                    newTime = 0;
                   }
-                  newTime = 0;
-                  break;
-                }
-                newTime = 0;
-              }
-              Duration targetPosition = Duration(seconds: newTime);
-              _controller.seekTo(targetPosition);
-            },
-            child: const Text("Watch previous violation"),
+                  Duration targetPosition = Duration(seconds: newTime);
+                  _controller.seekTo(targetPosition);
+                },
+                child: const Text("Watch previous violation"),
+              ),
+              TextButton(
+                onPressed: () {
+                  _controller.play();
+                  Duration currentPosition = _controller.value.position;
+                  late int newTime;
+                  for (int i = 0; i < numbers.length; i++) {
+                    if (numbers[i] > currentPosition.inSeconds) {
+                      newTime = numbers[i];
+                      break;
+                    }
+                    newTime = _controller.value.duration.inSeconds;
+                  }
+                  Duration targetPosition = Duration(seconds: newTime);
+                  _controller.seekTo(targetPosition);
+                },
+                child: const Text("Watch next violation"),
+              ),
+            ],
           ),
+
 // Use a FutureBuilder to display a loading spinner while waiting for the
           // VideoPlayerController to finish initializing.
           SizedBox(
@@ -223,22 +254,6 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
             child: const Icon(
                 // _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
                 Icons.play_arrow),
-          ),
-
-          ElevatedButton(
-            onPressed: () {
-              print("here");
-            },
-            style: ElevatedButton.styleFrom(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.zero, // Make the button square
-              ),
-            ),
-            child: const Text(
-              'Start',
-              style:
-                  TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-            ),
           ),
         ]),
       ),
