@@ -155,6 +155,31 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
               ],
             ),
           ),
+          TextButton(
+            onPressed: () {
+              Duration currentPosition = _controller.value.position;
+              late int newTime;
+
+              for (int i = 0; i < numbers.length; i++) {
+                if (currentPosition.inSeconds > numbers[numbers.length - 1]) {
+                  newTime = numbers[numbers.length - 1];
+                  break;
+                }
+                if ((numbers[i] > currentPosition.inSeconds)) {
+                  if (i >= 2) {
+                    newTime = numbers[i - 2];
+                    break;
+                  }
+                  newTime = 0;
+                  break;
+                }
+                newTime = 0;
+              }
+              Duration targetPosition = Duration(seconds: newTime);
+              _controller.seekTo(targetPosition);
+            },
+            child: const Text("Watch previous violation"),
+          ),
 // Use a FutureBuilder to display a loading spinner while waiting for the
           // VideoPlayerController to finish initializing.
           SizedBox(
