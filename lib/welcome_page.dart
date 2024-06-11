@@ -14,7 +14,7 @@ String getButtonPath(int? value) {
   } else if (value == 2) {
     return "/SelectSession";
   }
-  return "/MatchingPage";
+  return "/SecondConnectToSensor";
 }
 
 class _WelcomePage extends State<WelcomePage> {

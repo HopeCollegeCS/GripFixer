@@ -22,7 +22,6 @@ class _MeasureScreenState extends State<MeasureScreen> {
   BluetoothCharacteristic? responseCharacteristic;
   late bool isConnectedToBluetooth;
   late bool timerStarted;
-  //late int sum;
 
   @override
   void initState() {
@@ -31,7 +30,6 @@ class _MeasureScreenState extends State<MeasureScreen> {
     remainingTime = 5;
     isConnectedToBluetooth = false;
     timerStarted = false;
-    //sum = 0;
   }
 
   @override
@@ -83,10 +81,10 @@ class _MeasureScreenState extends State<MeasureScreen> {
           remainingTime--;
         } else {
           timer.cancel();
-          //sum = values.reduce((a, b) => a + b);
           strength = (values.reduce((a, b) => a + b) / values.length)
               .round(); // a = the sum of all the elements in the list
-          //values.clear();
+          state.person?.strength = strength;
+          values.clear();
           responseCharacteristic!.setNotifyValue(false);
         }
       });
@@ -151,10 +149,6 @@ class _MeasureScreenState extends State<MeasureScreen> {
                       size: 130,
                     ),
                     const SizedBox(height: 12.0),
-                    /*Text(
-                      'values: $values',
-                      style: const TextStyle(fontSize: 18),
-                    ),*/
                     Text(
                       'Strength: $strength',
                       style: const TextStyle(fontSize: 18),
