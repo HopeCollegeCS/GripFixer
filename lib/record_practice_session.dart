@@ -34,7 +34,9 @@ class RecordingScreenState extends State<RecordingScreen> {
         counter++;
       } else {
         timer.cancel();
-        context.go("/VideoRecording");
+        if (mounted) {
+          context.go("/VideoRecording");
+        }
       }
     });
   }
