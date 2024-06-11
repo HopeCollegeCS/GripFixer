@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:grip_fixer/person.dart';
@@ -31,24 +32,14 @@ class _MatchingScreen extends State<MatchingScreen> {
   late bool isConnectedToBluetooth;
   BluetoothCharacteristic? responseCharacteristic;
   late double currentValue;
+  late bool isStarted;
 
   @override
   void initState() {
     super.initState();
     isConnectedToBluetooth = false;
+    isStarted = false;
     currentValue = 0;
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    state = Provider.of<AppState>(context);
-    BluetoothDevice? device = state.bluetoothDevice;
-    if (device != null) {
-      subscribeToCharacteristic(device);
-    } else {
-      print("Bluetooth device is null");
-    }
   }
 
   void subscribeToCharacteristic(BluetoothDevice device) {
@@ -64,27 +55,28 @@ class _MatchingScreen extends State<MatchingScreen> {
           .where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216"))
           .first;
 
-      bool averageCalculated = false;
-
       responseCharacteristic!.onValueReceived.listen((value) {
-        if (!averageCalculated) {
+        if (!isStarted) {
           receivedValue = (value[0] & 0xFF |
               ((value[1] & 0xFF) << 8) |
               ((value[2] & 0xFF) << 16) |
               ((value[3] & 0xFF) << 24));
+          setState(() {
+            isConnectedToBluetooth = true; // bluetooth connected
+            currentValue = receivedValue.toDouble();
+          });
         }
       });
       responseCharacteristic!.setNotifyValue(true);
       requestCharacteristic.write([1]);
-      setState(() {
-        isConnectedToBluetooth = true; // bluetooth connected
-        currentValue = receivedValue.toDouble();
-      });
+      responseCharacteristic!.setNotifyValue(false);
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    state = Provider.of<AppState>(context);
+    //get the player list
     if (!playersLoaded) {
       // getting the state
       var state = Provider.of<AppState>(context);
@@ -98,7 +90,14 @@ class _MatchingScreen extends State<MatchingScreen> {
         });
       });
     }
-
+    // did change dependencies?
+    BluetoothDevice? device = state.bluetoothDevice;
+    if (device != null) {
+      subscribeToCharacteristic(device);
+    } else {
+      print("Bluetooth device is null");
+    }
+    // now time to build;
     return Scaffold(
         body: Stack(children: [
       if (isConnectedToBluetooth)
@@ -192,7 +191,9 @@ class _MatchingScreen extends State<MatchingScreen> {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  isStarted = true;
+                },
                 style: ElevatedButton.styleFrom(
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.zero, // Make the button square
@@ -210,10 +211,28 @@ class _MatchingScreen extends State<MatchingScreen> {
                 maximum: 10,
                 markerPointers: [
                   LinearShapePointer(
-                    value: currentValue,
+                    value: selectedPlayer != null &&
+                            selectedPlayer!.strength != null
+                        ? ((min(currentValue,
+                                        selectedPlayer!.strength!.toDouble())) /
+                                    selectedPlayer!.strength!.toDouble()) *
+                                (10 - 1) +
+                            1
+                        : 0,
                   ),
                 ],
-                barPointers: [LinearBarPointer(value: currentValue)],
+                barPointers: [
+                  LinearBarPointer(
+                    value: selectedPlayer != null &&
+                            selectedPlayer!.strength != null
+                        ? ((min(currentValue,
+                                        selectedPlayer!.strength!.toDouble())) /
+                                    selectedPlayer!.strength!.toDouble()) *
+                                (10 - 1) +
+                            1
+                        : 0,
+                  )
+                ],
               ),
             ]),
           ),

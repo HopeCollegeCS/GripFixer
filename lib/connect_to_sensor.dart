@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:grip_fixer/state.dart';
+import 'package:grip_fixer/welcome_page.dart';
 import 'package:provider/provider.dart';
 
 class ConnectToSensor extends StatefulWidget {
-  const ConnectToSensor({super.key});
+  final String nextRoute;
+
+  const ConnectToSensor(this.nextRoute, {super.key});
 
   @override
   State<ConnectToSensor> createState() => _ConnectToSensor();
@@ -143,13 +146,12 @@ class _ConnectToSensor extends State<ConnectToSensor> {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const SizedBox(width: 20.0), // Add some spacing
+                const SizedBox(width: 20.0),
                 ElevatedButton(
-                  onPressed: () =>
-                      context.go("/PlayerSelectPage"), // Call the method
+                  onPressed: () => context.go("/${widget.nextRoute}"),
                   style: ElevatedButton.styleFrom(
                     shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero, // Make the button square
+                      borderRadius: BorderRadius.zero,
                     ),
                   ),
                   child: const Text(

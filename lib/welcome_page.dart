@@ -8,13 +8,14 @@ class WelcomePage extends StatefulWidget {
   State<WelcomePage> createState() => _WelcomePage();
 }
 
-String getButtonPath(int? value) {
+String getButtonPath(int value) {
   if (value == 1) {
-    return "/RacketSelectPage";
-  } else if (value == 2) {
+    return "/RacketSelectPage/PlayerSelectPage";
+  } else if (value == 3) {
+    return "/RacketSelectPage/MatchingPage";
+  } else {
     return "/SelectSession";
   }
-  return "/SecondConnectToSensor";
 }
 
 class _WelcomePage extends State<WelcomePage> {
@@ -122,7 +123,7 @@ class _WelcomePage extends State<WelcomePage> {
             children: [
               const SizedBox(width: 20.0), // Add some spacing
               ElevatedButton(
-                onPressed: () => context.go(getButtonPath(_selectedValue)),
+                onPressed: () => context.go(getButtonPath(_selectedValue!)),
                 style: ElevatedButton.styleFrom(
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.zero, // Make the button square

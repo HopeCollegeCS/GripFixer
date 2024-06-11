@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:grip_fixer/2nd_connect_to_sensor.dart';
 import 'package:grip_fixer/analyze.dart';
 import 'package:grip_fixer/practice_hitting_target_grip.dart';
 import 'package:grip_fixer/measure.dart';
@@ -35,8 +34,9 @@ final _router = GoRouter(
       builder: (context, state) => const MeasureScreen(),
     ),
     GoRoute(
-      path: "/RacketSelectPage",
-      builder: (context, state) => const ConnectToSensor(),
+      path: "/RacketSelectPage/:nextRoute",
+      builder: (context, state) =>
+          ConnectToSensor(state.pathParameters['nextRoute']!),
     ),
     GoRoute(
       path: "/PlayerSelectPage",
@@ -69,10 +69,6 @@ final _router = GoRouter(
     GoRoute(
       path: "/VideoRecording",
       builder: (context, state) => const VideoRecorderScreen(),
-    ),
-    GoRoute(
-      path: "/SecondConnectToSensor",
-      builder: (context, state) => const SecondConnectToSensor(),
     ),
     // GoRoute(
     //   path: "/VideoPlaying",
