@@ -1,9 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:go_router/go_router.dart';
 import 'package:grip_fixer/session_measurements.dart';
-import 'package:grip_fixer/sqflite.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
 
@@ -15,41 +13,70 @@ class RecordingScreen extends StatefulWidget {
 }
 
 class RecordingScreenState extends State<RecordingScreen> {
-  Timer? timer;
+  BluetoothCharacteristic? responseCharacteristic;
+  AppState state = AppState();
+  int? currentResponseValue;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    state = Provider.of<AppState>(context, listen: false);
+    if (state.bluetoothDevice != null) {
+      subscribeToCharacteristic(state.bluetoothDevice!);
+    } else {
+      print('Bluetooth device is null');
+    }
+  }
+
+  void subscribeToCharacteristic(BluetoothDevice device) {
+    device.discoverServices().then((services) {
+      var service = services
+          .where((s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214"))
+          .first;
+      var requestCharacteristic = service.characteristics
+          .where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1215"))
+          .first;
+      responseCharacteristic = service.characteristics
+          .where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216"))
+          .first;
+
+      responseCharacteristic!.onValueReceived.listen((value) {
+        setState(() {
+          currentResponseValue = value[0] & 0xFF |
+              ((value[1] & 0xFF) << 8) |
+              ((value[2] & 0xFF) << 16) |
+              ((value[3] & 0xFF) << 24);
+        });
+      });
+      responseCharacteristic!.setNotifyValue(true);
+      requestCharacteristic.write([1]);
+      setState(() {});
+    });
+  }
 
   SessionMeasurements createSessionMeasurements(int sessionID) {
     return SessionMeasurements(
       session_id: sessionID,
       timestamp: DateTime.now().millisecondsSinceEpoch,
-      value: null,
+      value: currentResponseValue,
     );
   }
 
   void startRecording(AppState state) {
-    int counter = 0;
     int id = state.session?.session_id ?? 0;
-    timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
-      if (counter < 60) {
-        SessionMeasurements sessionMeasurements = createSessionMeasurements(id);
-        // save the sessionMeasurements somewhere
-        state.setSessionMeasurements(sessionMeasurements);
-        var db = state.sqfl;
-        await db
-            .insertSessionMeasurement(sessionMeasurements)
-            .then((_) async {});
-        counter++;
-      } else {
-        timer.cancel();
-        if (mounted) {
-          context.go("/VideoRecording");
-        }
-      }
-    });
+    SessionMeasurements sessionMeasurements = createSessionMeasurements(id);
+    state.setSessionMeasurements(sessionMeasurements);
+    var db = state.sqfl;
+    db.insertSessionMeasurement(sessionMeasurements).then((_) async {});
   }
 
   @override
   Widget build(BuildContext context) {
-    var state = Provider.of<AppState>(context);
     return Scaffold(
       body: Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -65,6 +92,14 @@ class RecordingScreenState extends State<RecordingScreen> {
             Icons.sports_tennis,
             size: 130,
           ),
+          // DISPLAYING THE CURRENT VALUE
+          const SizedBox(height: 15),
+          Text(
+            'Current Response Value: ${currentResponseValue ?? 'N/A'}',
+            style: const TextStyle(fontSize: 18),
+          ),
+          const SizedBox(height: 15),
+          // END OF DISPLAYING CURRENT VALUE
           const SizedBox(height: 15),
           Container(
             margin: const EdgeInsets.only(left: 12),
