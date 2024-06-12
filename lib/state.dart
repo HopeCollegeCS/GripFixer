@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grip_fixer/grip_target.dart';
 import 'package:grip_fixer/person.dart';
 import 'package:grip_fixer/session.dart';
 import 'package:grip_fixer/sqflite.dart';
@@ -9,11 +10,13 @@ class AppState extends ChangeNotifier {
   Person? person;
   Session? session;
   BluetoothDevice? bluetoothDevice;
+  Target? target;
 
   AppState({
     this.person,
     this.session,
     this.bluetoothDevice,
+    this.target,
   });
 
   setPerson(Person newPerson) {
@@ -29,6 +32,14 @@ class AppState extends ChangeNotifier {
       session = newSession;
     } else {
       session?.setSession(newSession);
+    }
+  }
+
+  setTarget(Target newTarget) {
+    if (target == null) {
+      target = newTarget;
+    } else {
+      target?.setTarget(newTarget);
     }
   }
 }

@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:collection';
+import 'package:grip_fixer/grip_target.dart';
 import 'package:grip_fixer/session.dart';
 import 'package:grip_fixer/session_measurements.dart';
 import 'package:sqflite/sqflite.dart';
@@ -22,6 +24,30 @@ class SqfliteClass {
   }
 
   Future<int> insertSession(Session session) async {
+    // Get a reference to the database.
+    final db = await database;
+
+    // Insert the Person into the correct table.
+    return await db.insert(
+      'sessions',
+      session.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<int> insertTarget(Target target) async {
+    // Get a reference to the database.
+    final db = await database;
+
+    // Insert the Person into the correct table.
+    return await db.insert(
+      'targets',
+      target.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<int> insertGripStrength(Session session) async {
     // Get a reference to the database.
     final db = await database;
 
@@ -87,6 +113,26 @@ class SqfliteClass {
           player_id: player_id,
           session_date: session_date,
           shot_type: shot_type,
+        ),
+    ];
+  }
+
+  Future<List<Target>> grip_strength_targets() async {
+    // Get a reference to the database.
+    final db = await database;
+
+    // Query the table for all the players.
+    final List<Map<String, Object?>> targetMaps = await db.query('targets');
+
+    // Convert the list of each player's fields into a list of `Person` objects.
+    return [
+      for (final {
+            'id': id as int,
+            'strokes': strokes as LinkedHashMap,
+          } in targetMaps)
+        Target(
+          id: id,
+          strokes: strokes,
         ),
     ];
   }

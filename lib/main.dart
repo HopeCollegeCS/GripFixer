@@ -4,6 +4,7 @@ import 'package:grip_fixer/practice_hitting_target_grip.dart';
 import 'package:grip_fixer/measure.dart';
 import 'package:grip_fixer/player_selection.dart';
 import 'package:grip_fixer/select_session.dart';
+import 'package:grip_fixer/settings.dart';
 import 'package:grip_fixer/sqflite.dart';
 import 'package:grip_fixer/video_recording.dart';
 import 'welcome_page.dart';
@@ -70,12 +71,10 @@ final _router = GoRouter(
       path: "/VideoRecording",
       builder: (context, state) => const VideoRecorderScreen(),
     ),
-    // GoRoute(
-    //   path: "/VideoPlaying",
-    //   builder: (context, state) => const VideoPlayerScreen(
-    //     videoPath: '',
-    //   ),
-    // ),
+    GoRoute(
+      path: "/Settings",
+      builder: (context, state) => const SettingsPage(),
+    ),
   ],
 );
 
@@ -99,6 +98,9 @@ void main() async {
       //Session ID incrementing is not relative to player (so you can't have 2 session 1s). Problem?
       batch.execute(
         'CREATE TABLE sessions(session_id INTEGER PRIMARY KEY AUTOINCREMENT, player_id INTEGER, session_date INTEGER, shot_type STRING)',
+      );
+      batch.execute(
+        'CREATE TABLE targets(id INTEGER PRIMARY KEY, strokes LINKEDHASHMAP)',
       );
       await batch.commit();
     },

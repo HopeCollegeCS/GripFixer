@@ -56,7 +56,7 @@ Future<void> showMyDialog(BuildContext context) async {
 }
 
 class _AnalyzeScreen extends State<AnalyzeScreen> {
-  bool light = false;
+  bool watchViolations = false;
   late VideoPlayerController _controller;
 
   @override
@@ -133,12 +133,12 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 Switch(
                   // This bool value toggles the switch.
-                  value: light,
+                  value: watchViolations,
                   activeColor: Colors.black,
                   onChanged: (value) {
                     // This is called when the user toggles the switch.
                     setState(() {
-                      light = value;
+                      watchViolations = value;
                     });
                   },
                 ),
@@ -166,46 +166,50 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextButton(
-                onPressed: () {
-                  _controller.play();
-                  Duration currentPosition = _controller.value.position;
-                  late int newTime;
-                  for (int i = 0; i < numbers.length; i++) {
-                    if (currentPosition.inSeconds >=
-                        numbers[numbers.length - 1]) {
-                      newTime = numbers[numbers.length - 2];
-                      break;
-                    }
-                    if ((numbers[i] > currentPosition.inSeconds)) {
-                      if (i >= 2) {
-                        newTime = numbers[i - 2];
-                        break;
-                      }
-                      newTime = 0;
-                      break;
-                    }
-                    newTime = 0;
-                  }
-                  Duration targetPosition = Duration(seconds: newTime);
-                  _controller.seekTo(targetPosition);
-                },
+                onPressed: !watchViolations
+                    ? null
+                    : () {
+                        _controller.play();
+                        Duration currentPosition = _controller.value.position;
+                        late int newTime;
+                        for (int i = 0; i < numbers.length; i++) {
+                          if (currentPosition.inSeconds >=
+                              numbers[numbers.length - 1]) {
+                            newTime = numbers[numbers.length - 2];
+                            break;
+                          }
+                          if ((numbers[i] > currentPosition.inSeconds)) {
+                            if (i >= 2) {
+                              newTime = numbers[i - 2];
+                              break;
+                            }
+                            newTime = 0;
+                            break;
+                          }
+                          newTime = 0;
+                        }
+                        Duration targetPosition = Duration(seconds: newTime);
+                        _controller.seekTo(targetPosition);
+                      },
                 child: const Text("Watch previous violation"),
               ),
               TextButton(
-                onPressed: () {
-                  _controller.play();
-                  Duration currentPosition = _controller.value.position;
-                  late int newTime;
-                  for (int i = 0; i < numbers.length; i++) {
-                    if (numbers[i] > currentPosition.inSeconds) {
-                      newTime = numbers[i];
-                      break;
-                    }
-                    newTime = _controller.value.duration.inSeconds;
-                  }
-                  Duration targetPosition = Duration(seconds: newTime);
-                  _controller.seekTo(targetPosition);
-                },
+                onPressed: !watchViolations
+                    ? null
+                    : () {
+                        _controller.play();
+                        Duration currentPosition = _controller.value.position;
+                        late int newTime;
+                        for (int i = 0; i < numbers.length; i++) {
+                          if (numbers[i] > currentPosition.inSeconds) {
+                            newTime = numbers[i];
+                            break;
+                          }
+                          newTime = _controller.value.duration.inSeconds;
+                        }
+                        Duration targetPosition = Duration(seconds: newTime);
+                        _controller.seekTo(targetPosition);
+                      },
                 child: const Text("Watch next violation"),
               ),
             ],
