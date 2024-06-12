@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:grip_fixer/session_measurements.dart';
+import 'package:grip_fixer/sqflite.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
 
@@ -27,10 +28,15 @@ class RecordingScreenState extends State<RecordingScreen> {
   void startRecording(AppState state) {
     int counter = 0;
     int id = state.session?.session_id ?? 0;
-    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       if (counter < 60) {
         SessionMeasurements sessionMeasurements = createSessionMeasurements(id);
-        // save the sessionMeasurements somehwere
+        // save the sessionMeasurements somewhere
+        state.setSessionMeasurements(sessionMeasurements);
+        var db = state.sqfl;
+        await db
+            .insertSessionMeasurement(sessionMeasurements)
+            .then((_) async {});
         counter++;
       } else {
         timer.cancel();

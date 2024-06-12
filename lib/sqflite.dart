@@ -91,29 +91,6 @@ class SqfliteClass {
     ];
   }
 
-  Future<List<SessionMeasurements>> sessionMeasurements() async {
-    // Get a reference to the database.
-    final db = await database;
-
-    // Query the table for all the players.
-    final List<Map<String, Object?>> sessionMeasurementMaps =
-        await db.query('sessionMeasurements');
-
-    // Convert the list of each player's fields into a list of `Person` objects.
-    return [
-      for (final {
-            'session_id': session_id as int,
-            'timestamp': timestamp as int,
-            'value': value as int,
-          } in sessionMeasurementMaps)
-        SessionMeasurements(
-          session_id: session_id,
-          timestamp: timestamp,
-          value: value,
-        ),
-    ];
-  }
-
   Future<void> updatePlayer(Person player) async {
     // Get a reference to the database.
     final db = await database;
@@ -140,6 +117,42 @@ class SqfliteClass {
       where: 'player_id = ?',
       // Pass the Person's id as a whereArg to prevent SQL injection.
       whereArgs: [player_id],
+    );
+  }
+
+  // get the sessionMeasurements
+  Future<List<SessionMeasurements>> sessionMeasurements() async {
+    // Get a reference to the database.
+    final db = await database;
+
+    // Query the table for all the players.
+    final List<Map<String, Object?>> sessionMeasurementMaps =
+        await db.query('sessionMeasurements');
+
+    // Convert the list of each player's fields into a list of `Person` objects.
+    return [
+      for (final {
+            'session_id': session_id as int,
+            'timestamp': timestamp as int,
+            'value': value as int,
+          } in sessionMeasurementMaps)
+        SessionMeasurements(
+          session_id: session_id,
+          timestamp: timestamp,
+          value: value,
+        ),
+    ];
+  }
+
+  Future<int> insertSessionMeasurement(
+      SessionMeasurements sessionMeasurement) async {
+    // Get a reference to the database.
+    final db = await database;
+    // insert the sessionMeasurement into the correct table
+    return await db.insert(
+      'session_measurements',
+      sessionMeasurement.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 }
