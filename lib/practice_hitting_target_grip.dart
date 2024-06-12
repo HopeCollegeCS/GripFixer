@@ -40,6 +40,10 @@ class _MatchingScreen extends State<MatchingScreen> {
     isConnectedToBluetooth = false;
     isStarted = false;
     currentValue = 0;
+    if (playersList.isNotEmpty) {
+      selectedPlayer = playersList.first;
+    }
+    selectedShot = shots.first;
   }
 
   void subscribeToCharacteristic(BluetoothDevice device) {
@@ -143,7 +147,7 @@ class _MatchingScreen extends State<MatchingScreen> {
                           selectedPlayer = newValue;
                         });
                       },
-                      items: playersList.map((player) {
+                      items: playersList.map((Person player) {
                         return DropdownMenuItem<Person>(
                           value: player,
                           child: Text(player.firstName),
@@ -152,7 +156,7 @@ class _MatchingScreen extends State<MatchingScreen> {
                       isExpanded: true,
                       underline: const SizedBox(),
                     ),
-                  ),
+                  )
                 ],
               ),
               const SizedBox(height: 20),
