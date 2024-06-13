@@ -105,7 +105,7 @@ class _PlayerSelection extends State<PlayerSelection> {
                               context.go("/NewPlayerPage");
                             }
                           : () {
-                              context.go("/MeasurePage");
+                              context.go("/ShotSelectionPage");
                               var state =
                                   Provider.of<AppState>(context, listen: false);
                               state.person = selectedPlayer;
