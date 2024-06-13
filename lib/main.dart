@@ -102,6 +102,9 @@ void main() async {
       batch.execute(
         'CREATE TABLE targets(id INTEGER PRIMARY KEY, strokes LINKEDHASHMAP)',
       );
+      batch.execute(
+        'CREATE TABLE session_measurements(session_id INTEGER PRIMARY KEY, timestamp INTEGER, value INTEGER)',
+      );
       await batch.commit();
     },
     // Set the version. This executes the onCreate function and provides a
