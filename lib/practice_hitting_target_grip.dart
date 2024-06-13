@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:grip_fixer/person.dart';
 import 'package:grip_fixer/state.dart';
+import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
@@ -194,7 +195,32 @@ class _MatchingScreen extends State<MatchingScreen> {
                 ],
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
+              Row(children: [
+                const Text(
+                  'Max Strength:',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(width: 10),
+                if (selectedPlayer != null)
+                  Text(
+                    '${selectedPlayer!.strength}',
+                    style: const TextStyle(fontSize: 20),
+                  ),
+              ]),
+              Row(children: [
+                const Text(
+                  'Incoming Strength:',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(width: 2),
+                if (selectedPlayer != null)
+                  Text(
+                    '$currentValue',
+                    style: const TextStyle(fontSize: 20),
+                  ),
+              ]),
+              const SizedBox(height: 20),
+              /*ElevatedButton(
                 onPressed: () {
                   isStarted = true;
                 },
@@ -208,19 +234,21 @@ class _MatchingScreen extends State<MatchingScreen> {
                   style: TextStyle(
                       fontWeight: FontWeight.bold, color: Colors.black),
                 ),
-              ),
+              ),*/
               const SizedBox(height: 20),
               SfLinearGauge(
                 minimum: 0,
-                maximum: 10,
+                maximum: selectedPlayer != null && selectedPlayer!.strength != 0
+                    ? selectedPlayer!.strength!.toDouble()
+                    : 10,
                 markerPointers: [
                   LinearShapePointer(
                     value: selectedPlayer != null &&
-                            selectedPlayer!.strength != null
+                            selectedPlayer!.strength != 0
                         ? ((min(currentValue,
                                         selectedPlayer!.strength!.toDouble())) /
                                     selectedPlayer!.strength!.toDouble()) *
-                                (10 - 1) +
+                                (selectedPlayer!.strength!.toDouble() - 1) +
                             1
                         : 0,
                   ),
@@ -228,11 +256,11 @@ class _MatchingScreen extends State<MatchingScreen> {
                 barPointers: [
                   LinearBarPointer(
                     value: selectedPlayer != null &&
-                            selectedPlayer!.strength != null
+                            selectedPlayer!.strength != 0
                         ? ((min(currentValue,
                                         selectedPlayer!.strength!.toDouble())) /
                                     selectedPlayer!.strength!.toDouble()) *
-                                (10 - 1) +
+                                (selectedPlayer!.strength!.toDouble() - 1) +
                             1
                         : 0,
                   )
