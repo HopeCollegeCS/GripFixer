@@ -100,7 +100,7 @@ void main() async {
         'CREATE TABLE sessions(session_id INTEGER PRIMARY KEY AUTOINCREMENT, player_id INTEGER, session_date INTEGER, shot_type STRING)',
       );
       batch.execute(
-        'CREATE TABLE targets(id INTEGER PRIMARY KEY, strokes LINKEDHASHMAP)',
+        'CREATE TABLE targets(id INTEGER PRIMARY KEY AUTOINCREMENT, stroke STRING, grip_strength INTEGER)',
       );
       batch.execute(
         'CREATE TABLE session_measurements(session_id INTEGER PRIMARY KEY, timestamp INTEGER, value INTEGER)',

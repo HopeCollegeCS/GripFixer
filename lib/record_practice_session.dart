@@ -46,12 +46,12 @@ class RecordingScreenState extends State<RecordingScreen> {
           .first;
 
       responseCharacteristic!.onValueReceived.listen((value) {
-        setState(() {
-          currentResponseValue = value[0] & 0xFF |
-              ((value[1] & 0xFF) << 8) |
-              ((value[2] & 0xFF) << 16) |
-              ((value[3] & 0xFF) << 24);
-        });
+        // setState(() {
+        //   currentResponseValue = value[0] & 0xFF |
+        //       ((value[1] & 0xFF) << 8) |
+        //       ((value[2] & 0xFF) << 16) |
+        //       ((value[3] & 0xFF) << 24);
+        // });
       });
       responseCharacteristic!.setNotifyValue(true);
       requestCharacteristic.write([1]);
@@ -72,7 +72,7 @@ class RecordingScreenState extends State<RecordingScreen> {
     SessionMeasurements sessionMeasurements = createSessionMeasurements(id);
     state.setSessionMeasurements(sessionMeasurements);
     var db = state.sqfl;
-    db.insertSessionMeasurement(sessionMeasurements).then((_) async {});
+    db.insertSessionMeasurement(sessionMeasurements);
   }
 
   @override

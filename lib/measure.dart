@@ -160,8 +160,8 @@ class _MeasureScreenState extends State<MeasureScreen> {
                     const SizedBox(height: 30),
                     ElevatedButton(
                       onPressed: () {
+                        print(state.person.toString());
                         context.go("/ShotSelectionPage");
-                        state.person?.strength = strength;
                       },
                       style: ElevatedButton.styleFrom(
                         shape: const RoundedRectangleBorder(

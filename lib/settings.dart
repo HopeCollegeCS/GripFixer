@@ -17,16 +17,15 @@ int forehandGroundstroke = 0;
 int forehandVolley = 0;
 int overhead = 0;
 int serve = 0;
-LinkedHashMap? targetValues;
+int? id;
 
-Future<int> buttonAction(
-  BuildContext context,
-) {
+Future<int> buttonAction(BuildContext context, String stroke, int strokeValue) {
   var state = Provider.of<AppState>(context, listen: false);
-  int? id = state.person?.player_id;
+
   Target newTarget = Target(
     id: id,
-    strokes: targetValues,
+    stroke: stroke,
+    grip_strength: strokeValue,
   );
 
   state.setTarget(newTarget);
@@ -187,16 +186,13 @@ class _SettingsPage extends State<SettingsPage> {
           ElevatedButton(
             onPressed: () {
               //use SQFlite class to insert new player, async so call .then and context.go goes inside
-              buttonAction(context).then((newTarget) {
+              buttonAction(
+                  context, "Forehand Groundstroke", forehandGroundstroke);
+              buttonAction(context, "Forehand Volley", forehandVolley);
+              buttonAction(context, "Overhead", overhead);
+              buttonAction(context, "Serve", serve).then((newTarget) {
                 var appState = Provider.of<AppState>(context, listen: false);
-                targetValues?.addAll({
-                  "Forehand Groundstroke": forehandGroundstroke,
-                  "Forehand Volley": forehandVolley,
-                  "Overhead": overhead,
-                  "Serve": serve,
-                });
-                appState.target?.strokes = targetValues;
-                print(appState.target?.toString());
+
                 context.go("/SelectSession");
               });
             },

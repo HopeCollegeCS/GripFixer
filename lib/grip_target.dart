@@ -1,19 +1,21 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'dart:collection';
-
 class Target {
   int? id;
-  LinkedHashMap? strokes;
+  String? stroke;
+  int? grip_strength;
 
   Target({
     this.id,
-    this.strokes,
+    this.stroke,
+    this.grip_strength,
   });
 
   Target setTarget(Target target) {
     id = target.id;
-    strokes = target.strokes;
+    stroke = target.stroke;
+    grip_strength = target.grip_strength;
+
     return this;
   }
 
@@ -22,7 +24,8 @@ class Target {
   Map<String, Object?> toMap() {
     return {
       'id': id,
-      'strokes': strokes,
+      'stroke': stroke,
+      'grip_strength': grip_strength,
     };
   }
 
@@ -30,6 +33,6 @@ class Target {
   // each player when using the print statement.
   @override
   String toString() {
-    return 'Session{id: $id, stroke: $strokes,}';
+    return 'Session{id: $id, stroke: $stroke, grip_strength: $grip_strength,}';
   }
 }
