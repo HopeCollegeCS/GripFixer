@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:go_router/go_router.dart';
@@ -16,6 +17,8 @@ class RecordingScreenState extends State<RecordingScreen> {
   BluetoothCharacteristic? responseCharacteristic;
   AppState state = AppState();
   int? currentResponseValue;
+  Timer? timer;
+  List<SessionMeasurements> sessionMeasurementsList = [];
 
   @override
   void initState() {
@@ -46,16 +49,21 @@ class RecordingScreenState extends State<RecordingScreen> {
           .first;
 
       responseCharacteristic!.onValueReceived.listen((value) {
-        setState(() {
-          currentResponseValue = value[0] & 0xFF |
+        int sessionID = state.session?.session_id ?? 0;
+        SessionMeasurements sessionMeasurements = SessionMeasurements(
+          session_id: sessionID,
+          timestamp: DateTime.now().millisecondsSinceEpoch,
+          value: value[0] & 0xFF |
               ((value[1] & 0xFF) << 8) |
               ((value[2] & 0xFF) << 16) |
-              ((value[3] & 0xFF) << 24);
-        });
+              ((value[3] & 0xFF) << 24),
+        );
+        sessionMeasurementsList.add(sessionMeasurements);
+        saveToDatabase(state);
+        setState(() {}); // JUST TO VIEW TILES
       });
       responseCharacteristic!.setNotifyValue(true);
       requestCharacteristic.write([1]);
-      setState(() {});
     });
   }
 
@@ -92,14 +100,25 @@ class RecordingScreenState extends State<RecordingScreen> {
             Icons.sports_tennis,
             size: 130,
           ),
-          // DISPLAYING THE CURRENT VALUE
           const SizedBox(height: 15),
-          Text(
-            'Current Response Value: ${currentResponseValue ?? 'N/A'}',
-            style: const TextStyle(fontSize: 18),
+          // get rid of this eventually
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: sessionMeasurementsList.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(
+                  'Timestamp: ${sessionMeasurementsList[index].timestamp}',
+                  style: const TextStyle(fontSize: 16),
+                ),
+                subtitle: Text(
+                  'Value: ${sessionMeasurementsList[index].value}',
+                  style: const TextStyle(fontSize: 14),
+                ),
+              );
+            },
           ),
-          const SizedBox(height: 15),
-          // END OF DISPLAYING CURRENT VALUE
+          //to here
           const SizedBox(height: 15),
           Container(
             margin: const EdgeInsets.only(left: 12),

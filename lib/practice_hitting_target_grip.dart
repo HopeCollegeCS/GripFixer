@@ -207,8 +207,20 @@ class _MatchingScreen extends State<MatchingScreen> {
                     style: const TextStyle(fontSize: 20),
                   ),
               ]),
+              Row(children: [
+                const Text(
+                  'Incoming Strength:',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(width: 2),
+                if (selectedPlayer != null)
+                  Text(
+                    '$currentValue',
+                    style: const TextStyle(fontSize: 20),
+                  ),
+              ]),
               const SizedBox(height: 20),
-              ElevatedButton(
+              /*ElevatedButton(
                 onPressed: () {
                   isStarted = true;
                 },
@@ -222,11 +234,13 @@ class _MatchingScreen extends State<MatchingScreen> {
                   style: TextStyle(
                       fontWeight: FontWeight.bold, color: Colors.black),
                 ),
-              ),
+              ),*/
               const SizedBox(height: 20),
               SfLinearGauge(
                 minimum: 0,
-                maximum: 10,
+                maximum: selectedPlayer != null && selectedPlayer!.strength != 0
+                    ? selectedPlayer!.strength!.toDouble()
+                    : 10,
                 markerPointers: [
                   LinearShapePointer(
                     value: selectedPlayer != null &&
@@ -234,14 +248,21 @@ class _MatchingScreen extends State<MatchingScreen> {
                         ? ((min(currentValue,
                                         selectedPlayer!.strength!.toDouble())) /
                                     selectedPlayer!.strength!.toDouble()) *
-                                (10 - 1) +
+                                (selectedPlayer!.strength!.toDouble() - 1) +
                             1
                         : 0,
                   ),
                 ],
                 barPointers: [
                   LinearBarPointer(
-                    value: currentValue,
+                    value: selectedPlayer != null &&
+                            selectedPlayer!.strength != 0
+                        ? ((min(currentValue,
+                                        selectedPlayer!.strength!.toDouble())) /
+                                    selectedPlayer!.strength!.toDouble()) *
+                                (selectedPlayer!.strength!.toDouble() - 1) +
+                            1
+                        : 0,
                   )
                 ],
               ),
