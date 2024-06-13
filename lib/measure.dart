@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:go_router/go_router.dart';
+import 'package:grip_fixer/sqflite.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
 
@@ -81,9 +82,10 @@ class _MeasureScreenState extends State<MeasureScreen> {
           remainingTime--;
         } else {
           timer.cancel();
-          strength = (values.reduce((a, b) => a + b) / values.length)
-              .round(); // a = the sum of all the elements in the list
+          strength = (values.reduce((a, b) => a + b) / values.length).round();
           state.person?.strength = strength;
+          var db = state.sqfl;
+          db.updatePlayer(state.person!);
           values.clear();
           responseCharacteristic!.setNotifyValue(false);
         }

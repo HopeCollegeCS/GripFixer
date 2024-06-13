@@ -194,6 +194,21 @@ class SqfliteClass {
       SessionMeasurements sessionMeasurement) async {
     // Get a reference to the database.
     final db = await database;
+
+    bool tableExists = await db
+            .rawQuery(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='session_measurements'")
+            .then((value) => Sqflite.firstIntValue(value) ?? 0) >
+        0;
+    if (!tableExists) {
+      await db.execute('''
+      CREATE TABLE session_measurements(
+        session_id INTEGER PRIMARY KEY, 
+        timestamp INTEGER, 
+        value INTEGER
+      )
+    ''');
+    }
     // insert the sessionMeasurement into the correct table
     return await db.insert(
       'session_measurements',

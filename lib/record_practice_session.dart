@@ -72,7 +72,7 @@ class RecordingScreenState extends State<RecordingScreen> {
     SessionMeasurements sessionMeasurements = createSessionMeasurements(id);
     state.setSessionMeasurements(sessionMeasurements);
     var db = state.sqfl;
-    db.insertSessionMeasurement(sessionMeasurements).then((_) async {});
+    db.insertSessionMeasurement(sessionMeasurements);
   }
 
   @override
