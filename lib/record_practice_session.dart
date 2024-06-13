@@ -67,7 +67,7 @@ class RecordingScreenState extends State<RecordingScreen> {
     );
   }
 
-  void startRecording(AppState state) {
+  void saveToDatabase(AppState state) {
     int id = state.session?.session_id ?? 0;
     SessionMeasurements sessionMeasurements = createSessionMeasurements(id);
     state.setSessionMeasurements(sessionMeasurements);
@@ -141,7 +141,7 @@ class RecordingScreenState extends State<RecordingScreen> {
           // CAMERA GOES HERE
           ElevatedButton(
             onPressed: () {
-              startRecording(state);
+              saveToDatabase(state);
               context.go("/VideoRecording"); // just to make it run
             },
             style: ElevatedButton.styleFrom(

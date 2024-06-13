@@ -196,6 +196,7 @@ class _SettingsPage extends State<SettingsPage> {
                   "Serve": serve,
                 });
                 appState.target?.strokes = targetValues;
+                print(appState.target?.toString());
                 context.go("/SelectSession");
               });
             },
