@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grip_fixer/analyze.dart';
+import 'package:grip_fixer/grip_target.dart';
 import 'package:grip_fixer/practice_hitting_target_grip.dart';
 import 'package:grip_fixer/measure.dart';
 import 'package:grip_fixer/player_selection.dart';
@@ -100,8 +101,21 @@ void main() async {
         'CREATE TABLE sessions(session_id INTEGER PRIMARY KEY AUTOINCREMENT, player_id INTEGER, session_date INTEGER, shot_type STRING)',
       );
       batch.execute(
-        'CREATE TABLE targets(id INTEGER PRIMARY KEY AUTOINCREMENT, stroke STRING, grip_strength INTEGER)',
+        'CREATE TABLE targets(stroke STRING PRIMARY KEY, grip_strength INTEGER)',
       );
+      batch.execute(
+        'insert into targets values ("Forehand Groundstroke", 5)',
+      );
+      batch.execute(
+        'insert into targets values ("Forehand Volley", 5)',
+      );
+      batch.execute(
+        'insert into targets values ("Overhand", 5)',
+      );
+      batch.execute(
+        'insert into targets values ("Serve", 5)',
+      );
+
       batch.execute(
         'CREATE TABLE session_measurements(session_id INTEGER PRIMARY KEY, timestamp INTEGER, value INTEGER)',
       );
@@ -114,7 +128,11 @@ void main() async {
   var state = AppState();
   var sqlLite = SqfliteClass(database: database);
   state.sqfl = sqlLite;
-
+  sqlLite.grip_strength_targets().then((targets) {
+    for (Target target in targets) {
+      //print("Stroke: ${target.stroke}: ${target.grip_strength}");
+    }
+  });
   //deleteDatabase(join(await getDatabasesPath(), 'player_database.db'));
   runApp(
     //create person object for all user profiles

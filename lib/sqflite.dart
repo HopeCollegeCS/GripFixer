@@ -127,12 +127,10 @@ class SqfliteClass {
     // Convert the list of each player's fields into a list of `Person` objects.
     return [
       for (final {
-            'id': id as int,
             'stroke': stroke as String,
             'grip_strength': grip_strength as int,
           } in targetMaps)
         Target(
-          id: id,
           stroke: stroke,
           grip_strength: grip_strength,
         ),

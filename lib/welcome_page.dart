@@ -123,7 +123,9 @@ class _WelcomePage extends State<WelcomePage> {
             children: [
               const SizedBox(width: 20.0), // Add some spacing
               ElevatedButton(
-                onPressed: () => context.go(getButtonPath(_selectedValue!)),
+                onPressed: () {
+                  context.go(getButtonPath(_selectedValue!));
+                },
                 style: ElevatedButton.styleFrom(
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.zero, // Make the button square

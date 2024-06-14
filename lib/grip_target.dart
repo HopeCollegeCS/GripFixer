@@ -1,18 +1,15 @@
 // ignore_for_file: non_constant_identifier_names
 
 class Target {
-  int? id;
   String? stroke;
   int? grip_strength;
 
   Target({
-    this.id,
     this.stroke,
     this.grip_strength,
   });
 
   Target setTarget(Target target) {
-    id = target.id;
     stroke = target.stroke;
     grip_strength = target.grip_strength;
 
@@ -23,7 +20,6 @@ class Target {
   // columns in the database.
   Map<String, Object?> toMap() {
     return {
-      'id': id,
       'stroke': stroke,
       'grip_strength': grip_strength,
     };
@@ -33,6 +29,6 @@ class Target {
   // each player when using the print statement.
   @override
   String toString() {
-    return 'Session{id: $id, stroke: $stroke, grip_strength: $grip_strength,}';
+    return 'Session{stroke: $stroke, grip_strength: $grip_strength,}';
   }
 }

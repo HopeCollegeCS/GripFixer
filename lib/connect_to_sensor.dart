@@ -148,7 +148,10 @@ class _ConnectToSensor extends State<ConnectToSensor> {
               children: [
                 const SizedBox(width: 20.0),
                 ElevatedButton(
-                  onPressed: () => context.go("/${widget.nextRoute}"),
+                  onPressed: () {
+                    print("Here ${state.target.toString()}");
+                    context.go("/${widget.nextRoute}");
+                  },
                   style: ElevatedButton.styleFrom(
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.zero,

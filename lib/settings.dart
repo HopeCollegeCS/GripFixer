@@ -23,7 +23,6 @@ Future<int> buttonAction(BuildContext context, String stroke, int strokeValue) {
   var state = Provider.of<AppState>(context, listen: false);
 
   Target newTarget = Target(
-    id: id,
     stroke: stroke,
     grip_strength: strokeValue,
   );
@@ -186,14 +185,21 @@ class _SettingsPage extends State<SettingsPage> {
           ElevatedButton(
             onPressed: () {
               //use SQFlite class to insert new player, async so call .then and context.go goes inside
-              buttonAction(
-                  context, "Forehand Groundstroke", forehandGroundstroke);
-              buttonAction(context, "Forehand Volley", forehandVolley);
-              buttonAction(context, "Overhead", overhead);
+
+              // buttonAction(
+              //     context, "Forehand Groundstroke", forehandGroundstroke);
+              // buttonAction(context, "Forehand Volley", forehandVolley);
+              // buttonAction(context, "Overhead", overhead);
               buttonAction(context, "Serve", serve).then((newTarget) {
                 var appState = Provider.of<AppState>(context, listen: false);
 
-                context.go("/SelectSession");
+                appState.sqfl.grip_strength_targets().then((targets) {
+                  print("Targets: ");
+                  for (Target target in targets) {
+                    print("Stroke: ${target.stroke}: ${target.grip_strength}");
+                  }
+                  context.go("/SelectSession");
+                });
               });
             },
             style: ElevatedButton.styleFrom(
