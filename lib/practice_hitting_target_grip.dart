@@ -78,13 +78,6 @@ class _MatchingScreen extends State<MatchingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    int calculatedMaxStrength = selectedPlayer != null &&
-            selectedPlayer!.strength != 0
-        ? (((selectedPlayer!.strength)! / (selectedPlayer!.strength)!.toInt()) *
-                    (10 - 1) +
-                1)
-            .round()
-        : 0;
     int calculatedIncomingStrength =
         selectedPlayer != null && selectedPlayer!.strength != 0
             ? (((min(currentValue, selectedPlayer!.strength!.toDouble())) /
@@ -210,18 +203,6 @@ class _MatchingScreen extends State<MatchingScreen> {
               const SizedBox(height: 20),
               Row(children: [
                 const Text(
-                  'Max Strength:',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(width: 10),
-                if (selectedPlayer != null)
-                  Text(
-                    '$calculatedMaxStrength',
-                    style: const TextStyle(fontSize: 20),
-                  ),
-              ]),
-              Row(children: [
-                const Text(
                   'Incoming Strength:',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
@@ -232,7 +213,7 @@ class _MatchingScreen extends State<MatchingScreen> {
                     style: const TextStyle(fontSize: 20),
                   ),
               ]),
-              const SizedBox(height: 40),
+              const SizedBox(height: 80),
               SfLinearGauge(
                 minimum: 0,
                 maximum: 10,

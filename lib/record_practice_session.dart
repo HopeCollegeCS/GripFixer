@@ -18,7 +18,6 @@ class RecordingScreenState extends State<RecordingScreen> {
   AppState state = AppState();
   int? currentResponseValue;
   Timer? timer;
-  List<SessionMeasurements> sessionMeasurementsList = [];
 
   @override
   void initState() {
@@ -58,9 +57,8 @@ class RecordingScreenState extends State<RecordingScreen> {
               ((value[2] & 0xFF) << 16) |
               ((value[3] & 0xFF) << 24),
         );
-        sessionMeasurementsList.add(sessionMeasurements);
+        //sessionMeasurementsList.add(sessionMeasurements);
         saveToDatabase(state);
-        setState(() {}); // JUST TO VIEW TILES
       });
       responseCharacteristic!.setNotifyValue(true);
       requestCharacteristic.write([1]);
@@ -100,25 +98,6 @@ class RecordingScreenState extends State<RecordingScreen> {
             Icons.sports_tennis,
             size: 130,
           ),
-          const SizedBox(height: 15),
-          // get rid of this eventually
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: sessionMeasurementsList.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(
-                  'Timestamp: ${sessionMeasurementsList[index].timestamp}',
-                  style: const TextStyle(fontSize: 16),
-                ),
-                subtitle: Text(
-                  'Value: ${sessionMeasurementsList[index].value}',
-                  style: const TextStyle(fontSize: 14),
-                ),
-              );
-            },
-          ),
-          //to here
           const SizedBox(height: 15),
           Container(
             margin: const EdgeInsets.only(left: 12),
