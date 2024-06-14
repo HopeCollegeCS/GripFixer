@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:grip_fixer/person.dart';
 import 'package:grip_fixer/state.dart';
-import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
@@ -14,18 +13,18 @@ class MatchingScreen extends StatefulWidget {
   State<MatchingScreen> createState() => _MatchingScreen();
 }
 
-const List<String> shots = <String>[
-  'Forehand Groundstroke',
-  'Backhand Groundstroke',
-  'Forehand Volley',
-  'Backhand Volley',
-  'Serve',
-  'Other'
-];
+const Map<String, int> shots = <String, int>{
+  'Forehand Groundstroke': 4,
+  'Backhand Groundstroke': 5,
+  'Forehand Volley': 6,
+  'Backhand Volley': 7,
+  'Serve': 8,
+  'Other': 0
+};
 
 class _MatchingScreen extends State<MatchingScreen> {
   late AppState state;
-  String selectedShot = "Forehand Groundstroke";
+  String selectedShot = "";
   Person? selectedPlayer;
   bool playersLoaded = false;
   List<Person> playersList = [];
@@ -44,7 +43,6 @@ class _MatchingScreen extends State<MatchingScreen> {
     if (playersList.isNotEmpty) {
       selectedPlayer = playersList.first;
     }
-    selectedShot = shots.first;
   }
 
   void subscribeToCharacteristic(BluetoothDevice device) {
@@ -80,6 +78,21 @@ class _MatchingScreen extends State<MatchingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    int calculatedMaxStrength = selectedPlayer != null &&
+            selectedPlayer!.strength != 0
+        ? (((selectedPlayer!.strength)! / (selectedPlayer!.strength)!.toInt()) *
+                    (10 - 1) +
+                1)
+            .round()
+        : 0;
+    int calculatedIncomingStrength =
+        selectedPlayer != null && selectedPlayer!.strength != 0
+            ? (((min(currentValue, selectedPlayer!.strength!.toDouble())) /
+                            selectedPlayer!.strength!.toDouble()) *
+                        (10 - 1) +
+                    1)
+                .round()
+            : 0;
     state = Provider.of<AppState>(context);
     //get the player list
     if (!playersLoaded) {
@@ -176,13 +189,13 @@ class _MatchingScreen extends State<MatchingScreen> {
                       borderRadius: BorderRadius.circular(4.0),
                     ),
                     child: DropdownButton<String>(
-                      value: selectedShot,
+                      value: selectedShot.isNotEmpty ? selectedShot : null,
                       onChanged: (String? newValue) {
                         setState(() {
                           selectedShot = newValue!;
                         });
                       },
-                      items: shots.map((String shot) {
+                      items: shots.keys.map((String shot) {
                         return DropdownMenuItem<String>(
                           value: shot,
                           child: Text(shot),
@@ -203,7 +216,7 @@ class _MatchingScreen extends State<MatchingScreen> {
                 const SizedBox(width: 10),
                 if (selectedPlayer != null)
                   Text(
-                    '${selectedPlayer!.strength}',
+                    '$calculatedMaxStrength',
                     style: const TextStyle(fontSize: 20),
                   ),
               ]),
@@ -212,57 +225,28 @@ class _MatchingScreen extends State<MatchingScreen> {
                   'Incoming Strength:',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(width: 2),
+                const SizedBox(width: 10),
                 if (selectedPlayer != null)
                   Text(
-                    '$currentValue',
+                    '$calculatedIncomingStrength',
                     style: const TextStyle(fontSize: 20),
                   ),
               ]),
-              const SizedBox(height: 20),
-              /*ElevatedButton(
-                onPressed: () {
-                  isStarted = true;
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero, // Make the button square
-                  ),
-                ),
-                child: const Text(
-                  'Start',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.black),
-                ),
-              ),*/
-              const SizedBox(height: 20),
+              const SizedBox(height: 40),
               SfLinearGauge(
                 minimum: 0,
-                maximum: selectedPlayer != null && selectedPlayer!.strength != 0
-                    ? selectedPlayer!.strength!.toDouble()
-                    : 10,
+                maximum: 10,
                 markerPointers: [
                   LinearShapePointer(
-                    value: selectedPlayer != null &&
-                            selectedPlayer!.strength != 0
-                        ? ((min(currentValue,
-                                        selectedPlayer!.strength!.toDouble())) /
-                                    selectedPlayer!.strength!.toDouble()) *
-                                (selectedPlayer!.strength!.toDouble() - 1) +
-                            1
-                        : 0,
-                  ),
+                      value: shots[selectedShot]?.toDouble() ?? 0.0),
                 ],
                 barPointers: [
                   LinearBarPointer(
-                    value: selectedPlayer != null &&
-                            selectedPlayer!.strength != 0
-                        ? ((min(currentValue,
-                                        selectedPlayer!.strength!.toDouble())) /
-                                    selectedPlayer!.strength!.toDouble()) *
-                                (selectedPlayer!.strength!.toDouble() - 1) +
-                            1
-                        : 0,
+                    value: calculatedIncomingStrength.toDouble(),
+                    color: linearBarColor(
+                      calculatedIncomingStrength.toDouble(),
+                      shots[selectedShot]?.toDouble() ?? 0.0,
+                    ),
                   )
                 ],
               ),
@@ -287,5 +271,16 @@ class _MatchingScreen extends State<MatchingScreen> {
           ),
         ),
     ]));
+  }
+
+  Color linearBarColor(double barValue, double targetValue) {
+    final difference = (barValue - targetValue).abs();
+    if (difference == 0) {
+      return Colors.green;
+    } else if (difference == 1) {
+      return Colors.orange;
+    } else {
+      return Colors.red;
+    }
   }
 }
