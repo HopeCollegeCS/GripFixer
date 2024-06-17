@@ -52,7 +52,7 @@ class ShotSelection extends State<ShotSelectionPage> {
   void writeToTargetGripPercentageCharacteristic(AppState state, String shot) async {
     final targetGripPercentageCharacteristic = state.targetGripPercentageCharacteristic;
     int shotStrength = shots[shot]!;
-    await targetGripPercentageCharacteristic?.write([0x0, 0x0, 0x0, 0xFF]);
+    await targetGripPercentageCharacteristic?.write([0x1, 0x0, 0x0, 0x00]);
     print('got here to send $shotStrength characteristic');
   }
 
@@ -204,6 +204,30 @@ class ShotSelection extends State<ShotSelectionPage> {
                 child: const Text(
                   'Let\'s Hit!',
                   style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                ),
+              )
+            ],
+          ),
+          const SizedBox(height: 10.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SizedBox(width: 20.0),
+              ElevatedButton(
+                onPressed: () {
+                  context.go("/PlayerSelectPage");
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.zero,
+                  ),
+                ),
+                child: const Text(
+                  'Back',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                 ),
               )
             ],

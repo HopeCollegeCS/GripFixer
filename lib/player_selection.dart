@@ -106,8 +106,7 @@ class _PlayerSelection extends State<PlayerSelection> {
                             }
                           : () {
                               context.go("/ShotSelectionPage");
-                              var state =
-                                  Provider.of<AppState>(context, listen: false);
+                              var state = Provider.of<AppState>(context, listen: false);
                               state.person = selectedPlayer;
                             },
                   style: ElevatedButton.styleFrom(

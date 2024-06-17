@@ -171,6 +171,30 @@ class _ConnectToSensor extends State<ConnectToSensor> {
                 )
               ],
             ),
+            const SizedBox(height: 10.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const SizedBox(width: 20.0),
+                ElevatedButton(
+                  onPressed: () {
+                    context.go("/WelcomePage");
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero,
+                    ),
+                  ),
+                  child: const Text(
+                    'Back',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                )
+              ],
+            ),
           ],
         ),
       ),
