@@ -13,6 +13,7 @@ class AppState extends ChangeNotifier {
   BluetoothDevice? bluetoothDevice;
   Target? target;
   SessionMeasurements? sessionMeasurements;
+  BluetoothCharacteristic? targetGripPercentageCharacteristic;
 
   AppState({
     this.person,
@@ -20,6 +21,7 @@ class AppState extends ChangeNotifier {
     this.bluetoothDevice,
     this.target,
     this.sessionMeasurements,
+    this.targetGripPercentageCharacteristic,
   });
 
   setPerson(Person newPerson) {

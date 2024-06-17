@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:grip_fixer/state.dart';
-import 'package:grip_fixer/welcome_page.dart';
 import 'package:provider/provider.dart';
 
 class ConnectToSensor extends StatefulWidget {
@@ -17,18 +16,19 @@ class ConnectToSensor extends StatefulWidget {
 class _ConnectToSensor extends State<ConnectToSensor> {
   BluetoothDevice? _selectedDevice;
   List<BluetoothDevice> _discoveredDevices = [];
+  AppState state = AppState();
 
   //initializes the Bluetooth state
   @override
   void initState() {
     super.initState();
     initBluetoothState().then((_) => startScan());
+    state = Provider.of<AppState>(context, listen: false);
   }
 
   // checks if the Bluetooth adapter is on
   Future<void> initBluetoothState() async {
-    bool isOn =
-        await FlutterBluePlus.adapterState.first == BluetoothAdapterState.on;
+    bool isOn = await FlutterBluePlus.adapterState.first == BluetoothAdapterState.on;
     if (!isOn) {
       await FlutterBluePlus.turnOn();
     }
@@ -63,26 +63,32 @@ class _ConnectToSensor extends State<ConnectToSensor> {
         device.discoverServices(timeout: 30).then((services) {
           // Discover services and characteristics
           //List<BluetoothService> services = await device.discoverServices();
-          var service = services
-              .where(
-                  (s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214"))
-              .first;
-          var characteristic = service.characteristics
-              .where(
-                  (s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216"))
-              .first;
-          final subscription = characteristic.onValueReceived.listen((value) {
-            // onValueReceived is updated:
-            //   - anytime read() is called
-            //   - anytime a notification arrives (if subscribed)
-            // DIALOG BOX WAS HERE
-          });
-          // cleanup: cancel subscription when disconnected
-          device.cancelWhenDisconnected(subscription);
+          var service = services.where((s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214")).first;
+          var requestCharacteristic =
+              service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1215")).first;
+          var responseCharacteristic =
+              service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216")).first;
+          var maxGripStrengthCharacteristic =
+              service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1217")).first;
+          var targetGripPercentageCharacteristic =
+              service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1218")).first;
+          state.targetGripPercentageCharacteristic = targetGripPercentageCharacteristic;
+          // final subscription =
+          //     responseCharacteristic.onValueReceived.listen((value) {
+          //   // onValueReceived is updated:
+          //   //   - anytime read() is called
+          //   //   - anytime a notification arrives (if subscribed)
+          //   // DIALOG BOX WAS HERE
+
+          //   // Save the targetGripPercentageCharacteristic in the AppState
+
+          // });
+          // // cleanup: cancel subscription when disconnected
+          // device.cancelWhenDisconnected(subscription);
           // subscribe
           // Note: If a characteristic supports both **notifications** and **indications**,
           // it will default to **notifications**. This matches how CoreBluetooth works on iOS.
-          characteristic.setNotifyValue(true);
+          responseCharacteristic.setNotifyValue(true);
         });
       });
       setState(() {
@@ -95,7 +101,6 @@ class _ConnectToSensor extends State<ConnectToSensor> {
 
   @override
   Widget build(BuildContext context) {
-    AppState state = Provider.of<AppState>(context);
     return Scaffold(
       body: Center(
         child: Column(
@@ -115,8 +120,7 @@ class _ConnectToSensor extends State<ConnectToSensor> {
               padding: EdgeInsets.only(left: 16.0),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child:
-                    Text('Select the sensor to connect to then click Connect'),
+                child: Text('Select the sensor to connect to then click Connect'),
               ),
             ),
             const SizedBox(height: 10.0),

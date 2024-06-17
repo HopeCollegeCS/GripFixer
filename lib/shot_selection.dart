@@ -49,6 +49,13 @@ Future<int> buttonAction(BuildContext context) {
 }
 
 class ShotSelection extends State<ShotSelectionPage> {
+  void writeToTargetGripPercentageCharacteristic(AppState state, String shot) async {
+    final targetGripPercentageCharacteristic = state.targetGripPercentageCharacteristic;
+    int shotStrength = shots[shot]!;
+    await targetGripPercentageCharacteristic?.write([0x0, 0x0, 0x0, 0xFF]);
+    print('got here to send $shotStrength characteristic');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -182,10 +189,10 @@ class ShotSelection extends State<ShotSelectionPage> {
                 onPressed: () {
                   //use SQFlite class to insert new player, async so call .then and context.go goes inside
                   buttonAction(context).then((newSessionId) {
-                    var appState =
-                        Provider.of<AppState>(context, listen: false);
+                    var appState = Provider.of<AppState>(context, listen: false);
                     appState.session?.session_id = newSessionId;
                     print(appState.person.toString());
+                    writeToTargetGripPercentageCharacteristic(appState, _selectedValue);
                     context.go("/RecordingPage");
                   });
                 },
@@ -196,8 +203,7 @@ class ShotSelection extends State<ShotSelectionPage> {
                 ),
                 child: const Text(
                   'Let\'s Hit!',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.black),
+                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                 ),
               )
             ],
