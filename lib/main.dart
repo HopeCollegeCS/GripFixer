@@ -125,15 +125,16 @@ void main() async {
     // path to perform database upgrades and downgrades.
     version: 1,
   );
+
   var state = AppState();
   var sqlLite = SqfliteClass(database: database);
   state.sqfl = sqlLite;
   sqlLite.grip_strength_targets().then((targets) {
     for (Target target in targets) {
-      //print("Stroke: ${target.stroke}: ${target.grip_strength}");
+      state.setTargetMap(target.stroke, target.grip_strength);
     }
   });
-  //deleteDatabase(join(await getDatabasesPath(), 'player_database.db'));
+  // deleteDatabase(join(await getDatabasesPath(), 'player_database.db'));
   runApp(
     //create person object for all user profiles
     ChangeNotifierProvider(

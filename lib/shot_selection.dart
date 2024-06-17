@@ -185,7 +185,6 @@ class ShotSelection extends State<ShotSelectionPage> {
                     var appState =
                         Provider.of<AppState>(context, listen: false);
                     appState.session?.session_id = newSessionId;
-                    print(appState.person.toString());
                     context.go("/RecordingPage");
                   });
                 },

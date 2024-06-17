@@ -29,7 +29,7 @@ Future<int> buttonAction(BuildContext context, String stroke, int strokeValue) {
 
   state.setTarget(newTarget);
   var db = state.sqfl;
-  return db.insertTarget(newTarget);
+  return db.updateTarget(newTarget);
 }
 
 class _SettingsPage extends State<SettingsPage> {

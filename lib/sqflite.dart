@@ -152,6 +152,21 @@ class SqfliteClass {
     );
   }
 
+  Future<int> updateTarget(Target target) async {
+    // Get a reference to the database.
+    final db = await database;
+
+    // Update the given Person.
+    return db.update(
+      'targets',
+      target.toMap(),
+      // Ensure that the Person has a matching id.
+      where: 'stroke = ?',
+      // Pass the Person's id as a whereArg to prevent SQL injection.
+      whereArgs: [target.stroke],
+    );
+  }
+
   Future<void> deletePlayer(int player_id) async {
     // Get a reference to the database.
     final db = await database;

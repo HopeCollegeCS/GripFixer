@@ -13,6 +13,7 @@ class AppState extends ChangeNotifier {
   BluetoothDevice? bluetoothDevice;
   Target? target;
   SessionMeasurements? sessionMeasurements;
+  Map targetMap = <String, int>{};
 
   AppState({
     this.person,
@@ -44,6 +45,11 @@ class AppState extends ChangeNotifier {
     } else {
       target?.setTarget(newTarget);
     }
+  }
+
+  setTargetMap(String? stroke, int? value) {
+    //final targetEntries = <String?, int?>{stroke: value};
+    targetMap[stroke] = value;
   }
 
   setSessionMeasurements(SessionMeasurements newSessionMeasurements) {

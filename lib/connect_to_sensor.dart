@@ -57,6 +57,8 @@ class _ConnectToSensor extends State<ConnectToSensor> {
   }
 
   // when the tile is clicked, this method is called and the device connects
+  // fix FlutterBluePlusException (FlutterBluePlusException | connect | android-code: 133 | ANDROID_SPECIFIC_ERROR)
+  // FlutterBluePlusException (FlutterBluePlusException | discoverServices | fbp-code: 6 | Device is disconnected)
   void connectToDevice(BluetoothDevice device) async {
     try {
       device.connect(timeout: const Duration(seconds: 30), mtu: null).then((s) {
