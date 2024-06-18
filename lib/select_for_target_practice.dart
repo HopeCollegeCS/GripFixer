@@ -5,11 +5,11 @@ import 'package:grip_fixer/session.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
 
-class ShotSelectionPage extends StatefulWidget {
-  const ShotSelectionPage({super.key});
+class TargetShotSelectionPage extends StatefulWidget {
+  const TargetShotSelectionPage({super.key});
 
   @override
-  State<ShotSelectionPage> createState() => ShotSelection();
+  State<TargetShotSelectionPage> createState() => TargetShotSelection();
 }
 
 int? session_id;
@@ -53,7 +53,7 @@ Future<int> buttonAction(BuildContext context, String gripTarget) {
   return db.insertSession(newSession);
 }
 
-class ShotSelection extends State<ShotSelectionPage> {
+class TargetShotSelection extends State<TargetShotSelectionPage> {
   @override
   Widget build(BuildContext context) {
     var appState = Provider.of<AppState>(context, listen: false);
@@ -128,7 +128,7 @@ class ShotSelection extends State<ShotSelectionPage> {
                           appState.targetMap.keys.toList()[selectedValue])
                       .then((newSessionId) {
                     appState.session?.session_id = newSessionId;
-                    context.go("/RecordingPage");
+                    context.go("/MatchingPage");
                   });
                 },
                 style: ElevatedButton.styleFrom(

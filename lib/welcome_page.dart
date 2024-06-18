@@ -14,7 +14,7 @@ String getButtonPath(int value) {
   } else if (value == 3) {
     return "/RacketSelectPage/MatchingPage";
   } else {
-    return "/Settings";
+    return "/SelectSession";
   }
 }
 

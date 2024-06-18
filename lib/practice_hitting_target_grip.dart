@@ -13,14 +13,14 @@ class MatchingScreen extends StatefulWidget {
   State<MatchingScreen> createState() => _MatchingScreen();
 }
 
-const Map<String, int> shots = <String, int>{
-  'Forehand Groundstroke': 4,
-  'Backhand Groundstroke': 5,
-  'Forehand Volley': 6,
-  'Backhand Volley': 7,
-  'Serve': 8,
-  'Other': 0
-};
+// const Map<String, int> shots = <String, int>{
+//   'Forehand Groundstroke': 4,
+//   'Backhand Groundstroke': 5,
+//   'Forehand Volley': 6,
+//   'Backhand Volley': 7,
+//   'Serve': 8,
+//   'Other': 0
+// };
 
 class _MatchingScreen extends State<MatchingScreen> {
   late AppState state;
@@ -87,6 +87,7 @@ class _MatchingScreen extends State<MatchingScreen> {
                 .round()
             : 0;
     state = Provider.of<AppState>(context);
+    Map<String, int>? shots = state.targetMap.cast<String, int>();
     //get the player list
     if (!playersLoaded) {
       // getting the state

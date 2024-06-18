@@ -4,6 +4,7 @@ import 'package:grip_fixer/grip_target.dart';
 import 'package:grip_fixer/practice_hitting_target_grip.dart';
 import 'package:grip_fixer/measure.dart';
 import 'package:grip_fixer/player_selection.dart';
+import 'package:grip_fixer/select_for_target_practice.dart';
 import 'package:grip_fixer/select_session.dart';
 import 'package:grip_fixer/settings.dart';
 import 'package:grip_fixer/sqflite.dart';
@@ -75,6 +76,10 @@ final _router = GoRouter(
     GoRoute(
       path: "/Settings",
       builder: (context, state) => const SettingsPage(),
+    ),
+    GoRoute(
+      path: "/TargetGripSelect",
+      builder: (context, state) => const TargetShotSelectionPage(),
     ),
   ],
 );
