@@ -14,15 +14,22 @@ class AppState extends ChangeNotifier {
   Target? target;
   SessionMeasurements? sessionMeasurements;
   BluetoothCharacteristic? targetGripPercentageCharacteristic;
+  BluetoothCharacteristic? maxGripStrengthCharacteristic;
+  BluetoothCharacteristic? enableFeedbackCharacteristic;
+  BluetoothCharacteristic? sensorNumberCharacteristic;
+  bool? enableFeedback;
 
-  AppState({
-    this.person,
-    this.session,
-    this.bluetoothDevice,
-    this.target,
-    this.sessionMeasurements,
-    this.targetGripPercentageCharacteristic,
-  });
+  AppState(
+      {this.person,
+      this.session,
+      this.bluetoothDevice,
+      this.target,
+      this.sessionMeasurements,
+      this.targetGripPercentageCharacteristic,
+      this.maxGripStrengthCharacteristic,
+      this.enableFeedbackCharacteristic,
+      this.sensorNumberCharacteristic,
+      this.enableFeedback});
 
   setPerson(Person newPerson) {
     if (person == null) {

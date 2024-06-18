@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -17,6 +18,8 @@ class _ConnectToSensor extends State<ConnectToSensor> {
   BluetoothDevice? _selectedDevice;
   List<BluetoothDevice> _discoveredDevices = [];
   AppState state = AppState();
+  final Completer<void> completer = Completer();
+  bool isConnecting = false;
 
   //initializes the Bluetooth state
   @override
@@ -59,6 +62,7 @@ class _ConnectToSensor extends State<ConnectToSensor> {
   // when the tile is clicked, this method is called and the device connects
   void connectToDevice(BluetoothDevice device) async {
     try {
+      isConnecting = true;
       device.connect(timeout: const Duration(seconds: 30), mtu: null).then((s) {
         device.discoverServices(timeout: 30).then((services) {
           // Discover services and characteristics
@@ -72,7 +76,13 @@ class _ConnectToSensor extends State<ConnectToSensor> {
               service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1217")).first;
           var targetGripPercentageCharacteristic =
               service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1218")).first;
+          var enableFeedbackCharacteristic =
+              service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1219")).first;
           state.targetGripPercentageCharacteristic = targetGripPercentageCharacteristic;
+          state.maxGripStrengthCharacteristic = maxGripStrengthCharacteristic;
+          state.enableFeedbackCharacteristic = enableFeedbackCharacteristic;
+          completer.complete();
+          isConnecting = false;
           // final subscription =
           //     responseCharacteristic.onValueReceived.listen((value) {
           //   // onValueReceived is updated:
@@ -140,61 +150,74 @@ class _ConnectToSensor extends State<ConnectToSensor> {
                   onChanged: (value) {
                     setState(() {
                       _selectedDevice = value;
-                      state.bluetoothDevice = _selectedDevice;
-                      connectToDevice(device);
                     });
                   },
                 )))),
             // END OF AVAILABLE SENSORS
             const SizedBox(height: 10.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const SizedBox(width: 20.0),
-                ElevatedButton(
-                  onPressed: () {
-                    print("Here ${state.target.toString()}");
-                    context.go("/${widget.nextRoute}");
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero,
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Stack(
+                    alignment: Alignment.center, // Center the CircularProgressIndicator
+                    children: [
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            if (_selectedDevice != null) {
+                              state.bluetoothDevice = _selectedDevice;
+                              connectToDevice(_selectedDevice!);
+                            }
+                            await completer.future; //wait for the characteristic value to be received
+                            context.go("/${widget.nextRoute}");
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.zero,
+                            ),
+                          ),
+                          child: const Text(
+                            'Connect',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                      if (isConnecting)
+                        const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 10.0),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        context.go("/WelcomePage");
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero,
+                        ),
+                      ),
+                      child: const Text(
+                        'Back',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
                     ),
                   ),
-                  child: const Text(
-                    'Connect',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                )
-              ],
-            ),
-            const SizedBox(height: 10.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const SizedBox(width: 20.0),
-                ElevatedButton(
-                  onPressed: () {
-                    context.go("/WelcomePage");
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero,
-                    ),
-                  ),
-                  child: const Text(
-                    'Back',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                )
-              ],
-            ),
+                ],
+              ),
+            )
           ],
         ),
       ),

@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:go_router/go_router.dart';
 import 'package:grip_fixer/person.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
@@ -48,22 +49,16 @@ class _MatchingScreen extends State<MatchingScreen> {
   void subscribeToCharacteristic(BluetoothDevice device) {
     late int receivedValue;
     device.discoverServices().then((services) {
-      var service = services
-          .where((s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214"))
-          .first;
-      var requestCharacteristic = service.characteristics
-          .where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1215"))
-          .first;
-      responseCharacteristic = service.characteristics
-          .where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216"))
-          .first;
+      var service = services.where((s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214")).first;
+      var requestCharacteristic =
+          service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1215")).first;
+      responseCharacteristic =
+          service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216")).first;
 
       responseCharacteristic!.onValueReceived.listen((value) {
         if (!isStarted) {
-          receivedValue = (value[0] & 0xFF |
-              ((value[1] & 0xFF) << 8) |
-              ((value[2] & 0xFF) << 16) |
-              ((value[3] & 0xFF) << 24));
+          receivedValue =
+              (value[0] & 0xFF | ((value[1] & 0xFF) << 8) | ((value[2] & 0xFF) << 16) | ((value[3] & 0xFF) << 24));
           setState(() {
             isConnectedToBluetooth = true; // bluetooth connected
             currentValue = receivedValue.toDouble();
@@ -78,14 +73,12 @@ class _MatchingScreen extends State<MatchingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    int calculatedIncomingStrength =
-        selectedPlayer != null && selectedPlayer!.strength != 0
-            ? (((min(currentValue, selectedPlayer!.strength!.toDouble())) /
-                            selectedPlayer!.strength!.toDouble()) *
-                        (10 - 1) +
-                    1)
-                .round()
-            : 0;
+    int calculatedIncomingStrength = selectedPlayer != null && selectedPlayer!.strength != 0
+        ? (((min(currentValue, selectedPlayer!.strength!.toDouble())) / selectedPlayer!.strength!.toDouble()) *
+                    (10 - 1) +
+                1)
+            .round()
+        : 0;
     state = Provider.of<AppState>(context);
     //get the player list
     if (!playersLoaded) {
@@ -218,8 +211,7 @@ class _MatchingScreen extends State<MatchingScreen> {
                 minimum: 0,
                 maximum: 10,
                 markerPointers: [
-                  LinearShapePointer(
-                      value: shots[selectedShot]?.toDouble() ?? 0.0),
+                  LinearShapePointer(value: shots[selectedShot]?.toDouble() ?? 0.0),
                 ],
                 barPointers: [
                   LinearBarPointer(
@@ -227,6 +219,30 @@ class _MatchingScreen extends State<MatchingScreen> {
                     color: linearBarColor(
                       calculatedIncomingStrength.toDouble(),
                       shots[selectedShot]?.toDouble() ?? 0.0,
+                    ),
+                  )
+                ],
+              ),
+              const SizedBox(height: 20.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const SizedBox(width: 10.0),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.go("/WelcomePage");
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero,
+                      ),
+                    ),
+                    child: const Text(
+                      'Back',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     ),
                   )
                 ],

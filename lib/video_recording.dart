@@ -26,8 +26,7 @@ class _VideoRecorderScreenState extends State<VideoRecorderScreen> {
 
   void _initializeCamera() async {
     final cameras = await availableCameras();
-    final front = cameras.firstWhere(
-        (camera) => camera.lensDirection == CameraLensDirection.back);
+    final front = cameras.firstWhere((camera) => camera.lensDirection == CameraLensDirection.back);
     _controller = CameraController(front, ResolutionPreset.max);
     await _controller.initialize();
     setState(() => _isLoading = false);

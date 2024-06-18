@@ -18,6 +18,7 @@ class RecordingScreenState extends State<RecordingScreen> {
   AppState state = AppState();
   int? currentResponseValue;
   Timer? timer;
+  bool enableFeedback = true;
 
   @override
   void initState() {
@@ -113,7 +114,20 @@ class RecordingScreenState extends State<RecordingScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 15),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SizedBox(width: 15),
+              const Text('Enable Feedback', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Switch(
+                  value: enableFeedback,
+                  onChanged: (value) {
+                    setState(() {
+                      enableFeedback = value;
+                    });
+                  })
+            ],
+          ),
           Container(
             margin: const EdgeInsets.only(left: 12, right: 12),
             child: const Text(
@@ -126,8 +140,12 @@ class RecordingScreenState extends State<RecordingScreen> {
           // CAMERA GOES HERE
           Center(
             child: ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 saveToDatabase(state);
+                final enableFeedbackCharacteristic = state.enableFeedbackCharacteristic;
+                await enableFeedbackCharacteristic?.write([enableFeedback ? 1 : 0]); // 1 for true, 0 for false
+                state.enableFeedback = enableFeedback;
+                print('enable feedback $enableFeedback');
                 context.go("/VideoRecording");
               },
               style: ElevatedButton.styleFrom(

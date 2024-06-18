@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:grip_fixer/new_player_page.dart';
 import 'package:grip_fixer/session.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
@@ -52,8 +53,22 @@ class ShotSelection extends State<ShotSelectionPage> {
   void writeToTargetGripPercentageCharacteristic(AppState state, String shot) async {
     final targetGripPercentageCharacteristic = state.targetGripPercentageCharacteristic;
     int shotStrength = shots[shot]!;
-    await targetGripPercentageCharacteristic?.write([0x1, 0x0, 0x0, 0x00]);
+    await targetGripPercentageCharacteristic?.write(
+        [shotStrength & 0xFF, (shotStrength >> 8) & 0xFF, (shotStrength >> 16) & 0xFF, (shotStrength >> 24) & 0xFF]);
     print('got here to send $shotStrength characteristic');
+  }
+
+  void writeToMaxGripStrengthCharacteristic(AppState state) async {
+    final maxGripStrengthCharacteristic = state.maxGripStrengthCharacteristic;
+    final strength = state.person?.strength;
+
+    if (maxGripStrengthCharacteristic != null && strength != null) {
+      await maxGripStrengthCharacteristic
+          .write([strength & 0xFF, (strength >> 8) & 0xFF, (strength >> 16) & 0xFF, (strength >> 24) & 0xFF]);
+      print('Sent $strength characteristic');
+    } else {
+      print('Failed to send characteristic');
+    }
   }
 
   @override
@@ -193,6 +208,7 @@ class ShotSelection extends State<ShotSelectionPage> {
                     appState.session?.session_id = newSessionId;
                     print(appState.person.toString());
                     writeToTargetGripPercentageCharacteristic(appState, _selectedValue);
+                    writeToMaxGripStrengthCharacteristic(appState);
                     context.go("/RecordingPage");
                   });
                 },
