@@ -14,22 +14,28 @@ const char * deviceServiceRequestCharacteristicUuid = "19b10001-e8f2-537e-4f6c-d
 const char * deviceServiceResponseCharacteristicUuid = "19b10001-e8f2-537e-4f6c-d104768a1216";
 const char * deviceServiceMaxGripStrengthCharacteristicUuid = "19b10001-e8f2-537e-4f6c-d104768a1217"; // New UUID for max grip strength characteristic
 const char * deviceServiceTargetGripPercentageCharacteristicUuid = "19b10001-e8f2-537e-4f6c-d104768a1218"; // New UUID for target grip percentage characteristic
+const char * deviceServiceEnableFeedbackCharacteristicUuid = "19b10001-e8f2-537e-4f6c-d104768a1219"; // New UUID for enabling feedback
+const char * deviceServiceSensorNumberCharacteristicUuid = "19b10001-e8f2-537e-4f6c-d104768a1220"; // New UUID for enabling feedback
 
 // create instances of the BLE service and characteristics
 BLEService servoService(deviceServiceUuid);
 BLEIntCharacteristic servoRequestCharacteristic(deviceServiceRequestCharacteristicUuid, BLEWrite);
 BLEIntCharacteristic servoResponseCharacteristic(deviceServiceResponseCharacteristicUuid, BLENotify);
-BLEFloatCharacteristic maxGripStrengthCharacteristic(deviceServiceMaxGripStrengthCharacteristicUuid, BLERead); // New characteristic for max grip strength
-BLEFloatCharacteristic targetGripPercentageCharacteristic(deviceServiceTargetGripPercentageCharacteristicUuid, BLERead); // New characteristic for target grip percentage
+BLEIntCharacteristic maxGripStrengthCharacteristic(deviceServiceMaxGripStrengthCharacteristicUuid, BLEWrite | BLERead); // New characteristic for max grip strength
+BLEIntCharacteristic targetGripPercentageCharacteristic(deviceServiceTargetGripPercentageCharacteristicUuid, BLEWrite | BLERead); // New characteristic for target grip percentage
+BLEBoolCharacteristic enableFeedbackCharacteristic(deviceServiceEnableFeedbackCharacteristicUuid, BLEWrite | BLERead); // New characteristic for enabling feedback
+BLEIntCharacteristic sensorNumberCharacteristic(deviceServiceSensorNumberCharacteristicUuid, BLEWrite | BLERead); // New characteristic for sensor number
 
 //2 sensors - buzz on and off until loosen and displays force values
 
-const int forceSensorPin1 = A0; // Define the analog pin for the first force sensor
+int forceSensorPin1 = A0; // Define the analog pin for the first force sensor
 const int motorPin = A1; // Define the digital pin for the motor
 int threshold = 2000; // Define the threshold value for the force sensor
 
 float maxGripStrength = 2000.0; // Variable to store the player's maximum grip strength
 float targetGripPercentage = 2.0; // Variable to store the target grip percentage
+bool enableFeedback = true; // Variable to store whether feedback is enabled
+int sensorNumber;
 
 /* In the setup() function, the code initializes serial communication, sets the device name and local name for BLE, 
 starts the BLE module, sets up the BLE service and characteristics, and starts advertising the BLE service. */ 
@@ -49,6 +55,8 @@ void setup() {
   servoService.addCharacteristic(servoResponseCharacteristic);
   servoService.addCharacteristic(maxGripStrengthCharacteristic);
   servoService.addCharacteristic(targetGripPercentageCharacteristic);
+  servoService.addCharacteristic(enableFeedbackCharacteristic);
+  servoService.addCharacteristic(sensorNumberCharacteristic);
   BLE.addService(servoService);
 
   // initialize the servoRequestCharacteristic value to 0
@@ -56,6 +64,7 @@ void setup() {
   // initialize maxGripStrengthCharacteristic and targetGripPercentageCharacteristic
   maxGripStrengthCharacteristic.setValue(maxGripStrength);
   targetGripPercentageCharacteristic.setValue(targetGripPercentage);
+  enableFeedbackCharacteristic.setValue(enableFeedback);
 
   // The BLE device starts advertising its service.
   if (!BLE.advertise()) {
@@ -88,13 +97,26 @@ void loop() {
   delay(500);
 
   if (central) {
-    Serial.println("* Connected to central device!");
-    Serial.print("* Device MAC address: ");
-    Serial.println(central.address());
-    Serial.println(" ");
+    //Serial.println("* Connected to central device!");
+    //Serial.print("* Device MAC address: ");
+    //Serial.println(central.address());
+    //Serial.println(" ");
 
     // while the central device is connected
     while (central.connected()) {
+
+      // Check if the sensor number feedback characteristic has been written to
+      if (sensorNumberCharacteristic.written()) {
+        // Assign the correct sensor value
+        if(sensorNumber == 1){
+          forceSensorPin1 = A1;
+        } else if(sensorNumber == 2){
+          forceSensorPin1 = A2;
+        }
+        sensorNumber = sensorNumberCharacteristic.value();
+        Serial.print("Sensor Number: ");
+        Serial.println(sensorNumber);
+      }
       
       int sensorValue1 = analogRead(forceSensorPin1); // Read the analog value from the first force sensor
  
@@ -107,16 +129,16 @@ void loop() {
         maxGripStrengthCharacteristic.writeValue(maxGripStrength); 
       }
 
-      if (sensorValue1 > threshold) {
+      if (sensorValue1 > threshold && enableFeedback) {
         digitalWrite(motorPin, HIGH); // Turn the motor on if the first force sensor value is above the threshold
-        Serial.println("Motor ON");
+        //Serial.println("Motor ON");
         delay(150); //on for 100 milliseconds
         digitalWrite(motorPin, LOW); //
-        Serial.println("Motor OFF");
+        //Serial.println("Motor OFF");
         delay(75); //off for 100 milliseconds
       } else {
         digitalWrite(motorPin, LOW); // Turn the motor off if the first force sensor value is below the threshold
-        Serial.println("Motor OFF");
+        //Serial.println("Motor OFF");
       }
 
       // Send the sensor values over BLE
@@ -127,8 +149,8 @@ void loop() {
       if (servoRequestCharacteristic.written()) {
         // read the value from the request characteristic
         int newAngle = servoRequestCharacteristic.value();
-        Serial.println(newAngle);
-        Serial.println();
+        //Serial.println(newAngle);
+        //Serial.println();
       }
 
       // Check if there is data available in the Serial monitor
@@ -140,8 +162,8 @@ void loop() {
         // Send the user input over BLE
         int intValue = userInput.toInt();
         servoRequestCharacteristic.writeValue(intValue);
-        Serial.print("Sent value: ");
-        Serial.println(intValue);
+        //Serial.print("Sent value: ");
+        //Serial.println(intValue);
       }
 
       // Check if the max grip strength characteristic has been written to
@@ -152,18 +174,25 @@ void loop() {
       }
 
       // Check if the target grip percentage characteristic has been written to
-      //if (targetGripPercentageCharacteristic.written()) {
+      if (targetGripPercentageCharacteristic.written()) {
         // Read the value from the target grip percentage characteristic
         targetGripPercentage = targetGripPercentageCharacteristic.value();
         targetGripPercentage = targetGripPercentage*0.1;
         Serial.print("Target Grip Percentage: ");
         Serial.println(targetGripPercentage);
-      //}
+      }
+
+      // Check if the enable feedback characteristic has been written to
+      if (enableFeedbackCharacteristic.written()) {
+        enableFeedback = enableFeedbackCharacteristic.value();
+        Serial.print("Enable Feedback: ");
+        Serial.println(enableFeedback);
+      }
 
       // Calculate the threshold based on the target grip percentage and maximum grip strength
       threshold = (maxGripStrength * targetGripPercentage);
-      Serial.print("Threshold: ");
-      Serial.println(threshold);
+      //Serial.print("Threshold: ");
+      //Serial.println(threshold);
 
       delay(1000);
     }
