@@ -18,6 +18,7 @@ class RecordingScreenState extends State<RecordingScreen> {
   AppState state = AppState();
   int? currentResponseValue;
   Timer? timer;
+  bool enableFeedback = true;
 
   @override
   void initState() {
@@ -37,25 +38,18 @@ class RecordingScreenState extends State<RecordingScreen> {
 
   void subscribeToCharacteristic(BluetoothDevice device) {
     device.discoverServices().then((services) {
-      var service = services
-          .where((s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214"))
-          .first;
-      var requestCharacteristic = service.characteristics
-          .where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1215"))
-          .first;
-      responseCharacteristic = service.characteristics
-          .where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216"))
-          .first;
+      var service = services.where((s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214")).first;
+      var requestCharacteristic =
+          service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1215")).first;
+      responseCharacteristic =
+          service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216")).first;
 
       responseCharacteristic!.onValueReceived.listen((value) {
         int sessionID = state.session?.session_id ?? 0;
         SessionMeasurements sessionMeasurements = SessionMeasurements(
           session_id: sessionID,
           timestamp: DateTime.now().millisecondsSinceEpoch,
-          value: value[0] & 0xFF |
-              ((value[1] & 0xFF) << 8) |
-              ((value[2] & 0xFF) << 16) |
-              ((value[3] & 0xFF) << 24),
+          value: value[0] & 0xFF | ((value[1] & 0xFF) << 8) | ((value[2] & 0xFF) << 16) | ((value[3] & 0xFF) << 24),
         );
         //sessionMeasurementsList.add(sessionMeasurements);
         saveToDatabase(state);
@@ -103,12 +97,9 @@ class RecordingScreenState extends State<RecordingScreen> {
             margin: const EdgeInsets.only(left: 12),
             child: Row(
               children: [
-                const Text('Practicing',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Text('Practicing', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(width: 10.0),
-                Text('${state.session?.shot_type}',
-                    style: const TextStyle(fontSize: 18))
+                Text('${state.session?.shot_type}', style: const TextStyle(fontSize: 18))
               ],
             ),
           ),
@@ -117,16 +108,26 @@ class RecordingScreenState extends State<RecordingScreen> {
             margin: const EdgeInsets.only(left: 12),
             child: Row(
               children: [
-                const Text('Target Grip Strength',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Text('Target Grip Strength', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(width: 10.0),
-                Text('${state.target?.grip_strength}',
-                    style: const TextStyle(fontSize: 18))
+                Text('${state.target?.grip_strength}', style: const TextStyle(fontSize: 18))
               ],
             ),
           ),
-          const SizedBox(height: 15),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SizedBox(width: 15),
+              const Text('Enable Feedback', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Switch(
+                  value: enableFeedback,
+                  onChanged: (value) {
+                    setState(() {
+                      enableFeedback = value;
+                    });
+                  })
+            ],
+          ),
           Container(
             margin: const EdgeInsets.only(left: 12, right: 12),
             child: const Text(
@@ -137,21 +138,49 @@ class RecordingScreenState extends State<RecordingScreen> {
           ),
           const SizedBox(height: 6),
           // CAMERA GOES HERE
-          ElevatedButton(
-            onPressed: () {
-              saveToDatabase(state);
-              context.go("/VideoRecording"); // just to make it run
-            },
-            style: ElevatedButton.styleFrom(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.zero,
+          Center(
+            child: ElevatedButton(
+              onPressed: () async {
+                saveToDatabase(state);
+                final enableFeedbackCharacteristic = state.enableFeedbackCharacteristic;
+                await enableFeedbackCharacteristic?.write([enableFeedback ? 1 : 0]); // 1 for true, 0 for false
+                state.enableFeedback = enableFeedback;
+                print('enable feedback $enableFeedback');
+                context.go("/VideoRecording");
+              },
+              style: ElevatedButton.styleFrom(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.zero,
+                ),
+              ),
+              child: const Text(
+                'Done',
+                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
               ),
             ),
-            child: const Text(
-              'Done',
-              style:
-                  TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-            ),
+          ),
+          const SizedBox(height: 10.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  context.go("/ShotSelectionPage");
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.zero,
+                  ),
+                ),
+                child: const Text(
+                  'Back',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              )
+            ],
           ),
         ]),
       ),

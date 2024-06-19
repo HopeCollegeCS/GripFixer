@@ -38,8 +38,7 @@ final _router = GoRouter(
     ),
     GoRoute(
       path: "/RacketSelectPage/:nextRoute",
-      builder: (context, state) =>
-          ConnectToSensor(state.pathParameters['nextRoute']!),
+      builder: (context, state) => ConnectToSensor(state.pathParameters['nextRoute']!),
     ),
     GoRoute(
       path: "/PlayerSelectPage",
@@ -105,31 +104,43 @@ void main() async {
       batch.execute(
         'CREATE TABLE sessions(session_id INTEGER PRIMARY KEY AUTOINCREMENT, player_id INTEGER, session_date INTEGER, shot_type STRING)',
       );
-      batch.execute(
-        'CREATE TABLE targets(stroke STRING PRIMARY KEY, grip_strength INTEGER)',
-      );
-      batch.execute(
-        'insert into targets values ("Forehand Groundstroke", 5)',
-      );
-      batch.execute(
-        'insert into targets values ("Forehand Volley", 5)',
-      );
-      batch.execute(
-        'insert into targets values ("Overhand", 5)',
-      );
-      batch.execute(
-        'insert into targets values ("Serve", 5)',
-      );
 
       batch.execute(
         'CREATE TABLE session_measurements(session_id INTEGER PRIMARY KEY, timestamp INTEGER, value INTEGER)',
       );
       await batch.commit();
     },
+    onUpgrade: (db, oldVersion, newVersion) async {
+      var batch = db.batch();
+      for (int version = oldVersion + 1; version <= newVersion; version++) {
+        switch (version) {
+          case 2:
+            batch.execute(
+              'CREATE TABLE targets(stroke STRING PRIMARY KEY, grip_strength INTEGER)',
+            );
+            batch.execute(
+              'insert into targets values ("Forehand Groundstroke", 5)',
+            );
+            batch.execute(
+              'insert into targets values ("Forehand Volley", 5)',
+            );
+            batch.execute(
+              'insert into targets values ("Overhand", 5)',
+            );
+            batch.execute(
+              'insert into targets values ("Serve", 5)',
+            );
+            break;
+        }
+      }
+      await batch.commit();
+    },
     // Set the version. This executes the onCreate function and provides a
     // path to perform database upgrades and downgrades.
-    version: 1,
+    version: 2,
   );
+
+  // deleteDatabase(join(await getDatabasesPath(), 'player_database.db'));
 
   var state = AppState();
   var sqlLite = SqfliteClass(database: database);
@@ -139,7 +150,6 @@ void main() async {
       state.setTargetMap(target.stroke, target.grip_strength);
     }
   });
-  // deleteDatabase(join(await getDatabasesPath(), 'player_database.db'));
   runApp(
     //create person object for all user profiles
     ChangeNotifierProvider(

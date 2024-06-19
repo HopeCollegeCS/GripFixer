@@ -19,8 +19,8 @@ const char * deviceServiceTargetGripPercentageCharacteristicUuid = "19b10001-e8f
 BLEService servoService(deviceServiceUuid);
 BLEIntCharacteristic servoRequestCharacteristic(deviceServiceRequestCharacteristicUuid, BLEWrite);
 BLEIntCharacteristic servoResponseCharacteristic(deviceServiceResponseCharacteristicUuid, BLENotify);
-BLEFloatCharacteristic maxGripStrengthCharacteristic(deviceServiceMaxGripStrengthCharacteristicUuid, BLERead | BLEWrite); // New characteristic for max grip strength
-BLEFloatCharacteristic targetGripPercentageCharacteristic(deviceServiceTargetGripPercentageCharacteristicUuid, BLERead | BLEWrite); // New characteristic for target grip percentage
+BLEFloatCharacteristic maxGripStrengthCharacteristic(deviceServiceMaxGripStrengthCharacteristicUuid, BLERead); // New characteristic for max grip strength
+BLEFloatCharacteristic targetGripPercentageCharacteristic(deviceServiceTargetGripPercentageCharacteristicUuid, BLERead); // New characteristic for target grip percentage
 
 //2 sensors - buzz on and off until loosen and displays force values
 
@@ -28,7 +28,7 @@ const int forceSensorPin1 = A0; // Define the analog pin for the first force sen
 const int motorPin = A1; // Define the digital pin for the motor
 int threshold = 2000; // Define the threshold value for the force sensor
 
-float maxGripStrength = 0.0; // Variable to store the player's maximum grip strength
+float maxGripStrength = 2000.0; // Variable to store the player's maximum grip strength
 float targetGripPercentage = 2.0; // Variable to store the target grip percentage
 
 /* In the setup() function, the code initializes serial communication, sets the device name and local name for BLE, 
@@ -152,12 +152,13 @@ void loop() {
       }
 
       // Check if the target grip percentage characteristic has been written to
-      if (targetGripPercentageCharacteristic.written()) {
+      //if (targetGripPercentageCharacteristic.written()) {
         // Read the value from the target grip percentage characteristic
         targetGripPercentage = targetGripPercentageCharacteristic.value();
+        targetGripPercentage = targetGripPercentage*0.1;
         Serial.print("Target Grip Percentage: ");
         Serial.println(targetGripPercentage);
-      }
+      //}
 
       // Calculate the threshold based on the target grip percentage and maximum grip strength
       threshold = (maxGripStrength * targetGripPercentage);

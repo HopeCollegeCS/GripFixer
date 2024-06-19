@@ -45,8 +45,7 @@ class _NewPlayer extends State<NewPlayerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       const Text(
         'Grip Strength Tool',
         style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
@@ -169,8 +168,7 @@ class _NewPlayer extends State<NewPlayerPage> {
               children: [
                 Row(
                   children: [
-                    const SizedBox(
-                        width: 45.0), // Move the radio button to the left
+                    const SizedBox(width: 45.0), // Move the radio button to the left
                     Radio(
                       value: 'Male',
                       groupValue: gender,
@@ -186,8 +184,7 @@ class _NewPlayer extends State<NewPlayerPage> {
                 const SizedBox(height: 2),
                 Row(
                   children: [
-                    const SizedBox(
-                        width: 59.0), // Move the radio button to the left
+                    const SizedBox(width: 59.0), // Move the radio button to the left
                     Radio(
                       value: 'Female',
                       groupValue: gender,
@@ -289,8 +286,31 @@ class _NewPlayer extends State<NewPlayerPage> {
             ),
             child: const Text(
               'Measure Grip Strength',
-              style:
-                  TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+            ),
+          )
+        ],
+      ),
+      const SizedBox(height: 10.0),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(width: 20.0),
+          ElevatedButton(
+            onPressed: () {
+              context.go("/PlayerSelectPage");
+            },
+            style: ElevatedButton.styleFrom(
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.zero,
+              ),
+            ),
+            child: const Text(
+              'Back',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
             ),
           )
         ],
