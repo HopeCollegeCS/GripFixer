@@ -4,7 +4,6 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
 import 'package:grip_fixer/session_measurements.dart';
-import 'package:provider/provider.dart';
 import 'video_playing.dart';
 
 class VideoRecorderScreen extends StatefulWidget {
