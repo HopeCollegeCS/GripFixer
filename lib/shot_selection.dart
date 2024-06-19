@@ -55,11 +55,17 @@ Future<int> buttonAction(BuildContext context, String gripTarget) {
 }
 
 class ShotSelection extends State<ShotSelectionPage> {
-  void writeToTargetGripPercentageCharacteristic(AppState state, String shot) async {
-    final targetGripPercentageCharacteristic = state.targetGripPercentageCharacteristic;
+  void writeToTargetGripPercentageCharacteristic(
+      AppState state, String shot) async {
+    final targetGripPercentageCharacteristic =
+        state.targetGripPercentageCharacteristic;
     int shotStrength = state.targetMap[shot]!;
-    await targetGripPercentageCharacteristic?.write(
-        [shotStrength & 0xFF, (shotStrength >> 8) & 0xFF, (shotStrength >> 16) & 0xFF, (shotStrength >> 24) & 0xFF]);
+    await targetGripPercentageCharacteristic?.write([
+      shotStrength & 0xFF,
+      (shotStrength >> 8) & 0xFF,
+      (shotStrength >> 16) & 0xFF,
+      (shotStrength >> 24) & 0xFF
+    ]);
     print('got here to send $shotStrength characteristic');
   }
 
@@ -68,8 +74,12 @@ class ShotSelection extends State<ShotSelectionPage> {
     final strength = state.person?.strength;
 
     if (maxGripStrengthCharacteristic != null && strength != null) {
-      await maxGripStrengthCharacteristic
-          .write([strength & 0xFF, (strength >> 8) & 0xFF, (strength >> 16) & 0xFF, (strength >> 24) & 0xFF]);
+      await maxGripStrengthCharacteristic.write([
+        strength & 0xFF,
+        (strength >> 8) & 0xFF,
+        (strength >> 16) & 0xFF,
+        (strength >> 24) & 0xFF
+      ]);
       print('Sent $strength characteristic');
     } else {
       print('Failed to send characteristic');
@@ -79,11 +89,15 @@ class ShotSelection extends State<ShotSelectionPage> {
   void writeToSensorNumberCharacteristic(AppState state) async {
     final sensorNumberCharacteristic = state.sensorNumberCharacteristic;
     int sensorNumber = 0;
-    if ((state.person?.hand == 'Right' && state.person?.forehandGrip == 'Continental') ||
-        (state.person?.hand == 'Left' && state.person?.forehandGrip == 'Semi-Western')) {
+    if ((state.person?.hand == 'Right' &&
+            state.person?.forehandGrip == 'Continental') ||
+        (state.person?.hand == 'Left' &&
+            state.person?.forehandGrip == 'Semi-Western')) {
       sensorNumber = 2;
-    } else if ((state.person?.hand == 'Right' && state.person?.forehandGrip == 'Semi-Western') ||
-        (state.person?.hand == 'Left' && state.person?.forehandGrip == 'Continental')) {
+    } else if ((state.person?.hand == 'Right' &&
+            state.person?.forehandGrip == 'Semi-Western') ||
+        (state.person?.hand == 'Left' &&
+            state.person?.forehandGrip == 'Continental')) {
       sensorNumber = 1;
     }
     await sensorNumberCharacteristic!.write([sensorNumber]);
@@ -95,116 +109,142 @@ class ShotSelection extends State<ShotSelectionPage> {
     //String selectedValue = appState.targetMap.keys.first;
 
     return Scaffold(
-        body: SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            'Grip Strength Tool',
-            style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 20.0),
-          const Icon(
-            Icons.sports_tennis,
-            size: 130,
-          ),
-          const SizedBox(height: 20.0),
-          const Row(
-            children: [
-              SizedBox(width: 20.0),
-              Text(
-                'What shot do you want to work on?',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10.0),
-          SizedBox(
-            child: DataTable(
-              columnSpacing: 13,
-              columns: const [
-                DataColumn(label: SizedBox(width: 20)),
-                DataColumn(label: Text('Shots')),
+      appBar: AppBar(),
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'Grip Strength Tool',
+              style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20.0),
+            const Icon(
+              Icons.sports_tennis,
+              size: 130,
+            ),
+            const SizedBox(height: 20.0),
+            const Row(
+              children: [
+                SizedBox(width: 20.0),
+                Text(
+                  'What shot do you want to work on?',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
               ],
-              //border: TableBorder.all(),
-              //rows: appState.targetMap.keys.toList() ?? [],
-              rows: appState.targetMap.keys.toList().map((target) {
-                return DataRow(
-                  cells: [
-                    DataCell(
-                      SizedBox(
-                        width: 3,
-                        child: Radio(
-                          value: appState.targetMap.keys.toList().indexOf(target),
-                          groupValue: selectedValue,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedValue = value!;
-                            });
-                          },
+            ),
+            const SizedBox(height: 10.0),
+            SizedBox(
+              child: DataTable(
+                columnSpacing: 13,
+                columns: const [
+                  DataColumn(label: SizedBox(width: 20)),
+                  DataColumn(label: Text('Shots')),
+                ],
+                //border: TableBorder.all(),
+                //rows: appState.targetMap.keys.toList() ?? [],
+                rows: appState.targetMap.keys.toList().map((target) {
+                  return DataRow(
+                    cells: [
+                      DataCell(
+                        SizedBox(
+                          width: 3,
+                          child: Radio(
+                            value: appState.targetMap.keys
+                                .toList()
+                                .indexOf(target),
+                            groupValue: selectedValue,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedValue = value!;
+                              });
+                            },
+                          ),
                         ),
                       ),
-                    ),
-                    DataCell(Text('$target')),
-                  ],
-                );
-              }).toList(),
+                      DataCell(Text('$target')),
+                    ],
+                  );
+                }).toList(),
+              ),
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const SizedBox(width: 20.0),
-              ElevatedButton(
-                onPressed: () {
-                  //use SQFlite class to insert new player, async so call .then and context.go goes inside
-                  buttonAction(context, appState.targetMap.keys.toList()[selectedValue]).then((newSessionId) {
-                    appState.session?.session_id = newSessionId;
-                    print(appState.person.toString());
-                    writeToTargetGripPercentageCharacteristic(
-                        appState, appState.targetMap.keys.toList()[selectedValue]);
-                    writeToMaxGripStrengthCharacteristic(appState);
-                    context.go("/RecordingPage");
-                  });
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const SizedBox(width: 20.0),
+                ElevatedButton(
+                  onPressed: () {
+                    //use SQFlite class to insert new player, async so call .then and context.go goes inside
+                    buttonAction(context,
+                            appState.targetMap.keys.toList()[selectedValue])
+                        .then((newSessionId) {
+                      appState.session?.session_id = newSessionId;
+                      print(appState.person.toString());
+                      writeToTargetGripPercentageCharacteristic(appState,
+                          appState.targetMap.keys.toList()[selectedValue]);
+                      writeToMaxGripStrengthCharacteristic(appState);
+                      context.go("/RecordingPage");
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero,
+                    ),
                   ),
-                ),
-                child: const Text(
-                  'Let\'s Hit!',
-                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                ),
-              )
-            ],
-          ),
-          const SizedBox(height: 10.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const SizedBox(width: 20.0),
-              ElevatedButton(
-                onPressed: () {
-                  context.go("/PlayerSelectPage");
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero,
+                  child: const Text(
+                    'Let\'s Hit!',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.black),
                   ),
-                ),
-                child: const Text(
-                  'Back',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                )
+              ],
+            ),
+            const SizedBox(height: 10.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const SizedBox(width: 20.0),
+                ElevatedButton(
+                  onPressed: () {
+                    context.go("/PlayerSelectPage");
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero,
+                    ),
                   ),
-                ),
-              )
-            ],
-          ),
-        ],
+                  child: const Text(
+                    'Back',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
       ),
-    ));
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text('Drawer Header'),
+            ),
+            ListTile(
+              title: const Text('Settings'),
+              onTap: () {
+                context.go("/Settings");
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

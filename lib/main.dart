@@ -38,7 +38,8 @@ final _router = GoRouter(
     ),
     GoRoute(
       path: "/RacketSelectPage/:nextRoute",
-      builder: (context, state) => ConnectToSensor(state.pathParameters['nextRoute']!),
+      builder: (context, state) =>
+          ConnectToSensor(state.pathParameters['nextRoute']!),
     ),
     GoRoute(
       path: "/PlayerSelectPage",
@@ -119,16 +120,16 @@ void main() async {
               'CREATE TABLE targets(stroke STRING PRIMARY KEY, grip_strength INTEGER)',
             );
             batch.execute(
-              'insert into targets values ("Forehand Groundstroke", 5)',
+              'insert into targets values ("Forehand Groundstroke", 3)',
             );
             batch.execute(
               'insert into targets values ("Forehand Volley", 5)',
             );
             batch.execute(
-              'insert into targets values ("Overhand", 5)',
+              'insert into targets values ("Overhead", 7)',
             );
             batch.execute(
-              'insert into targets values ("Serve", 5)',
+              'insert into targets values ("Serve", 9)',
             );
             break;
         }
@@ -140,7 +141,7 @@ void main() async {
     version: 2,
   );
 
-  // deleteDatabase(join(await getDatabasesPath(), 'player_database.db'));
+  //deleteDatabase(join(await getDatabasesPath(), 'player_database.db'));
 
   var state = AppState();
   var sqlLite = SqfliteClass(database: database);

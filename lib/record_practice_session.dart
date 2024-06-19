@@ -38,18 +38,25 @@ class RecordingScreenState extends State<RecordingScreen> {
 
   void subscribeToCharacteristic(BluetoothDevice device) {
     device.discoverServices().then((services) {
-      var service = services.where((s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214")).first;
-      var requestCharacteristic =
-          service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1215")).first;
-      responseCharacteristic =
-          service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216")).first;
+      var service = services
+          .where((s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214"))
+          .first;
+      var requestCharacteristic = service.characteristics
+          .where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1215"))
+          .first;
+      responseCharacteristic = service.characteristics
+          .where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216"))
+          .first;
 
       responseCharacteristic!.onValueReceived.listen((value) {
         int sessionID = state.session?.session_id ?? 0;
         SessionMeasurements sessionMeasurements = SessionMeasurements(
           session_id: sessionID,
           timestamp: DateTime.now().millisecondsSinceEpoch,
-          value: value[0] & 0xFF | ((value[1] & 0xFF) << 8) | ((value[2] & 0xFF) << 16) | ((value[3] & 0xFF) << 24),
+          value: value[0] & 0xFF |
+              ((value[1] & 0xFF) << 8) |
+              ((value[2] & 0xFF) << 16) |
+              ((value[3] & 0xFF) << 24),
         );
         //sessionMeasurementsList.add(sessionMeasurements);
         saveToDatabase(state);
@@ -78,6 +85,7 @@ class RecordingScreenState extends State<RecordingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           const Align(
@@ -97,9 +105,12 @@ class RecordingScreenState extends State<RecordingScreen> {
             margin: const EdgeInsets.only(left: 12),
             child: Row(
               children: [
-                const Text('Practicing', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Text('Practicing',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(width: 10.0),
-                Text('${state.session?.shot_type}', style: const TextStyle(fontSize: 18))
+                Text('${state.session?.shot_type}',
+                    style: const TextStyle(fontSize: 18))
               ],
             ),
           ),
@@ -108,9 +119,12 @@ class RecordingScreenState extends State<RecordingScreen> {
             margin: const EdgeInsets.only(left: 12),
             child: Row(
               children: [
-                const Text('Target Grip Strength', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Text('Target Grip Strength',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(width: 10.0),
-                Text('${state.target?.grip_strength}', style: const TextStyle(fontSize: 18))
+                Text('${state.target?.grip_strength}',
+                    style: const TextStyle(fontSize: 18))
               ],
             ),
           ),
@@ -118,7 +132,8 @@ class RecordingScreenState extends State<RecordingScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               const SizedBox(width: 15),
-              const Text('Enable Feedback', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const Text('Enable Feedback',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               Switch(
                   value: enableFeedback,
                   onChanged: (value) {
@@ -142,8 +157,10 @@ class RecordingScreenState extends State<RecordingScreen> {
             child: ElevatedButton(
               onPressed: () async {
                 saveToDatabase(state);
-                final enableFeedbackCharacteristic = state.enableFeedbackCharacteristic;
-                await enableFeedbackCharacteristic?.write([enableFeedback ? 1 : 0]); // 1 for true, 0 for false
+                final enableFeedbackCharacteristic =
+                    state.enableFeedbackCharacteristic;
+                await enableFeedbackCharacteristic?.write(
+                    [enableFeedback ? 1 : 0]); // 1 for true, 0 for false
                 state.enableFeedback = enableFeedback;
                 print('enable feedback $enableFeedback');
                 context.go("/VideoRecording");
@@ -155,7 +172,8 @@ class RecordingScreenState extends State<RecordingScreen> {
               ),
               child: const Text(
                 'Done',
-                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                style:
+                    TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
               ),
             ),
           ),
@@ -183,6 +201,25 @@ class RecordingScreenState extends State<RecordingScreen> {
             ],
           ),
         ]),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text('Drawer Header'),
+            ),
+            ListTile(
+              title: const Text('Settings'),
+              onTap: () {
+                context.go("/Settings");
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

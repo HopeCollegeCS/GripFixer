@@ -41,6 +41,7 @@ class _PlayerSelection extends State<PlayerSelection> {
       });
     }
     return Scaffold(
+      appBar: AppBar(),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -106,7 +107,8 @@ class _PlayerSelection extends State<PlayerSelection> {
                             }
                           : () {
                               context.go("/ShotSelectionPage");
-                              var state = Provider.of<AppState>(context, listen: false);
+                              var state =
+                                  Provider.of<AppState>(context, listen: false);
                               state.person = selectedPlayer;
                             },
                   style: ElevatedButton.styleFrom(
@@ -123,6 +125,25 @@ class _PlayerSelection extends State<PlayerSelection> {
                   ),
                 )
               ],
+            ),
+          ],
+        ),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text('Drawer Header'),
+            ),
+            ListTile(
+              title: const Text('Settings'),
+              onTap: () {
+                context.go("/Settings");
+              },
             ),
           ],
         ),

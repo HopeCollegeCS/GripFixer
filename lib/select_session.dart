@@ -39,6 +39,7 @@ class _SelectSession extends State<SelectSession> {
     }
 
     return Scaffold(
+      appBar: AppBar(),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -136,6 +137,25 @@ class _SelectSession extends State<SelectSession> {
                   ),
                 ),
               ],
+            ),
+          ],
+        ),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text('Drawer Header'),
+            ),
+            ListTile(
+              title: const Text('Settings'),
+              onTap: () {
+                context.go("/Settings");
+              },
             ),
           ],
         ),
