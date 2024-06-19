@@ -76,6 +76,7 @@ class _MeasureScreenState extends State<MeasureScreen> {
           remainingTime--;
         } else {
           timer.cancel();
+          values.removeWhere((value) => value < 100); // get rid of values less than 100
           strength = (values.reduce((a, b) => a + b) / values.length).round();
           state.person?.strength = strength;
           var db = state.sqfl;
