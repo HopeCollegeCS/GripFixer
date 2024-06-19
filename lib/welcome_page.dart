@@ -24,21 +24,44 @@ class _WelcomePage extends State<WelcomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const SizedBox(
+          child: Row(
+            children: [
+              Text('Grip Strength Tool'),
+              SizedBox(width: 10),
+              Icon(
+                Icons.sports_tennis,
+              ),
+              SizedBox(width: 10),
+              // Builder(
+              //   builder: (context) {
+              //     return IconButton(
+              //       icon: const Icon(Icons.menu),
+              //       onPressed: () {
+              //         Scaffold.of(context).openDrawer();
+              //       },
+              //     );
+              //   },
+              // ),
+            ],
+          ),
+        ),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              'Grip Strength Tool',
-              style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20.0),
-            const Icon(
-              Icons.sports_tennis,
-              size: 130,
-            ),
-            const SizedBox(height: 20.0),
+            // const Text(
+            //   'Grip Strength Tool',
+            //   style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
+            // ),
+            // const SizedBox(height: 20.0),
+            // const Icon(
+            //   Icons.sports_tennis,
+            //   size: 130,
+            // ),
+            // const SizedBox(height: 20.0),
             const Row(
               children: [
                 SizedBox(width: 20.0),
