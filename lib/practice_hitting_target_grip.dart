@@ -112,7 +112,39 @@ class _MatchingScreen extends State<MatchingScreen> {
     }
     // now time to build;
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF5482ab),
+        leading: IconButton(
+          color: (const Color(0xFFFFFFFF)),
+          onPressed: () {
+            context.pop();
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
+        title: SizedBox(
+          child: Row(
+            children: [
+              const Text('Grip Strength Tool'),
+              const SizedBox(width: 10),
+              // const Icon(
+              //   Icons.sports_tennis,
+              // ),
+              const SizedBox(width: 10),
+              Builder(
+                builder: (context) {
+                  return IconButton(
+                    icon: const Icon(Icons.sports_tennis),
+                    color: (const Color(0xFFFFFFFF)),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
       body: Stack(children: [
         if (isConnectedToBluetooth)
           Center(
@@ -243,7 +275,7 @@ class _MatchingScreen extends State<MatchingScreen> {
                     const SizedBox(width: 10.0),
                     ElevatedButton(
                       onPressed: () {
-                        context.go("/WelcomePage");
+                        context.push("/WelcomePage");
                       },
                       style: ElevatedButton.styleFrom(
                         shape: const RoundedRectangleBorder(
@@ -294,7 +326,7 @@ class _MatchingScreen extends State<MatchingScreen> {
             ListTile(
               title: const Text('Settings'),
               onTap: () {
-                context.go("/Settings");
+                context.push("/Settings");
               },
             ),
           ],

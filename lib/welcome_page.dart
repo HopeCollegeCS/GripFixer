@@ -25,25 +25,33 @@ class _WelcomePage extends State<WelcomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const SizedBox(
+        backgroundColor: const Color(0xFF5482ab),
+        leading: const SizedBox(),
+        title: SizedBox(
           child: Row(
             children: [
-              Text('Grip Strength Tool'),
-              SizedBox(width: 10),
-              Icon(
-                Icons.sports_tennis,
-              ),
-              SizedBox(width: 10),
-              // Builder(
-              //   builder: (context) {
-              //     return IconButton(
-              //       icon: const Icon(Icons.menu),
-              //       onPressed: () {
-              //         Scaffold.of(context).openDrawer();
-              //       },
-              //     );
-              //   },
+              const Text('Grip Strength Tool',
+                  style: TextStyle(
+                    color: Color(0xFFFFFFFF),
+                  )),
+              const SizedBox(width: 10),
+              // const Icon(
+              //   Icons.sports_tennis,
               // ),
+              const SizedBox(width: 10),
+              Builder(
+                builder: (context) {
+                  return IconButton(
+                    icon: const Icon(
+                      Icons.sports_tennis,
+                    ),
+                    color: (const Color(0xFFFFFFFF)),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  );
+                },
+              ),
             ],
           ),
         ),
@@ -149,7 +157,7 @@ class _WelcomePage extends State<WelcomePage> {
                 const SizedBox(width: 20.0), // Add some spacing
                 ElevatedButton(
                   onPressed: () {
-                    context.go(getButtonPath(_selectedValue!));
+                    context.push(getButtonPath(_selectedValue!));
                   },
                   style: ElevatedButton.styleFrom(
                     shape: const RoundedRectangleBorder(
@@ -180,7 +188,7 @@ class _WelcomePage extends State<WelcomePage> {
             ListTile(
               title: const Text('Settings'),
               onTap: () {
-                context.go("/Settings");
+                context.push("/Settings");
               },
             ),
           ],

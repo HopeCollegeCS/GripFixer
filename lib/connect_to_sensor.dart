@@ -129,20 +129,57 @@ class _ConnectToSensor extends State<ConnectToSensor> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF5482ab),
+        leading: IconButton(
+          color: (const Color(0xFFFFFFFF)),
+          onPressed: () {
+            context.pop();
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
+        title: SizedBox(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              const SizedBox(width: 10),
+              const Text('Grip Strength Tool',
+                  style: TextStyle(
+                    color: Color(0xFFFFFFFF),
+                  )),
+              // const SizedBox(width: 10),
+              // const Icon(
+              //   Icons.sports_tennis,
+              // ),
+              // const SizedBox(width: 10),
+              Builder(
+                builder: (context) {
+                  return IconButton(
+                    icon: const Icon(Icons.sports_tennis),
+                    color: (const Color(0xFFFFFFFF)),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              'Grip Strength Tool',
-              style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20.0),
-            const Icon(
-              Icons.sports_tennis,
-              size: 130,
-            ),
+            // const Text(
+            //   'Grip Strength Tool',
+            //   style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
+            // ),
+            // const SizedBox(height: 20.0),
+            // const Icon(
+            //   Icons.sports_tennis,
+            //   size: 130,
+            // ),
             const SizedBox(height: 20.0),
             const Padding(
               padding: EdgeInsets.only(left: 16.0),
@@ -193,7 +230,7 @@ class _ConnectToSensor extends State<ConnectToSensor> {
                             }
                             await completer
                                 .future; //wait for the characteristic value to be received
-                            context.go("/${widget.nextRoute}");
+                            context.push("/${widget.nextRoute}");
                           },
                           style: ElevatedButton.styleFrom(
                             shape: const RoundedRectangleBorder(
@@ -220,7 +257,7 @@ class _ConnectToSensor extends State<ConnectToSensor> {
                     alignment: Alignment.centerLeft,
                     child: ElevatedButton(
                       onPressed: () {
-                        context.go("/WelcomePage");
+                        context.push("/WelcomePage");
                       },
                       style: ElevatedButton.styleFrom(
                         shape: const RoundedRectangleBorder(
@@ -255,7 +292,7 @@ class _ConnectToSensor extends State<ConnectToSensor> {
             ListTile(
               title: const Text('Settings'),
               onTap: () {
-                context.go("/Settings");
+                context.push("/Settings");
               },
             ),
           ],
