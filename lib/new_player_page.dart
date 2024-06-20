@@ -44,277 +44,338 @@ class _NewPlayer extends State<NewPlayerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-            child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      const Text(
-        'Grip Strength Tool',
-        style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
-      ),
-      const SizedBox(height: 20.0),
-      const Row(
-        mainAxisAlignment: MainAxisAlignment.start, // Align to the left
-        children: [
-          SizedBox(width: 28),
-          Text(
-            'Add a new Player',
-            style: TextStyle(fontSize: 25),
-          ),
-        ],
-      ),
-      const SizedBox(height: 20.0),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.start, // Align to the left
-        children: [
-          const SizedBox(width: 28),
-          const Text(
-            'First Name',
-            style: TextStyle(fontSize: 25),
-          ),
-          const SizedBox(width: 17),
-          Expanded(
-            child: SizedBox(
-              height: 32, // Adjust this value to change the height
-              child: TextField(
-                onChanged: (text) {
-                  firstName = text;
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF5482ab),
+        leading: IconButton(
+          color: (const Color(0xFFFFFFFF)),
+          onPressed: () {
+            context.pop();
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
+        title: SizedBox(
+          child: Row(
+            children: [
+              const Text('Grip Strength Tool'),
+              const SizedBox(width: 10),
+              // const Icon(
+              //   Icons.sports_tennis,
+              // ),
+              const SizedBox(width: 10),
+              Builder(
+                builder: (context) {
+                  return IconButton(
+                    icon: const Icon(Icons.sports_tennis),
+                    color: (const Color(0xFFFFFFFF)),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  );
                 },
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.zero,
-                    borderSide: BorderSide(color: Colors.black, width: 5.0),
-                  ),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
-                ),
-                style: const TextStyle(fontSize: 20.0),
               ),
-            ),
+            ],
           ),
-          const SizedBox(width: 28),
-        ],
+        ),
       ),
-      const SizedBox(height: 10),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.start, // Align to the left
-        children: [
-          const SizedBox(width: 28),
-          const Text(
-            'Last Name',
-            style: TextStyle(fontSize: 25),
-          ),
-          const SizedBox(width: 19),
-          Expanded(
-            child: SizedBox(
-              height: 32, // Adjust this value to change the height
-              child: TextField(
-                onChanged: (text) {
-                  lastName = text;
-                },
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.zero,
-                    borderSide: BorderSide(color: Colors.black, width: 5.0),
-                  ),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
-                ),
-                style: const TextStyle(fontSize: 20.0),
-              ),
-            ),
-          ),
-          const SizedBox(width: 28),
-        ],
-      ),
-      const SizedBox(height: 10),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.start, // Align to the left
-        children: [
-          const SizedBox(width: 32),
-          const Text(
-            'Age',
-            style: TextStyle(fontSize: 25),
-          ),
-          const SizedBox(width: 93),
-          Expanded(
-            child: SizedBox(
-              height: 32, // Adjust this value to change the height
-              child: TextField(
-                onChanged: (text) {
-                  //age = int.tryParse(text)!;
-                  placeholderAge = text;
-                },
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.zero,
-                    borderSide: BorderSide(color: Colors.black, width: 5.0),
-                  ),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
-                ),
-                style: const TextStyle(fontSize: 20.0),
-              ),
-            ),
-          ),
-          const SizedBox(width: 28),
-        ],
-      ),
-      const SizedBox(height: 10),
-      Row(
-          mainAxisAlignment: MainAxisAlignment.start, // Align to the left
-          children: [
-            const SizedBox(width: 28),
+      body: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             const Text(
-              'Gender',
-              style: TextStyle(fontSize: 25),
+              'Grip Strength Tool',
+              style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
             ),
-            Column(
+            const SizedBox(height: 20.0),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.start, // Align to the left
               children: [
-                Row(
-                  children: [
-                    const SizedBox(width: 45.0), // Move the radio button to the left
-                    Radio(
-                      value: 'Male',
-                      groupValue: gender,
-                      onChanged: (value) {
-                        setState(() {
-                          gender = 'Male';
-                        });
-                      },
-                    ),
-                    const Text('Male'),
-                  ],
-                ),
-                const SizedBox(height: 2),
-                Row(
-                  children: [
-                    const SizedBox(width: 59.0), // Move the radio button to the left
-                    Radio(
-                      value: 'Female',
-                      groupValue: gender,
-                      onChanged: (value) {
-                        setState(() {
-                          gender = 'Female';
-                        });
-                      },
-                    ),
-                    const Text('Female'),
-                  ],
+                SizedBox(width: 28),
+                Text(
+                  'Add a new Player',
+                  style: TextStyle(fontSize: 25),
                 ),
               ],
-            )
-          ]),
-      Center(
-          child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Radio(
-            value: 'Left',
-            groupValue: hand,
-            onChanged: (value) {
-              setState(() {
-                hand = 'Left';
-              });
-            },
-          ),
-          const Text('Left Handed'),
-          const SizedBox(width: 20.0),
-          Radio(
-            value: 'Right',
-            groupValue: hand,
-            onChanged: (value) {
-              setState(() {
-                hand = 'Right';
-              });
-            },
-          ),
-          const Text('Right Handed'),
-        ],
-      )),
-      Center(
-          child: Row(
-        children: [
-          Radio(
-            value: 'Eastern',
-            groupValue: forehandGrip,
-            onChanged: (value) {
-              setState(() {
-                forehandGrip = 'Eastern';
-              });
-            },
-          ),
-          const Text('Eastern'),
-          const SizedBox(width: 8.0),
-          Radio(
-            value: 'Semi-Western',
-            groupValue: forehandGrip,
-            onChanged: (value) {
-              setState(() {
-                forehandGrip = 'Semi-Western';
-              });
-            },
-          ),
-          const Text('Semi-Western'),
-          const SizedBox(width: 8.0),
-          Radio(
-            value: 'Continental',
-            groupValue: forehandGrip,
-            onChanged: (value) {
-              setState(() {
-                forehandGrip = 'Continental';
-              });
-            },
-          ),
-          const Text('Continental'),
-        ],
-      )),
-      const SizedBox(height: 8),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const SizedBox(width: 20.0), // Add some spacing
-          ElevatedButton(
-            onPressed: () {
-              age = int.tryParse(placeholderAge)!;
-              //use SQFlite class to insert new player, async so call .then and context.go goes inside
-              buttonAction(context).then((newPlayerId) {
-                var appState = Provider.of<AppState>(context, listen: false);
-                appState.person?.player_id = newPlayerId;
-                context.go("/MeasurePage");
-              });
-            },
-            style: ElevatedButton.styleFrom(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.zero, // Make the button square
+            ),
+            const SizedBox(height: 20.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start, // Align to the left
+              children: [
+                const SizedBox(width: 28),
+                const Text(
+                  'First Name',
+                  style: TextStyle(fontSize: 25),
+                ),
+                const SizedBox(width: 17),
+                Expanded(
+                  child: SizedBox(
+                    height: 32, // Adjust this value to change the height
+                    child: TextField(
+                      onChanged: (text) {
+                        firstName = text;
+                      },
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.zero,
+                          borderSide:
+                              BorderSide(color: Colors.black, width: 5.0),
+                        ),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
+                      ),
+                      style: const TextStyle(fontSize: 20.0),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 28),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start, // Align to the left
+              children: [
+                const SizedBox(width: 28),
+                const Text(
+                  'Last Name',
+                  style: TextStyle(fontSize: 25),
+                ),
+                const SizedBox(width: 19),
+                Expanded(
+                  child: SizedBox(
+                    height: 32, // Adjust this value to change the height
+                    child: TextField(
+                      onChanged: (text) {
+                        lastName = text;
+                      },
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.zero,
+                          borderSide:
+                              BorderSide(color: Colors.black, width: 5.0),
+                        ),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
+                      ),
+                      style: const TextStyle(fontSize: 20.0),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 28),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start, // Align to the left
+              children: [
+                const SizedBox(width: 32),
+                const Text(
+                  'Age',
+                  style: TextStyle(fontSize: 25),
+                ),
+                const SizedBox(width: 93),
+                Expanded(
+                  child: SizedBox(
+                    height: 32, // Adjust this value to change the height
+                    child: TextField(
+                      onChanged: (text) {
+                        //age = int.tryParse(text)!;
+                        placeholderAge = text;
+                      },
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.zero,
+                          borderSide:
+                              BorderSide(color: Colors.black, width: 5.0),
+                        ),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
+                      ),
+                      style: const TextStyle(fontSize: 20.0),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 28),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.start, // Align to the left
+                children: [
+                  const SizedBox(width: 28),
+                  const Text(
+                    'Gender',
+                    style: TextStyle(fontSize: 25),
+                  ),
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          const SizedBox(
+                              width: 45.0), // Move the radio button to the left
+                          Radio(
+                            value: 'Male',
+                            groupValue: gender,
+                            onChanged: (value) {
+                              setState(() {
+                                gender = 'Male';
+                              });
+                            },
+                          ),
+                          const Text('Male'),
+                        ],
+                      ),
+                      const SizedBox(height: 2),
+                      Row(
+                        children: [
+                          const SizedBox(
+                              width: 59.0), // Move the radio button to the left
+                          Radio(
+                            value: 'Female',
+                            groupValue: gender,
+                            onChanged: (value) {
+                              setState(() {
+                                gender = 'Female';
+                              });
+                            },
+                          ),
+                          const Text('Female'),
+                        ],
+                      ),
+                    ],
+                  )
+                ]),
+            Center(
+                child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Radio(
+                  value: 'Left',
+                  groupValue: hand,
+                  onChanged: (value) {
+                    setState(() {
+                      hand = 'Left';
+                    });
+                  },
+                ),
+                const Text('Left Handed'),
+                const SizedBox(width: 20.0),
+                Radio(
+                  value: 'Right',
+                  groupValue: hand,
+                  onChanged: (value) {
+                    setState(() {
+                      hand = 'Right';
+                    });
+                  },
+                ),
+                const Text('Right Handed'),
+              ],
+            )),
+            Center(
+                child: Row(
+              children: [
+                Radio(
+                  value: 'Eastern',
+                  groupValue: forehandGrip,
+                  onChanged: (value) {
+                    setState(() {
+                      forehandGrip = 'Eastern';
+                    });
+                  },
+                ),
+                const Text('Eastern'),
+                const SizedBox(width: 8.0),
+                Radio(
+                  value: 'Semi-Western',
+                  groupValue: forehandGrip,
+                  onChanged: (value) {
+                    setState(() {
+                      forehandGrip = 'Semi-Western';
+                    });
+                  },
+                ),
+                const Text('Semi-Western'),
+                const SizedBox(width: 8.0),
+                Radio(
+                  value: 'Continental',
+                  groupValue: forehandGrip,
+                  onChanged: (value) {
+                    setState(() {
+                      forehandGrip = 'Continental';
+                    });
+                  },
+                ),
+                const Text('Continental'),
+              ],
+            )),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(width: 20.0), // Add some spacing
+                ElevatedButton(
+                  onPressed: () {
+                    age = int.tryParse(placeholderAge)!;
+                    //use SQFlite class to insert new player, async so call .then and context.go goes inside
+                    buttonAction(context).then((newPlayerId) {
+                      var appState =
+                          Provider.of<AppState>(context, listen: false);
+                      appState.person?.player_id = newPlayerId;
+                      context.push("/MeasurePage");
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero, // Make the button square
+                    ),
+                  ),
+                  child: const Text(
+                    'Measure Grip Strength',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.black),
+                  ),
+                )
+              ],
+            ),
+            const SizedBox(height: 10.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(width: 20.0),
+                ElevatedButton(
+                  onPressed: () {
+                    context.push("/PlayerSelectPage");
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero,
+                    ),
+                  ),
+                  child: const Text(
+                    'Back',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ])),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
               ),
+              child: Text('Drawer Header'),
             ),
-            child: const Text(
-              'Measure Grip Strength',
-              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+            ListTile(
+              title: const Text('Settings'),
+              onTap: () {
+                context.push("/Settings");
+              },
             ),
-          )
-        ],
+          ],
+        ),
       ),
-      const SizedBox(height: 10.0),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const SizedBox(width: 20.0),
-          ElevatedButton(
-            onPressed: () {
-              context.go("/PlayerSelectPage");
-            },
-            style: ElevatedButton.styleFrom(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.zero,
-              ),
-            ),
-            child: const Text(
-              'Back',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
-          )
-        ],
-      ),
-    ])));
+    );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:grip_fixer/new_player_page.dart';
 import 'package:grip_fixer/grip_target.dart';
+import 'package:grip_fixer/person.dart';
 import 'package:grip_fixer/session.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
@@ -34,6 +34,7 @@ Future<int> buttonAction(BuildContext context, String gripTarget) {
   var state = Provider.of<AppState>(context, listen: false);
 
   player_id = state.person!.player_id!;
+
   session_date = now!;
   shot_type = gripTarget;
 
@@ -95,116 +96,170 @@ class ShotSelection extends State<ShotSelectionPage> {
     //String selectedValue = appState.targetMap.keys.first;
 
     return Scaffold(
-        body: SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            'Grip Strength Tool',
-            style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 20.0),
-          const Icon(
-            Icons.sports_tennis,
-            size: 130,
-          ),
-          const SizedBox(height: 20.0),
-          const Row(
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF5482ab),
+        leading: IconButton(
+          color: (const Color(0xFFFFFFFF)),
+          onPressed: () {
+            context.pop();
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
+        title: SizedBox(
+          child: Row(
             children: [
-              SizedBox(width: 20.0),
-              Text(
-                'What shot do you want to work on?',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              const Text('Grip Strength Tool'),
+              const SizedBox(width: 10),
+              // const Icon(
+              //   Icons.sports_tennis,
+              // ),
+              const SizedBox(width: 10),
+              Builder(
+                builder: (context) {
+                  return IconButton(
+                    icon: const Icon(Icons.sports_tennis),
+                    color: (const Color(0xFFFFFFFF)),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  );
+                },
               ),
             ],
           ),
-          const SizedBox(height: 10.0),
-          SizedBox(
-            child: DataTable(
-              columnSpacing: 13,
-              columns: const [
-                DataColumn(label: SizedBox(width: 20)),
-                DataColumn(label: Text('Shots')),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'Grip Strength Tool',
+              style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20.0),
+            const Icon(
+              Icons.sports_tennis,
+              size: 130,
+            ),
+            const SizedBox(height: 20.0),
+            const Row(
+              children: [
+                SizedBox(width: 20.0),
+                Text(
+                  'What shot do you want to work on?',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
               ],
-              //border: TableBorder.all(),
-              //rows: appState.targetMap.keys.toList() ?? [],
-              rows: appState.targetMap.keys.toList().map((target) {
-                return DataRow(
-                  cells: [
-                    DataCell(
-                      SizedBox(
-                        width: 3,
-                        child: Radio(
-                          value: appState.targetMap.keys.toList().indexOf(target),
-                          groupValue: selectedValue,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedValue = value!;
-                            });
-                          },
+            ),
+            const SizedBox(height: 10.0),
+            SizedBox(
+              child: DataTable(
+                columnSpacing: 13,
+                columns: const [
+                  DataColumn(label: SizedBox(width: 20)),
+                  DataColumn(label: Text('Shots')),
+                ],
+                //border: TableBorder.all(),
+                //rows: appState.targetMap.keys.toList() ?? [],
+                rows: appState.targetMap.keys.toList().map((target) {
+                  return DataRow(
+                    cells: [
+                      DataCell(
+                        SizedBox(
+                          width: 3,
+                          child: Radio(
+                            value: appState.targetMap.keys.toList().indexOf(target),
+                            groupValue: selectedValue,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedValue = value!;
+                              });
+                            },
+                          ),
                         ),
                       ),
-                    ),
-                    DataCell(Text('$target')),
-                  ],
-                );
-              }).toList(),
+                      DataCell(Text('$target')),
+                    ],
+                  );
+                }).toList(),
+              ),
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const SizedBox(width: 20.0),
-              ElevatedButton(
-                onPressed: () {
-                  //use SQFlite class to insert new player, async so call .then and context.go goes inside
-                  buttonAction(context, appState.targetMap.keys.toList()[selectedValue]).then((newSessionId) {
-                    appState.session?.session_id = newSessionId;
-                    print(appState.person.toString());
-                    writeToTargetGripPercentageCharacteristic(
-                        appState, appState.targetMap.keys.toList()[selectedValue]);
-                    writeToMaxGripStrengthCharacteristic(appState);
-                    context.go("/RecordingPage");
-                  });
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const SizedBox(width: 20.0),
+                ElevatedButton(
+                  onPressed: () {
+                    //use SQFlite class to insert new player, async so call .then and context.go goes inside
+                    buttonAction(context, appState.targetMap.keys.toList()[selectedValue]).then((newSessionId) {
+                      appState.session?.session_id = newSessionId;
+                      print(appState.person.toString());
+                      writeToTargetGripPercentageCharacteristic(
+                          appState, appState.targetMap.keys.toList()[selectedValue]);
+                      writeToMaxGripStrengthCharacteristic(appState);
+                      writeToSensorNumberCharacteristic(appState);
+                      context.push("/RecordingPage");
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero,
+                    ),
                   ),
-                ),
-                child: const Text(
-                  'Let\'s Hit!',
-                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                ),
-              )
-            ],
-          ),
-          const SizedBox(height: 10.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const SizedBox(width: 20.0),
-              ElevatedButton(
-                onPressed: () {
-                  context.go("/PlayerSelectPage");
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero,
+                  child: const Text(
+                    'Let\'s Hit!',
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                   ),
-                ),
-                child: const Text(
-                  'Back',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                )
+              ],
+            ),
+            const SizedBox(height: 10.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const SizedBox(width: 20.0),
+                ElevatedButton(
+                  onPressed: () {
+                    context.push("/PlayerSelectPage");
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.zero,
+                    ),
                   ),
-                ),
-              )
-            ],
-          ),
-        ],
+                  child: const Text(
+                    'Back',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
       ),
-    ));
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text('Drawer Header'),
+            ),
+            ListTile(
+              title: const Text('Settings'),
+              onTap: () {
+                context.push("/Settings");
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

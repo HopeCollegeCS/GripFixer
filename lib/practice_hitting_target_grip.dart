@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -6,6 +7,7 @@ import 'package:grip_fixer/person.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class MatchingScreen extends StatefulWidget {
   const MatchingScreen({super.key});
@@ -14,15 +16,6 @@ class MatchingScreen extends StatefulWidget {
   State<MatchingScreen> createState() => _MatchingScreen();
 }
 
-// const Map<String, int> shots = <String, int>{
-//   'Forehand Groundstroke': 4,
-//   'Backhand Groundstroke': 5,
-//   'Forehand Volley': 6,
-//   'Backhand Volley': 7,
-//   'Serve': 8,
-//   'Other': 0
-// };
-
 class _MatchingScreen extends State<MatchingScreen> {
   late AppState state;
   String selectedShot = "";
@@ -30,6 +23,7 @@ class _MatchingScreen extends State<MatchingScreen> {
   bool playersLoaded = false;
   List<Person> playersList = [];
   List<int> values = [];
+  late Queue<int> strengthQueue = Queue<int>();
   late bool isConnectedToBluetooth;
   BluetoothCharacteristic? responseCharacteristic;
   late double currentValue;
@@ -41,6 +35,7 @@ class _MatchingScreen extends State<MatchingScreen> {
     isConnectedToBluetooth = false;
     isStarted = false;
     currentValue = 0;
+    strengthQueue.add(0);
     if (playersList.isNotEmpty) {
       selectedPlayer = playersList.first;
     }
@@ -79,6 +74,10 @@ class _MatchingScreen extends State<MatchingScreen> {
                 1)
             .round()
         : 0;
+    //strengthQueue.add(calculatedIncomingStrength);
+    //if (strengthQueue.length > 10) {
+    //  strengthQueue.removeLast();
+    //}
     state = Provider.of<AppState>(context);
     Map<String, int>? shots = state.targetMap.cast<String, int>();
     //get the player list
@@ -104,171 +103,222 @@ class _MatchingScreen extends State<MatchingScreen> {
     }
     // now time to build;
     return Scaffold(
-        body: Stack(children: [
-      if (isConnectedToBluetooth)
-        Center(
-          child: Container(
-            margin: const EdgeInsets.only(left: 12, right: 12, top: 20),
-            child: Column(children: [
-              const SizedBox(height: 40),
-              const Align(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  "Grip Strength Tool",
-                  style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
-                ),
-              ),
-              const SizedBox(height: 20.0),
-              const Align(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  "Practice hitting target grip strength",
-                  style: TextStyle(fontSize: 25),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Row(
-                children: [
-                  const Text(
-                    'Player',
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(width: 10.0),
-                  Container(
-                    width: 250,
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(4.0),
-                    ),
-                    child: DropdownButton<Person>(
-                      value: selectedPlayer,
-                      onChanged: (Person? newValue) {
-                        setState(() {
-                          selectedPlayer = newValue;
-                        });
-                      },
-                      items: playersList.map((Person player) {
-                        return DropdownMenuItem<Person>(
-                          value: player,
-                          child: Text(player.firstName),
-                        );
-                      }).toList(),
-                      isExpanded: true,
-                      underline: const SizedBox(),
-                    ),
-                  )
-                ],
-              ),
-              const SizedBox(height: 20),
-              Row(
-                children: [
-                  const Text(
-                    'Shot',
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(width: 29.0),
-                  Container(
-                    width: 250,
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(4.0),
-                    ),
-                    child: DropdownButton<String>(
-                      value: selectedShot.isNotEmpty ? selectedShot : null,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          selectedShot = newValue!;
-                        });
-                      },
-                      items: shots.keys.map((String shot) {
-                        return DropdownMenuItem<String>(
-                          value: shot,
-                          child: Text(shot),
-                        );
-                      }).toList(),
-                      isExpanded: true,
-                      underline: const SizedBox(),
-                    ),
-                  )
-                ],
-              ),
-              const SizedBox(height: 20),
-              Row(children: [
-                const Text(
-                  'Incoming Strength:',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(width: 10),
-                if (selectedPlayer != null)
-                  Text(
-                    '$calculatedIncomingStrength',
-                    style: const TextStyle(fontSize: 20),
-                  ),
-              ]),
-              const SizedBox(height: 80),
-              SfLinearGauge(
-                minimum: 0,
-                maximum: 10,
-                markerPointers: [
-                  LinearShapePointer(value: shots[selectedShot]?.toDouble() ?? 0.0),
-                ],
-                barPointers: [
-                  LinearBarPointer(
-                    value: calculatedIncomingStrength.toDouble(),
-                    color: linearBarColor(
-                      calculatedIncomingStrength.toDouble(),
-                      shots[selectedShot]?.toDouble() ?? 0.0,
-                    ),
-                  )
-                ],
-              ),
-              const SizedBox(height: 20.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const SizedBox(width: 10.0),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.go("/WelcomePage");
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero,
-                      ),
-                    ),
-                    child: const Text(
-                      'Back',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ]),
-          ),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF5482ab),
+        leading: IconButton(
+          color: (const Color(0xFFFFFFFF)),
+          onPressed: () {
+            context.pop();
+          },
+          icon: const Icon(Icons.arrow_back),
         ),
-      if (!isConnectedToBluetooth)
-        const Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+        title: SizedBox(
+          child: Row(
             children: [
-              CircularProgressIndicator(),
-              SizedBox(height: 16.0),
-              Text(
-                'Connecting to Bluetooth...',
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                ),
+              const Text('Grip Strength Tool'),
+              const SizedBox(width: 10),
+              // const Icon(
+              //   Icons.sports_tennis,
+              // ),
+              const SizedBox(width: 10),
+              Builder(
+                builder: (context) {
+                  return IconButton(
+                    icon: const Icon(Icons.sports_tennis),
+                    color: (const Color(0xFFFFFFFF)),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  );
+                },
               ),
             ],
           ),
         ),
-    ]));
+      ),
+      body: Stack(children: [
+        if (isConnectedToBluetooth)
+          Center(
+            child: Container(
+              margin: const EdgeInsets.only(left: 12, right: 12, top: 10),
+              child: Column(children: [
+                const Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Grip Strength Tool",
+                    style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: 20.0),
+                const Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Practice hitting target grip strength",
+                    style: TextStyle(fontSize: 25),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    const Text(
+                      'Player',
+                      style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(width: 10.0),
+                    Container(
+                      width: 250,
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(4.0),
+                      ),
+                      child: DropdownButton<Person>(
+                        value: selectedPlayer,
+                        onChanged: (Person? newValue) {
+                          Person.writeToSensorNumberCharacteristic(state);
+                          setState(() {
+                            selectedPlayer = newValue;
+                          });
+                        },
+                        items: playersList.map((Person player) {
+                          return DropdownMenuItem<Person>(
+                            value: player,
+                            child: Text(player.firstName),
+                          );
+                        }).toList(),
+                        isExpanded: true,
+                        underline: const SizedBox(),
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    const Text(
+                      'Shot',
+                      style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(width: 29.0),
+                    Container(
+                      width: 250,
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(4.0),
+                      ),
+                      child: DropdownButton<String>(
+                        value: selectedShot.isNotEmpty ? selectedShot : null,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedShot = newValue!;
+                          });
+                        },
+                        items: shots.keys.map((String shot) {
+                          return DropdownMenuItem<String>(
+                            value: shot,
+                            child: Text(shot),
+                          );
+                        }).toList(),
+                        isExpanded: true,
+                        underline: const SizedBox(),
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Row(children: [
+                  const Text(
+                    'Incoming Strength:',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(width: 10),
+                  if (selectedPlayer != null)
+                    Text(
+                      '$calculatedIncomingStrength',
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                ]),
+                const SizedBox(height: 30),
+                SfLinearGauge(
+                  minimum: 0,
+                  maximum: 10,
+                  markerPointers: [
+                    LinearShapePointer(value: shots[selectedShot]?.toDouble() ?? 0.0),
+                  ],
+                  barPointers: [
+                    LinearBarPointer(
+                      value: calculatedIncomingStrength.toDouble(),
+                      color: linearBarColor(
+                        calculatedIncomingStrength.toDouble(),
+                        shots[selectedShot]?.toDouble() ?? 0.0,
+                      ),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 20),
+                /*Expanded(
+                  child: SfCartesianChart(
+                    primaryXAxis: const NumericAxis(
+                      minimum: 0,
+                      maximum: 10,
+                      interval: 1,
+                    ),
+                    primaryYAxis: const NumericAxis(
+                      minimum: 0,
+                      maximum: 10,
+                      interval: 1,
+                    ),
+                    series: <LineSeries<int, int>>[
+                      LineSeries<int, int>(
+                        dataSource: strengthQueue.toList(),
+                        xValueMapper: (int value, int index) => index,
+                        yValueMapper: (int value, int index) => value,
+                      ),
+                    ],
+                  ),
+                )*/
+              ]),
+            ),
+          ),
+        if (!isConnectedToBluetooth)
+          const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator(),
+                SizedBox(height: 16.0),
+                Text(
+                  'Connecting to Bluetooth...',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+      ]),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text('Drawer Header'),
+            ),
+            ListTile(
+              title: const Text('Settings'),
+              onTap: () {
+                context.push("/Settings");
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Color linearBarColor(double barValue, double targetValue) {

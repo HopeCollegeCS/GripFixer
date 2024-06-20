@@ -41,6 +41,39 @@ class _PlayerSelection extends State<PlayerSelection> {
       });
     }
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF5482ab),
+        leading: IconButton(
+          color: (const Color(0xFFFFFFFF)),
+          onPressed: () {
+            context.pop();
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
+        title: SizedBox(
+          child: Row(
+            children: [
+              const Text('Grip Strength Tool'),
+              const SizedBox(width: 10),
+              // const Icon(
+              //   Icons.sports_tennis,
+              // ),
+              const SizedBox(width: 10),
+              Builder(
+                builder: (context) {
+                  return IconButton(
+                    icon: const Icon(Icons.sports_tennis),
+                    color: (const Color(0xFFFFFFFF)),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -102,11 +135,12 @@ class _PlayerSelection extends State<PlayerSelection> {
                       ? null
                       : selectedPlayer?.firstName == 'New Player'
                           ? () {
-                              context.go("/NewPlayerPage");
+                              context.push("/NewPlayerPage");
                             }
                           : () {
-                              context.go("/ShotSelectionPage");
-                              var state = Provider.of<AppState>(context, listen: false);
+                              context.push("/ShotSelectionPage");
+                              var state =
+                                  Provider.of<AppState>(context, listen: false);
                               state.person = selectedPlayer;
                             },
                   style: ElevatedButton.styleFrom(
@@ -123,6 +157,25 @@ class _PlayerSelection extends State<PlayerSelection> {
                   ),
                 )
               ],
+            ),
+          ],
+        ),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text('Drawer Header'),
+            ),
+            ListTile(
+              title: const Text('Settings'),
+              onTap: () {
+                context.push("/Settings");
+              },
             ),
           ],
         ),

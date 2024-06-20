@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:go_router/go_router.dart';
-import 'package:grip_fixer/session_measurements.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
 
@@ -26,58 +25,42 @@ class RecordingScreenState extends State<RecordingScreen> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    state = Provider.of<AppState>(context, listen: false);
-    if (state.bluetoothDevice != null) {
-      subscribeToCharacteristic(state.bluetoothDevice!);
-    } else {
-      print('Bluetooth device is null');
-    }
-  }
-
-  void subscribeToCharacteristic(BluetoothDevice device) {
-    device.discoverServices().then((services) {
-      var service = services.where((s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214")).first;
-      var requestCharacteristic =
-          service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1215")).first;
-      responseCharacteristic =
-          service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216")).first;
-
-      responseCharacteristic!.onValueReceived.listen((value) {
-        int sessionID = state.session?.session_id ?? 0;
-        SessionMeasurements sessionMeasurements = SessionMeasurements(
-          session_id: sessionID,
-          timestamp: DateTime.now().millisecondsSinceEpoch,
-          value: value[0] & 0xFF | ((value[1] & 0xFF) << 8) | ((value[2] & 0xFF) << 16) | ((value[3] & 0xFF) << 24),
-        );
-        //sessionMeasurementsList.add(sessionMeasurements);
-        saveToDatabase(state);
-      });
-      responseCharacteristic!.setNotifyValue(true);
-      requestCharacteristic.write([1]);
-    });
-  }
-
-  SessionMeasurements createSessionMeasurements(int sessionID) {
-    return SessionMeasurements(
-      session_id: sessionID,
-      timestamp: DateTime.now().millisecondsSinceEpoch,
-      value: currentResponseValue,
-    );
-  }
-
-  void saveToDatabase(AppState state) {
-    int id = state.session?.session_id ?? 0;
-    SessionMeasurements sessionMeasurements = createSessionMeasurements(id);
-    state.setSessionMeasurements(sessionMeasurements);
-    var db = state.sqfl;
-    db.insertSessionMeasurement(sessionMeasurements);
-  }
-
-  @override
   Widget build(BuildContext context) {
+    state = Provider.of<AppState>(context, listen: false);
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF5482ab),
+        leading: IconButton(
+          color: (const Color(0xFFFFFFFF)),
+          onPressed: () {
+            context.pop();
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
+        title: SizedBox(
+          child: Row(
+            children: [
+              const Text('Grip Strength Tool'),
+              const SizedBox(width: 10),
+              // const Icon(
+              //   Icons.sports_tennis,
+              // ),
+              const SizedBox(width: 10),
+              Builder(
+                builder: (context) {
+                  return IconButton(
+                    icon: const Icon(Icons.sports_tennis),
+                    color: (const Color(0xFFFFFFFF)),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
       body: Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           const Align(
@@ -141,12 +124,11 @@ class RecordingScreenState extends State<RecordingScreen> {
           Center(
             child: ElevatedButton(
               onPressed: () async {
-                saveToDatabase(state);
                 final enableFeedbackCharacteristic = state.enableFeedbackCharacteristic;
                 await enableFeedbackCharacteristic?.write([enableFeedback ? 1 : 0]); // 1 for true, 0 for false
                 state.enableFeedback = enableFeedback;
                 print('enable feedback $enableFeedback');
-                context.go("/VideoRecording");
+                context.push("/VideoRecording");
               },
               style: ElevatedButton.styleFrom(
                 shape: const RoundedRectangleBorder(
@@ -165,7 +147,7 @@ class RecordingScreenState extends State<RecordingScreen> {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  context.go("/ShotSelectionPage");
+                  context.push("/ShotSelectionPage");
                 },
                 style: ElevatedButton.styleFrom(
                   shape: const RoundedRectangleBorder(
@@ -183,6 +165,25 @@ class RecordingScreenState extends State<RecordingScreen> {
             ],
           ),
         ]),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text('Drawer Header'),
+            ),
+            ListTile(
+              title: const Text('Settings'),
+              onTap: () {
+                context.push("/Settings");
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
