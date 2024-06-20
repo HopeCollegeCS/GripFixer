@@ -107,15 +107,15 @@ void loop() {
 
       // Check if the sensor number feedback characteristic has been written to
       if (sensorNumberCharacteristic.written()) {
+        sensorNumber = sensorNumberCharacteristic.value();
+        Serial.print("Sensor Number: ");
+        Serial.println(sensorNumber);
         // Assign the correct sensor value
         if(sensorNumber == 1){
           forceSensorPin1 = A1;
         } else if(sensorNumber == 2){
           forceSensorPin1 = A2;
         }
-        sensorNumber = sensorNumberCharacteristic.value();
-        Serial.print("Sensor Number: ");
-        Serial.println(sensorNumber);
       }
       
       int sensorValue1 = analogRead(forceSensorPin1); // Read the analog value from the first force sensor

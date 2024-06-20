@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -6,6 +7,7 @@ import 'package:grip_fixer/person.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class MatchingScreen extends StatefulWidget {
   const MatchingScreen({super.key});
@@ -14,15 +16,6 @@ class MatchingScreen extends StatefulWidget {
   State<MatchingScreen> createState() => _MatchingScreen();
 }
 
-// const Map<String, int> shots = <String, int>{
-//   'Forehand Groundstroke': 4,
-//   'Backhand Groundstroke': 5,
-//   'Forehand Volley': 6,
-//   'Backhand Volley': 7,
-//   'Serve': 8,
-//   'Other': 0
-// };
-
 class _MatchingScreen extends State<MatchingScreen> {
   late AppState state;
   String selectedShot = "";
@@ -30,6 +23,7 @@ class _MatchingScreen extends State<MatchingScreen> {
   bool playersLoaded = false;
   List<Person> playersList = [];
   List<int> values = [];
+  late Queue<int> strengthQueue = Queue<int>();
   late bool isConnectedToBluetooth;
   BluetoothCharacteristic? responseCharacteristic;
   late double currentValue;
@@ -41,6 +35,7 @@ class _MatchingScreen extends State<MatchingScreen> {
     isConnectedToBluetooth = false;
     isStarted = false;
     currentValue = 0;
+    strengthQueue.add(0);
     if (playersList.isNotEmpty) {
       selectedPlayer = playersList.first;
     }
@@ -49,22 +44,16 @@ class _MatchingScreen extends State<MatchingScreen> {
   void subscribeToCharacteristic(BluetoothDevice device) {
     late int receivedValue;
     device.discoverServices().then((services) {
-      var service = services
-          .where((s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214"))
-          .first;
-      var requestCharacteristic = service.characteristics
-          .where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1215"))
-          .first;
-      responseCharacteristic = service.characteristics
-          .where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216"))
-          .first;
+      var service = services.where((s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214")).first;
+      var requestCharacteristic =
+          service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1215")).first;
+      responseCharacteristic =
+          service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216")).first;
 
       responseCharacteristic!.onValueReceived.listen((value) {
         if (!isStarted) {
-          receivedValue = (value[0] & 0xFF |
-              ((value[1] & 0xFF) << 8) |
-              ((value[2] & 0xFF) << 16) |
-              ((value[3] & 0xFF) << 24));
+          receivedValue =
+              (value[0] & 0xFF | ((value[1] & 0xFF) << 8) | ((value[2] & 0xFF) << 16) | ((value[3] & 0xFF) << 24));
           setState(() {
             isConnectedToBluetooth = true; // bluetooth connected
             currentValue = receivedValue.toDouble();
@@ -79,14 +68,16 @@ class _MatchingScreen extends State<MatchingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    int calculatedIncomingStrength =
-        selectedPlayer != null && selectedPlayer!.strength != 0
-            ? (((min(currentValue, selectedPlayer!.strength!.toDouble())) /
-                            selectedPlayer!.strength!.toDouble()) *
-                        (10 - 1) +
-                    1)
-                .round()
-            : 0;
+    int calculatedIncomingStrength = selectedPlayer != null && selectedPlayer!.strength != 0
+        ? (((min(currentValue, selectedPlayer!.strength!.toDouble())) / selectedPlayer!.strength!.toDouble()) *
+                    (10 - 1) +
+                1)
+            .round()
+        : 0;
+    //strengthQueue.add(calculatedIncomingStrength);
+    //if (strengthQueue.length > 10) {
+    //  strengthQueue.removeLast();
+    //}
     state = Provider.of<AppState>(context);
     Map<String, int>? shots = state.targetMap.cast<String, int>();
     //get the player list
@@ -117,9 +108,8 @@ class _MatchingScreen extends State<MatchingScreen> {
         if (isConnectedToBluetooth)
           Center(
             child: Container(
-              margin: const EdgeInsets.only(left: 12, right: 12, top: 20),
+              margin: const EdgeInsets.only(left: 12, right: 12, top: 10),
               child: Column(children: [
-                const SizedBox(height: 40),
                 const Align(
                   alignment: Alignment.topLeft,
                   child: Text(
@@ -140,8 +130,7 @@ class _MatchingScreen extends State<MatchingScreen> {
                   children: [
                     const Text(
                       'Player',
-                      style:
-                          TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(width: 10.0),
                     Container(
@@ -154,6 +143,7 @@ class _MatchingScreen extends State<MatchingScreen> {
                       child: DropdownButton<Person>(
                         value: selectedPlayer,
                         onChanged: (Person? newValue) {
+                          Person.writeToSensorNumberCharacteristic(state);
                           setState(() {
                             selectedPlayer = newValue;
                           });
@@ -175,8 +165,7 @@ class _MatchingScreen extends State<MatchingScreen> {
                   children: [
                     const Text(
                       'Shot',
-                      style:
-                          TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(width: 29.0),
                     Container(
@@ -218,13 +207,12 @@ class _MatchingScreen extends State<MatchingScreen> {
                       style: const TextStyle(fontSize: 20),
                     ),
                 ]),
-                const SizedBox(height: 80),
+                const SizedBox(height: 30),
                 SfLinearGauge(
                   minimum: 0,
                   maximum: 10,
                   markerPointers: [
-                    LinearShapePointer(
-                        value: shots[selectedShot]?.toDouble() ?? 0.0),
+                    LinearShapePointer(value: shots[selectedShot]?.toDouble() ?? 0.0),
                   ],
                   barPointers: [
                     LinearBarPointer(
@@ -236,30 +224,28 @@ class _MatchingScreen extends State<MatchingScreen> {
                     )
                   ],
                 ),
-                const SizedBox(height: 20.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const SizedBox(width: 10.0),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.go("/WelcomePage");
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.zero,
-                        ),
+                const SizedBox(height: 20),
+                /*Expanded(
+                  child: SfCartesianChart(
+                    primaryXAxis: const NumericAxis(
+                      minimum: 0,
+                      maximum: 10,
+                      interval: 1,
+                    ),
+                    primaryYAxis: const NumericAxis(
+                      minimum: 0,
+                      maximum: 10,
+                      interval: 1,
+                    ),
+                    series: <LineSeries<int, int>>[
+                      LineSeries<int, int>(
+                        dataSource: strengthQueue.toList(),
+                        xValueMapper: (int value, int index) => index,
+                        yValueMapper: (int value, int index) => value,
                       ),
-                      child: const Text(
-                        'Back',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
+                    ],
+                  ),
+                )*/
               ]),
             ),
           ),

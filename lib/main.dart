@@ -38,8 +38,7 @@ final _router = GoRouter(
     ),
     GoRoute(
       path: "/RacketSelectPage/:nextRoute",
-      builder: (context, state) =>
-          ConnectToSensor(state.pathParameters['nextRoute']!),
+      builder: (context, state) => ConnectToSensor(state.pathParameters['nextRoute']!),
     ),
     GoRoute(
       path: "/PlayerSelectPage",

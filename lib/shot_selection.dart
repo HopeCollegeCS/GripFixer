@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:grip_fixer/grip_target.dart';
+import 'package:grip_fixer/person.dart';
 import 'package:grip_fixer/session.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
@@ -33,6 +34,7 @@ Future<int> buttonAction(BuildContext context, String gripTarget) {
   var state = Provider.of<AppState>(context, listen: false);
 
   player_id = state.person!.player_id!;
+
   session_date = now!;
   shot_type = gripTarget;
 
@@ -73,19 +75,6 @@ class ShotSelection extends State<ShotSelectionPage> {
     } else {
       print('Failed to send characteristic');
     }
-  }
-
-  void writeToSensorNumberCharacteristic(AppState state) async {
-    final sensorNumberCharacteristic = state.sensorNumberCharacteristic;
-    int sensorNumber = 0;
-    if ((state.person?.hand == 'Right' && state.person?.forehandGrip == 'Continental') ||
-        (state.person?.hand == 'Left' && state.person?.forehandGrip == 'Semi-Western')) {
-      sensorNumber = 2;
-    } else if ((state.person?.hand == 'Right' && state.person?.forehandGrip == 'Semi-Western') ||
-        (state.person?.hand == 'Left' && state.person?.forehandGrip == 'Continental')) {
-      sensorNumber = 1;
-    }
-    await sensorNumberCharacteristic!.write([sensorNumber]);
   }
 
   @override
@@ -164,7 +153,7 @@ class ShotSelection extends State<ShotSelectionPage> {
                       writeToTargetGripPercentageCharacteristic(
                           appState, appState.targetMap.keys.toList()[selectedValue]);
                       writeToMaxGripStrengthCharacteristic(appState);
-                      writeToSensorNumberCharacteristic(appState);
+                      Person.writeToSensorNumberCharacteristic(appState);
                       context.go("/RecordingPage");
                     });
                   },
