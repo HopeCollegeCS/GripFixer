@@ -94,10 +94,15 @@ class _ConnectToSensor extends State<ConnectToSensor> {
               .where(
                   (s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1219"))
               .first;
+          var sensorNumberCharacteristic = service.characteristics
+              .where(
+                  (s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1220"))
+              .first;
           state.targetGripPercentageCharacteristic =
               targetGripPercentageCharacteristic;
           state.maxGripStrengthCharacteristic = maxGripStrengthCharacteristic;
           state.enableFeedbackCharacteristic = enableFeedbackCharacteristic;
+          state.sensorNumberCharacteristic = sensorNumberCharacteristic;
           completer.complete();
           isConnecting = false;
           // final subscription =

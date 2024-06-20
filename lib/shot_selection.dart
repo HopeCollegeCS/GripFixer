@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:grip_fixer/new_player_page.dart';
 import 'package:grip_fixer/grip_target.dart';
 import 'package:grip_fixer/session.dart';
 import 'package:grip_fixer/state.dart';
@@ -215,6 +214,7 @@ class ShotSelection extends State<ShotSelectionPage> {
                       writeToTargetGripPercentageCharacteristic(appState,
                           appState.targetMap.keys.toList()[selectedValue]);
                       writeToMaxGripStrengthCharacteristic(appState);
+                      writeToSensorNumberCharacteristic(appState);
                       context.push("/RecordingPage");
                     });
                   },
