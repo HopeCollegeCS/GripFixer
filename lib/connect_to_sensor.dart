@@ -52,9 +52,11 @@ class _ConnectToSensor extends State<ConnectToSensor> {
     );
 
     FlutterBluePlus.scanResults.listen((results) {
-      setState(() {
-        _discoveredDevices = results.map((result) => result.device).toList();
-      });
+      if (mounted) {
+        setState(() {
+          _discoveredDevices = results.map((result) => result.device).toList();
+        });
+      }
     }).onDone(() {
       print('Scan finished');
     });
@@ -103,7 +105,9 @@ class _ConnectToSensor extends State<ConnectToSensor> {
           state.maxGripStrengthCharacteristic = maxGripStrengthCharacteristic;
           state.enableFeedbackCharacteristic = enableFeedbackCharacteristic;
           state.sensorNumberCharacteristic = sensorNumberCharacteristic;
-          completer.complete();
+          if (!completer.isCompleted) {
+            completer.complete();
+          }
           isConnecting = false;
           // final subscription =
           //     responseCharacteristic.onValueReceived.listen((value) {
@@ -133,12 +137,15 @@ class _ConnectToSensor extends State<ConnectToSensor> {
 
   @override
   Widget build(BuildContext context) {
+    if (_selectedDevice == null &&
+        FlutterBluePlus.adapterState.first == BluetoothAdapterState.on) {
+    } else {}
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF5482ab),
         leading: IconButton(
           color: (const Color(0xFFFFFFFF)),
-          onPressed: () {
+          onPressed: () async {
             context.pop();
           },
           icon: const Icon(Icons.arrow_back),
@@ -191,7 +198,7 @@ class _ConnectToSensor extends State<ConnectToSensor> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child:
-                    Text('Select the sensor to connect to then click Connect'),
+                    Text('Select a sensor to connect to, then click Connect'),
               ),
             ),
             const SizedBox(height: 10.0),
@@ -232,6 +239,11 @@ class _ConnectToSensor extends State<ConnectToSensor> {
                             if (_selectedDevice != null) {
                               state.bluetoothDevice = _selectedDevice;
                               connectToDevice(_selectedDevice!);
+                            }
+                            if (_selectedDevice == null &&
+                                await FlutterBluePlus.adapterState.first ==
+                                    BluetoothAdapterState.on) {
+                              context.push("/${widget.nextRoute}");
                             }
                             await completer
                                 .future; //wait for the characteristic value to be received
