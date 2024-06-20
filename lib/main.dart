@@ -38,7 +38,8 @@ final _router = GoRouter(
     ),
     GoRoute(
       path: "/RacketSelectPage/:nextRoute",
-      builder: (context, state) => ConnectToSensor(state.pathParameters['nextRoute']!),
+      builder: (context, state) =>
+          ConnectToSensor(state.pathParameters['nextRoute']!),
     ),
     GoRoute(
       path: "/PlayerSelectPage",
@@ -84,27 +85,29 @@ final _router = GoRouter(
 );
 
 void createAndFillTargetsTable(var batch) {
-	batch.execute(
-		'CREATE TABLE targets(stroke STRING PRIMARY KEY, grip_strength INTEGER)',
-	);
-	batch.execute(
-		'insert into targets values ("Forehand Groundstroke", 5)',
-	);
-	batch.execute(
-		'insert into targets values ("Forehand Volley", 5)',
-	);
-	batch.execute(
-		'insert into targets values ("Overhand", 5)',
-	);
-	batch.execute(
-		'insert into targets values ("Serve", 5)',
-	);
-
+  batch.execute(
+    'CREATE TABLE targets(stroke STRING PRIMARY KEY, grip_strength INTEGER)',
+  );
+  batch.execute(
+    'insert into targets values ("Forehand Groundstroke", 5)',
+  );
+  batch.execute(
+    'insert into targets values ("Forehand Volley", 5)',
+  );
+  batch.execute(
+    'insert into targets values ("Overhand", 5)',
+  );
+  batch.execute(
+    'insert into targets values ("Serve", 5)',
+  );
 }
 
 void main() async {
   // database
   WidgetsFlutterBinding.ensureInitialized();
+
+  // deleteDatabase(join(await getDatabasesPath(), 'player_database.db'));
+
   // Open the database and store the reference.
   var database = await openDatabase(
     // Set the path to the database. Note: Using the `join` function from the
@@ -135,7 +138,7 @@ void main() async {
       for (int version = oldVersion + 1; version <= newVersion; version++) {
         switch (version) {
           case 2:
-	    createAndFillTargetsTable(batch);
+            createAndFillTargetsTable(batch);
             break;
         }
       }
@@ -145,8 +148,6 @@ void main() async {
     // path to perform database upgrades and downgrades.
     version: 2,
   );
-
-  //deleteDatabase(join(await getDatabasesPath(), 'player_database.db'));
 
   var state = AppState();
   var sqlLite = SqfliteClass(database: database);
