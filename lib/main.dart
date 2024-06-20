@@ -83,6 +83,25 @@ final _router = GoRouter(
   ],
 );
 
+void createAndFillTargetsTable(var batch) {
+	batch.execute(
+		'CREATE TABLE targets(stroke STRING PRIMARY KEY, grip_strength INTEGER)',
+	);
+	batch.execute(
+		'insert into targets values ("Forehand Groundstroke", 5)',
+	);
+	batch.execute(
+		'insert into targets values ("Forehand Volley", 5)',
+	);
+	batch.execute(
+		'insert into targets values ("Overhand", 5)',
+	);
+	batch.execute(
+		'insert into targets values ("Serve", 5)',
+	);
+
+}
+
 void main() async {
   // database
   WidgetsFlutterBinding.ensureInitialized();
@@ -108,6 +127,7 @@ void main() async {
       batch.execute(
         'CREATE TABLE session_measurements(session_id INTEGER PRIMARY KEY, timestamp INTEGER, value INTEGER)',
       );
+      createAndFillTargetsTable(batch);
       await batch.commit();
     },
     onUpgrade: (db, oldVersion, newVersion) async {
@@ -115,21 +135,7 @@ void main() async {
       for (int version = oldVersion + 1; version <= newVersion; version++) {
         switch (version) {
           case 2:
-            batch.execute(
-              'CREATE TABLE targets(stroke STRING PRIMARY KEY, grip_strength INTEGER)',
-            );
-            batch.execute(
-              'insert into targets values ("Forehand Groundstroke", 5)',
-            );
-            batch.execute(
-              'insert into targets values ("Forehand Volley", 5)',
-            );
-            batch.execute(
-              'insert into targets values ("Overhand", 5)',
-            );
-            batch.execute(
-              'insert into targets values ("Serve", 5)',
-            );
+	    createAndFillTargetsTable(batch);
             break;
         }
       }
@@ -140,7 +146,7 @@ void main() async {
     version: 2,
   );
 
-  // deleteDatabase(join(await getDatabasesPath(), 'player_database.db'));
+  //deleteDatabase(join(await getDatabasesPath(), 'player_database.db'));
 
   var state = AppState();
   var sqlLite = SqfliteClass(database: database);

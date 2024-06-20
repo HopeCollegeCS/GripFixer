@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -22,7 +24,32 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>
+	GripFixer uses Bluetooth to connect to the Arduino sensor attached to a tennis racket to record the amount of force you apply while swinging the racket.
+	</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>
+	GripFixer uses Bluetooth to connect to the Arduino sensor attached to a tennis racket to record the amount of force you apply while swinging the racket.
+	</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>
+	Your microphone is used while recording a practice session in order to hear the ball hitting the racket and to hear the coach's instruction.
+	</string>
+	<key>NSCameraUsageDescription</key>
+	<string>
+	Your camera is used to record video of practice sessions so you can identify common play situations where you exceed the recommended grip strength.
+	</string>
+
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>
+	GripFixer does not use your location information in anyway.  However, it does utilize 3rd party libraries that do utilize location services.
+	</string>
 	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -41,9 +68,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
 </dict>
 </plist>

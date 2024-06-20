@@ -8,7 +8,7 @@
 PRODUCT_NAME = grip_fixer
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.example.gripFixer
+PRODUCT_BUNDLE_IDENTIFIER = institute.hopesoftware.gripfixer
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2024 com.example. All rights reserved.
