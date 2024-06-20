@@ -77,13 +77,58 @@ class ShotSelection extends State<ShotSelectionPage> {
     }
   }
 
+  void writeToSensorNumberCharacteristic(AppState state) async {
+    final sensorNumberCharacteristic = state.sensorNumberCharacteristic;
+    int sensorNumber = 0;
+    if ((state.person?.hand == 'Right' && state.person?.forehandGrip == 'Continental') ||
+        (state.person?.hand == 'Left' && state.person?.forehandGrip == 'Semi-Western')) {
+      sensorNumber = 2;
+    } else if ((state.person?.hand == 'Right' && state.person?.forehandGrip == 'Semi-Western') ||
+        (state.person?.hand == 'Left' && state.person?.forehandGrip == 'Continental')) {
+      sensorNumber = 1;
+    }
+    await sensorNumberCharacteristic!.write([sensorNumber]);
+  }
+
   @override
   Widget build(BuildContext context) {
     var appState = Provider.of<AppState>(context, listen: false);
     //String selectedValue = appState.targetMap.keys.first;
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF5482ab),
+        leading: IconButton(
+          color: (const Color(0xFFFFFFFF)),
+          onPressed: () {
+            context.pop();
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
+        title: SizedBox(
+          child: Row(
+            children: [
+              const Text('Grip Strength Tool'),
+              const SizedBox(width: 10),
+              // const Icon(
+              //   Icons.sports_tennis,
+              // ),
+              const SizedBox(width: 10),
+              Builder(
+                builder: (context) {
+                  return IconButton(
+                    icon: const Icon(Icons.sports_tennis),
+                    color: (const Color(0xFFFFFFFF)),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -153,8 +198,8 @@ class ShotSelection extends State<ShotSelectionPage> {
                       writeToTargetGripPercentageCharacteristic(
                           appState, appState.targetMap.keys.toList()[selectedValue]);
                       writeToMaxGripStrengthCharacteristic(appState);
-                      Person.writeToSensorNumberCharacteristic(appState);
-                      context.go("/RecordingPage");
+                      writeToSensorNumberCharacteristic(appState);
+                      context.push("/RecordingPage");
                     });
                   },
                   style: ElevatedButton.styleFrom(
@@ -176,7 +221,7 @@ class ShotSelection extends State<ShotSelectionPage> {
                 const SizedBox(width: 20.0),
                 ElevatedButton(
                   onPressed: () {
-                    context.go("/PlayerSelectPage");
+                    context.push("/PlayerSelectPage");
                   },
                   style: ElevatedButton.styleFrom(
                     shape: const RoundedRectangleBorder(
@@ -209,7 +254,7 @@ class ShotSelection extends State<ShotSelectionPage> {
             ListTile(
               title: const Text('Settings'),
               onTap: () {
-                context.go("/Settings");
+                context.push("/Settings");
               },
             ),
           ],

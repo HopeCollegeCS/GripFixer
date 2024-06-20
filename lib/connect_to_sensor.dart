@@ -31,7 +31,8 @@ class _ConnectToSensor extends State<ConnectToSensor> {
 
   // checks if the Bluetooth adapter is on
   Future<void> initBluetoothState() async {
-    bool isOn = await FlutterBluePlus.adapterState.first == BluetoothAdapterState.on;
+    bool isOn =
+        await FlutterBluePlus.adapterState.first == BluetoothAdapterState.on;
     if (!isOn) {
       await FlutterBluePlus.turnOn();
     }
@@ -69,20 +70,36 @@ class _ConnectToSensor extends State<ConnectToSensor> {
         device.discoverServices(timeout: 30).then((services) {
           // Discover services and characteristics
           //List<BluetoothService> services = await device.discoverServices();
-          var service = services.where((s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214")).first;
-          var requestCharacteristic =
-              service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1215")).first;
-          var responseCharacteristic =
-              service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216")).first;
-          var maxGripStrengthCharacteristic =
-              service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1217")).first;
-          var targetGripPercentageCharacteristic =
-              service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1218")).first;
-          var enableFeedbackCharacteristic =
-              service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1219")).first;
-          var sensorNumberCharacteristic =
-              service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1220")).first;
-          state.targetGripPercentageCharacteristic = targetGripPercentageCharacteristic;
+          var service = services
+              .where(
+                  (s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214"))
+              .first;
+          var requestCharacteristic = service.characteristics
+              .where(
+                  (s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1215"))
+              .first;
+          var responseCharacteristic = service.characteristics
+              .where(
+                  (s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216"))
+              .first;
+          var maxGripStrengthCharacteristic = service.characteristics
+              .where(
+                  (s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1217"))
+              .first;
+          var targetGripPercentageCharacteristic = service.characteristics
+              .where(
+                  (s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1218"))
+              .first;
+          var enableFeedbackCharacteristic = service.characteristics
+              .where(
+                  (s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1219"))
+              .first;
+          var sensorNumberCharacteristic = service.characteristics
+              .where(
+                  (s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1220"))
+              .first;
+          state.targetGripPercentageCharacteristic =
+              targetGripPercentageCharacteristic;
           state.maxGripStrengthCharacteristic = maxGripStrengthCharacteristic;
           state.enableFeedbackCharacteristic = enableFeedbackCharacteristic;
           state.sensorNumberCharacteristic = sensorNumberCharacteristic;
@@ -117,26 +134,64 @@ class _ConnectToSensor extends State<ConnectToSensor> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF5482ab),
+        leading: IconButton(
+          color: (const Color(0xFFFFFFFF)),
+          onPressed: () {
+            context.pop();
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
+        title: SizedBox(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              const SizedBox(width: 10),
+              const Text('Grip Strength Tool',
+                  style: TextStyle(
+                    color: Color(0xFFFFFFFF),
+                  )),
+              // const SizedBox(width: 10),
+              // const Icon(
+              //   Icons.sports_tennis,
+              // ),
+              // const SizedBox(width: 10),
+              Builder(
+                builder: (context) {
+                  return IconButton(
+                    icon: const Icon(Icons.sports_tennis),
+                    color: (const Color(0xFFFFFFFF)),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              'Grip Strength Tool',
-              style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20.0),
-            const Icon(
-              Icons.sports_tennis,
-              size: 130,
-            ),
+            // const Text(
+            //   'Grip Strength Tool',
+            //   style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
+            // ),
+            // const SizedBox(height: 20.0),
+            // const Icon(
+            //   Icons.sports_tennis,
+            //   size: 130,
+            // ),
             const SizedBox(height: 20.0),
             const Padding(
               padding: EdgeInsets.only(left: 16.0),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Text('Select the sensor to connect to then click Connect'),
+                child:
+                    Text('Select the sensor to connect to then click Connect'),
               ),
             ),
             const SizedBox(height: 10.0),
@@ -167,7 +222,8 @@ class _ConnectToSensor extends State<ConnectToSensor> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Stack(
-                    alignment: Alignment.center, // Center the CircularProgressIndicator
+                    alignment: Alignment
+                        .center, // Center the CircularProgressIndicator
                     children: [
                       Align(
                         alignment: Alignment.centerLeft,
@@ -177,8 +233,9 @@ class _ConnectToSensor extends State<ConnectToSensor> {
                               state.bluetoothDevice = _selectedDevice;
                               connectToDevice(_selectedDevice!);
                             }
-                            await completer.future; //wait for the characteristic value to be received
-                            context.go("/${widget.nextRoute}");
+                            await completer
+                                .future; //wait for the characteristic value to be received
+                            context.push("/${widget.nextRoute}");
                           },
                           style: ElevatedButton.styleFrom(
                             shape: const RoundedRectangleBorder(
@@ -205,7 +262,7 @@ class _ConnectToSensor extends State<ConnectToSensor> {
                     alignment: Alignment.centerLeft,
                     child: ElevatedButton(
                       onPressed: () {
-                        context.go("/WelcomePage");
+                        context.push("/WelcomePage");
                       },
                       style: ElevatedButton.styleFrom(
                         shape: const RoundedRectangleBorder(
@@ -240,7 +297,7 @@ class _ConnectToSensor extends State<ConnectToSensor> {
             ListTile(
               title: const Text('Settings'),
               onTap: () {
-                context.go("/Settings");
+                context.push("/Settings");
               },
             ),
           ],

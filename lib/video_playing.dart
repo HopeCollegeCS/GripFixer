@@ -57,7 +57,7 @@ class _VideoPageState extends State<VideoPage> {
                   "${directory.path}/${state.session?.session_id}.mp4");
               //await File(widget.filePath).delete();
               //navigate to next page
-              context.go("/WelcomePage");
+              context.push("/WelcomePage");
             },
           )
         ],

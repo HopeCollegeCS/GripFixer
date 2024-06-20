@@ -28,7 +28,39 @@ class RecordingScreenState extends State<RecordingScreen> {
   Widget build(BuildContext context) {
     state = Provider.of<AppState>(context, listen: false);
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF5482ab),
+        leading: IconButton(
+          color: (const Color(0xFFFFFFFF)),
+          onPressed: () {
+            context.pop();
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
+        title: SizedBox(
+          child: Row(
+            children: [
+              const Text('Grip Strength Tool'),
+              const SizedBox(width: 10),
+              // const Icon(
+              //   Icons.sports_tennis,
+              // ),
+              const SizedBox(width: 10),
+              Builder(
+                builder: (context) {
+                  return IconButton(
+                    icon: const Icon(Icons.sports_tennis),
+                    color: (const Color(0xFFFFFFFF)),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
       body: Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           const Align(
@@ -96,7 +128,7 @@ class RecordingScreenState extends State<RecordingScreen> {
                 await enableFeedbackCharacteristic?.write([enableFeedback ? 1 : 0]); // 1 for true, 0 for false
                 state.enableFeedback = enableFeedback;
                 print('enable feedback $enableFeedback');
-                context.go("/VideoRecording");
+                context.push("/VideoRecording");
               },
               style: ElevatedButton.styleFrom(
                 shape: const RoundedRectangleBorder(
@@ -115,7 +147,7 @@ class RecordingScreenState extends State<RecordingScreen> {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  context.go("/ShotSelectionPage");
+                  context.push("/ShotSelectionPage");
                 },
                 style: ElevatedButton.styleFrom(
                   shape: const RoundedRectangleBorder(
@@ -147,7 +179,7 @@ class RecordingScreenState extends State<RecordingScreen> {
             ListTile(
               title: const Text('Settings'),
               onTap: () {
-                context.go("/Settings");
+                context.push("/Settings");
               },
             ),
           ],

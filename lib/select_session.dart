@@ -39,7 +39,39 @@ class _SelectSession extends State<SelectSession> {
     }
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF5482ab),
+        leading: IconButton(
+          color: (const Color(0xFFFFFFFF)),
+          onPressed: () {
+            context.pop();
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
+        title: SizedBox(
+          child: Row(
+            children: [
+              const Text('Grip Strength Tool'),
+              const SizedBox(width: 10),
+              // const Icon(
+              //   Icons.sports_tennis,
+              // ),
+              const SizedBox(width: 10),
+              Builder(
+                builder: (context) {
+                  return IconButton(
+                    icon: const Icon(Icons.sports_tennis),
+                    color: (const Color(0xFFFFFFFF)),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -117,7 +149,7 @@ class _SelectSession extends State<SelectSession> {
                 const SizedBox(width: 20),
                 ElevatedButton(
                   onPressed: () {
-                    context.go("/AnalyzePage");
+                    context.push("/AnalyzePage");
                     var state = Provider.of<AppState>(context, listen: false);
                     int value = selectedValue!;
                     state.session = sessions?[value];
@@ -154,7 +186,7 @@ class _SelectSession extends State<SelectSession> {
             ListTile(
               title: const Text('Settings'),
               onTap: () {
-                context.go("/Settings");
+                context.push("/Settings");
               },
             ),
           ],

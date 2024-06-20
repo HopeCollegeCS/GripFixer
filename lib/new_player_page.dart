@@ -44,7 +44,39 @@ class _NewPlayer extends State<NewPlayerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF5482ab),
+        leading: IconButton(
+          color: (const Color(0xFFFFFFFF)),
+          onPressed: () {
+            context.pop();
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
+        title: SizedBox(
+          child: Row(
+            children: [
+              const Text('Grip Strength Tool'),
+              const SizedBox(width: 10),
+              // const Icon(
+              //   Icons.sports_tennis,
+              // ),
+              const SizedBox(width: 10),
+              Builder(
+                builder: (context) {
+                  return IconButton(
+                    icon: const Icon(Icons.sports_tennis),
+                    color: (const Color(0xFFFFFFFF)),
+                    onPressed: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -284,7 +316,7 @@ class _NewPlayer extends State<NewPlayerPage> {
                       var appState =
                           Provider.of<AppState>(context, listen: false);
                       appState.person?.player_id = newPlayerId;
-                      context.go("/MeasurePage");
+                      context.push("/MeasurePage");
                     });
                   },
                   style: ElevatedButton.styleFrom(
@@ -307,7 +339,7 @@ class _NewPlayer extends State<NewPlayerPage> {
                 const SizedBox(width: 20.0),
                 ElevatedButton(
                   onPressed: () {
-                    context.go("/PlayerSelectPage");
+                    context.push("/PlayerSelectPage");
                   },
                   style: ElevatedButton.styleFrom(
                     shape: const RoundedRectangleBorder(
@@ -338,7 +370,7 @@ class _NewPlayer extends State<NewPlayerPage> {
             ListTile(
               title: const Text('Settings'),
               onTap: () {
-                context.go("/Settings");
+                context.push("/Settings");
               },
             ),
           ],
