@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:grip_fixer/gripFixerDrawer.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
 
@@ -242,25 +243,7 @@ class _ConnectToSensor extends State<ConnectToSensor> {
             ],
           ),
         ),
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              const DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                ),
-                child: Text('Drawer Header'),
-              ),
-              ListTile(
-                title: const Text('Settings'),
-                onTap: () {
-                  context.push("/Settings");
-                },
-              ),
-            ],
-          ),
-        ),
+        drawer: const GripFixerDrawer(),
       );
     } else {
       return Scaffold(
@@ -282,11 +265,6 @@ class _ConnectToSensor extends State<ConnectToSensor> {
                     style: TextStyle(
                       color: Color(0xFFFFFFFF),
                     )),
-                // const SizedBox(width: 10),
-                // const Icon(
-                //   Icons.sports_tennis,
-                // ),
-                // const SizedBox(width: 10),
                 Builder(
                   builder: (context) {
                     return IconButton(
@@ -306,15 +284,6 @@ class _ConnectToSensor extends State<ConnectToSensor> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // const Text(
-              //   'Grip Strength Tool',
-              //   style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
-              // ),
-              // const SizedBox(height: 20.0),
-              // const Icon(
-              //   Icons.sports_tennis,
-              //   size: 130,
-              // ),
               const SizedBox(height: 20.0),
               const Padding(
                 padding: EdgeInsets.only(left: 16.0),
@@ -415,167 +384,8 @@ class _ConnectToSensor extends State<ConnectToSensor> {
             ],
           ),
         ),
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              const DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                ),
-                child: Text('Drawer Header'),
-              ),
-              ListTile(
-                title: const Text('Settings'),
-                onTap: () {
-                  context.push("/Settings");
-                },
-              ),
-            ],
-          ),
-        ),
+        drawer: const GripFixerDrawer(),
       );
     }
-    if (_selectedDevice == null && FlutterBluePlus.adapterState.first == BluetoothAdapterState.on) {
-    } else {}
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF5482ab),
-        centerTitle: true,
-        leading: IconButton(
-          color: (const Color(0xFFFFFFFF)),
-          onPressed: () async {
-            context.pop();
-          },
-          icon: const Icon(Icons.arrow_back),
-        ),
-        title: SizedBox(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              const SizedBox(width: 24),
-              const Text('Grip Strength Tool',
-                  style: TextStyle(
-                    color: Color(0xFFFFFFFF),
-                  )),
-              const SizedBox(width: 45),
-              Builder(
-                builder: (context) {
-                  return IconButton(
-                    icon: const Icon(Icons.sports_tennis),
-                    color: (const Color(0xFFFFFFFF)),
-                    onPressed: () {
-                      Scaffold.of(context).openDrawer();
-                    },
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const SizedBox(height: 100.0),
-            const Padding(
-              padding: EdgeInsets.only(left: 16.0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text('Available sensors:', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
-              ),
-            ),
-            const SizedBox(height: 6),
-            const Padding(
-              padding: EdgeInsets.only(left: 16.0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text('Select a sensor, then click Connect', style: TextStyle(fontSize: 16)),
-              ),
-            ),
-            const SizedBox(height: 10.0),
-            // AVAILABLE SENSORS GO HERE
-            ...(_discoveredDevices.map((device) => ListTile(
-                title: Text(device.platformName, style: const TextStyle(fontSize: 16)),
-                leading: Radio<BluetoothDevice>(
-                  value: device,
-                  groupValue: _selectedDevice,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedDevice = value;
-                    });
-                  },
-                )))),
-            // END OF AVAILABLE SENSORS
-            const SizedBox(height: 10.0),
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Stack(
-                    alignment: Alignment.center, // Center the CircularProgressIndicator
-                    children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            if (_selectedDevice != null) {
-                              state.bluetoothDevice = _selectedDevice;
-                              connectToDevice(_selectedDevice!);
-                            }
-                            if (_selectedDevice == null &&
-                                await FlutterBluePlus.adapterState.first == BluetoothAdapterState.on) {
-                              context.push("/${widget.nextRoute}");
-                            }
-                            await completer.future; //wait for the characteristic value to be received
-                            context.push("/${widget.nextRoute}");
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF5482ab),
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.zero,
-                            ),
-                          ),
-                          child: const Text(
-                            'Connect',
-                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
-                          ),
-                        ),
-                      ),
-                      if (isConnecting)
-                        const Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 10.0),
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text('Drawer Header'),
-            ),
-            ListTile(
-              title: const Text('Settings'),
-              onTap: () {
-                context.push("/Settings");
-              },
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

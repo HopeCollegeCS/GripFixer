@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:grip_fixer/gripFixerDrawer.dart';
 import 'package:grip_fixer/grip_target.dart';
 import 'package:grip_fixer/session.dart';
 import 'package:grip_fixer/state.dart';
@@ -133,9 +134,7 @@ class TargetShotSelection extends State<TargetShotSelectionPage> {
                         SizedBox(
                           width: 3,
                           child: Radio(
-                            value: appState.targetMap.keys
-                                .toList()
-                                .indexOf(target),
+                            value: appState.targetMap.keys.toList().indexOf(target),
                             groupValue: selectedValue,
                             onChanged: (value) {
                               setState(() {
@@ -158,9 +157,7 @@ class TargetShotSelection extends State<TargetShotSelectionPage> {
                 ElevatedButton(
                   onPressed: () {
                     //use SQFlite class to insert new player, async so call .then and context.go goes inside
-                    buttonAction(context,
-                            appState.targetMap.keys.toList()[selectedValue])
-                        .then((newSessionId) {
+                    buttonAction(context, appState.targetMap.keys.toList()[selectedValue]).then((newSessionId) {
                       appState.session?.session_id = newSessionId;
                       context.push("/MatchingPage");
                     });
@@ -172,8 +169,7 @@ class TargetShotSelection extends State<TargetShotSelectionPage> {
                   ),
                   child: const Text(
                     'Let\'s Hit!',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.black),
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                   ),
                 )
               ],
@@ -181,25 +177,7 @@ class TargetShotSelection extends State<TargetShotSelectionPage> {
           ],
         ),
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text('Drawer Header'),
-            ),
-            ListTile(
-              title: const Text('Settings'),
-              onTap: () {
-                context.push("/Settings");
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: const GripFixerDrawer(),
     );
   }
 }
