@@ -388,4 +388,4 @@ class _ConnectToSensor extends State<ConnectToSensor> {
       );
     }
   }
-}
+} // end
