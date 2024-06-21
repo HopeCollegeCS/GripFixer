@@ -15,14 +15,14 @@ class ConnectToSensor extends StatefulWidget {
   State<ConnectToSensor> createState() => _ConnectToSensor();
 }
 
-bool firstTime = false;
-
 class _ConnectToSensor extends State<ConnectToSensor> {
   BluetoothDevice? _selectedDevice;
   List<BluetoothDevice> _discoveredDevices = [];
   AppState state = AppState();
   final Completer<void> completer = Completer();
   bool isConnecting = false;
+  late bool firstTime = false;
+
   //initializes the Bluetooth state
   @override
   void initState() {
@@ -35,8 +35,8 @@ class _ConnectToSensor extends State<ConnectToSensor> {
   Future<void> initBluetoothState() async {
     bool isOn =
         await FlutterBluePlus.adapterState.first == BluetoothAdapterState.on;
-
     if (!isOn) {
+      firstTime = true;
       await FlutterBluePlus.turnOn();
     }
     //sets the log level for the flutter_blue_plus package and checks if Bluetooth is supported on the device
@@ -59,8 +59,6 @@ class _ConnectToSensor extends State<ConnectToSensor> {
         setState(() {
           _discoveredDevices = results.map((result) => result.device).toList();
         });
-      } else {
-        firstTime = true;
       }
     }).onDone(() {
       print('Scan finished');
@@ -143,7 +141,7 @@ class _ConnectToSensor extends State<ConnectToSensor> {
 //test later bc of arduino overheating
   @override
   Widget build(BuildContext context) {
-    if (state.bluetoothDevice == null) {
+    if (!firstTime) {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: const Color(0xFF5482ab),
