@@ -20,6 +20,7 @@ class _ConnectToSensor extends State<ConnectToSensor> {
   AppState state = AppState();
   final Completer<void> completer = Completer();
   bool isConnecting = false;
+  late bool firstTime = false;
 
   //initializes the Bluetooth state
   @override
@@ -34,6 +35,7 @@ class _ConnectToSensor extends State<ConnectToSensor> {
     bool isOn =
         await FlutterBluePlus.adapterState.first == BluetoothAdapterState.on;
     if (!isOn) {
+      firstTime = true;
       await FlutterBluePlus.turnOn();
     }
     //sets the log level for the flutter_blue_plus package and checks if Bluetooth is supported on the device
@@ -135,186 +137,362 @@ class _ConnectToSensor extends State<ConnectToSensor> {
     }
   }
 
+//test later bc of arduino overheating
   @override
   Widget build(BuildContext context) {
-    if (_selectedDevice == null &&
-        FlutterBluePlus.adapterState.first == BluetoothAdapterState.on) {
-    } else {}
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF5482ab),
-        leading: IconButton(
-          color: (const Color(0xFFFFFFFF)),
-          onPressed: () async {
-            context.pop();
-          },
-          icon: const Icon(Icons.arrow_back),
+    if (!firstTime) {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color(0xFF5482ab),
+          leading: IconButton(
+            color: (const Color(0xFFFFFFFF)),
+            onPressed: () async {
+              context.pop();
+            },
+            icon: const Icon(Icons.arrow_back),
+          ),
+          title: SizedBox(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                const SizedBox(width: 10),
+                const Text('Grip Strength Tool',
+                    style: TextStyle(
+                      color: Color(0xFFFFFFFF),
+                    )),
+                // const SizedBox(width: 10),
+                // const Icon(
+                //   Icons.sports_tennis,
+                // ),
+                // const SizedBox(width: 10),
+                Builder(
+                  builder: (context) {
+                    return IconButton(
+                      icon: const Icon(Icons.sports_tennis),
+                      color: (const Color(0xFFFFFFFF)),
+                      onPressed: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
         ),
-        title: SizedBox(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(width: 10),
-              const Text('Grip Strength Tool',
-                  style: TextStyle(
-                    color: Color(0xFFFFFFFF),
-                  )),
-              // const SizedBox(width: 10),
+              // const Text(
+              //   'Grip Strength Tool',
+              //   style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
+              // ),
+              // const SizedBox(height: 20.0),
               // const Icon(
               //   Icons.sports_tennis,
+              //   size: 130,
               // ),
-              // const SizedBox(width: 10),
-              Builder(
-                builder: (context) {
-                  return IconButton(
-                    icon: const Icon(Icons.sports_tennis),
-                    color: (const Color(0xFFFFFFFF)),
-                    onPressed: () {
-                      Scaffold.of(context).openDrawer();
+              const SizedBox(height: 20.0),
+              const Padding(
+                padding: EdgeInsets.only(left: 16.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child:
+                      Text('Select a sensor to connect to, then click Connect'),
+                ),
+              ),
+              const SizedBox(height: 10.0),
+              const Padding(
+                padding: EdgeInsets.only(left: 16.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text('Available sensors'),
+                ),
+              ),
+              // AVAILABLE SENSORS GO HERE
+              ...(_discoveredDevices.map((device) => ListTile(
+                  title: Text(device.platformName),
+                  leading: Radio<BluetoothDevice>(
+                    value: device,
+                    groupValue: _selectedDevice,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedDevice = value;
+                      });
                     },
-                  );
+                  )))),
+              // END OF AVAILABLE SENSORS
+              const SizedBox(height: 10.0),
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Stack(
+                      alignment: Alignment
+                          .center, // Center the CircularProgressIndicator
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              if (_selectedDevice != null) {
+                                state.bluetoothDevice = _selectedDevice;
+                                connectToDevice(_selectedDevice!);
+                              }
+                              if (_selectedDevice == null &&
+                                  await FlutterBluePlus.adapterState.first ==
+                                      BluetoothAdapterState.on) {
+                                context.push("/${widget.nextRoute}");
+                              }
+                              await completer
+                                  .future; //wait for the characteristic value to be received
+                              context.push("/${widget.nextRoute}");
+                            },
+                            style: ElevatedButton.styleFrom(
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.zero,
+                              ),
+                            ),
+                            child: const Text(
+                              'Connect',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ),
+                        if (isConnecting)
+                          const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 10.0),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          context.push("/WelcomePage");
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.zero,
+                          ),
+                        ),
+                        child: const Text(
+                          'Back',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              const DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                ),
+                child: Text('Drawer Header'),
+              ),
+              ListTile(
+                title: const Text('Settings'),
+                onTap: () {
+                  context.push("/Settings");
                 },
               ),
             ],
           ),
         ),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // const Text(
-            //   'Grip Strength Tool',
-            //   style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
-            // ),
-            // const SizedBox(height: 20.0),
-            // const Icon(
-            //   Icons.sports_tennis,
-            //   size: 130,
-            // ),
-            const SizedBox(height: 20.0),
-            const Padding(
-              padding: EdgeInsets.only(left: 16.0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child:
-                    Text('Select a sensor to connect to, then click Connect'),
-              ),
-            ),
-            const SizedBox(height: 10.0),
-            const Padding(
-              padding: EdgeInsets.only(left: 16.0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text('Available sensors'),
-              ),
-            ),
-            // AVAILABLE SENSORS GO HERE
-            ...(_discoveredDevices.map((device) => ListTile(
-                title: Text(device.platformName),
-                leading: Radio<BluetoothDevice>(
-                  value: device,
-                  groupValue: _selectedDevice,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedDevice = value;
-                    });
-                  },
-                )))),
-            // END OF AVAILABLE SENSORS
-            const SizedBox(height: 10.0),
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Stack(
-                    alignment: Alignment
-                        .center, // Center the CircularProgressIndicator
-                    children: [
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            if (_selectedDevice != null) {
-                              state.bluetoothDevice = _selectedDevice;
-                              connectToDevice(_selectedDevice!);
-                            }
-                            if (_selectedDevice == null &&
-                                await FlutterBluePlus.adapterState.first ==
-                                    BluetoothAdapterState.on) {
-                              context.push("/${widget.nextRoute}");
-                            }
-                            await completer
-                                .future; //wait for the characteristic value to be received
-                            context.push("/${widget.nextRoute}");
-                          },
-                          style: ElevatedButton.styleFrom(
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.zero,
-                            ),
-                          ),
-                          child: const Text(
-                            'Connect',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                      ),
-                      if (isConnecting)
-                        const Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 10.0),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: ElevatedButton(
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color(0xFF5482ab),
+          leading: IconButton(
+            color: (const Color(0xFFFFFFFF)),
+            onPressed: () async {
+              context.pop();
+            },
+            icon: const Icon(Icons.arrow_back),
+          ),
+          title: SizedBox(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                const SizedBox(width: 10),
+                const Text('Grip Strength Tool',
+                    style: TextStyle(
+                      color: Color(0xFFFFFFFF),
+                    )),
+                // const SizedBox(width: 10),
+                // const Icon(
+                //   Icons.sports_tennis,
+                // ),
+                // const SizedBox(width: 10),
+                Builder(
+                  builder: (context) {
+                    return IconButton(
+                      icon: const Icon(Icons.sports_tennis),
+                      color: (const Color(0xFFFFFFFF)),
                       onPressed: () {
-                        context.push("/WelcomePage");
+                        Scaffold.of(context).openDrawer();
                       },
-                      style: ElevatedButton.styleFrom(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.zero,
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // const Text(
+              //   'Grip Strength Tool',
+              //   style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
+              // ),
+              // const SizedBox(height: 20.0),
+              // const Icon(
+              //   Icons.sports_tennis,
+              //   size: 130,
+              // ),
+              const SizedBox(height: 20.0),
+              const Padding(
+                padding: EdgeInsets.only(left: 16.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text('You have already connected to a sensor'),
+                ),
+              ),
+              const SizedBox(height: 10.0),
+              const Padding(
+                padding: EdgeInsets.only(left: 16.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text('Available sensors'),
+                ),
+              ),
+              // AVAILABLE SENSORS GO HERE
+              ...(_discoveredDevices.map((device) => ListTile(
+                  title: Text(device.platformName),
+                  leading: Radio<BluetoothDevice>(
+                    value: device,
+                    groupValue: _selectedDevice,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedDevice = value;
+                      });
+                    },
+                  )))),
+              // END OF AVAILABLE SENSORS
+              const SizedBox(height: 10.0),
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Stack(
+                      alignment: Alignment
+                          .center, // Center the CircularProgressIndicator
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              if (_selectedDevice != null) {
+                                state.bluetoothDevice = _selectedDevice;
+                                connectToDevice(_selectedDevice!);
+                              }
+                              if (_selectedDevice == null &&
+                                  await FlutterBluePlus.adapterState.first ==
+                                      BluetoothAdapterState.on) {
+                                context.push("/${widget.nextRoute}");
+                              }
+                              await completer
+                                  .future; //wait for the characteristic value to be received
+                              context.push("/${widget.nextRoute}");
+                            },
+                            style: ElevatedButton.styleFrom(
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.zero,
+                              ),
+                            ),
+                            child: const Text(
+                              'Connect',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                      child: const Text(
-                        'Back',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                        if (isConnecting)
+                          const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 10.0),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          context.push("/WelcomePage");
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.zero,
+                          ),
+                        ),
+                        child: const Text(
+                          'Back',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            )
-          ],
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              const DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                ),
+                child: Text('Drawer Header'),
               ),
-              child: Text('Drawer Header'),
-            ),
-            ListTile(
-              title: const Text('Settings'),
-              onTap: () {
-                context.push("/Settings");
-              },
-            ),
-          ],
+              ListTile(
+                title: const Text('Settings'),
+                onTap: () {
+                  context.push("/Settings");
+                },
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 }
