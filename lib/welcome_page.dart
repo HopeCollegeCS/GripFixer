@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:grip_fixer/gripFixerDrawer.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -167,25 +168,7 @@ class _WelcomePage extends State<WelcomePage> {
           ],
         ),
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text('Drawer Header'),
-            ),
-            ListTile(
-              title: const Text('Settings'),
-              onTap: () {
-                context.push("/Settings");
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: const GripFixerDrawer(),
     );
   }
 }

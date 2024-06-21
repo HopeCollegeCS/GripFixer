@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:grip_fixer/gripFixerDrawer.dart';
 import 'package:grip_fixer/grip_target.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
@@ -228,8 +229,7 @@ class _SettingsPage extends State<SettingsPage> {
                   appState.sqfl.grip_strength_targets().then((targets) {
                     print("Targets: ");
                     for (Target target in targets) {
-                      print(
-                          "Stroke: ${target.stroke}: ${target.grip_strength}");
+                      print("Stroke: ${target.stroke}: ${target.grip_strength}");
                     }
                     context.push("/SelectSession");
                   });
@@ -242,32 +242,13 @@ class _SettingsPage extends State<SettingsPage> {
               ),
               child: const Text(
                 'Measure Grip Strength',
-                style:
-                    TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
               ),
             )
           ],
         ),
       ])),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text('Drawer Header'),
-            ),
-            ListTile(
-              title: const Text('Settings'),
-              onTap: () {
-                context.push("/Settings");
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: const GripFixerDrawer(),
     );
   }
 }

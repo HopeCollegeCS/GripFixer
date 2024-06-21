@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:go_router/go_router.dart';
+import 'package:grip_fixer/gripFixerDrawer.dart';
 import 'package:grip_fixer/person.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
@@ -315,25 +316,7 @@ class _MatchingScreen extends State<MatchingScreen> {
             ),
           ),
       ]),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text('Drawer Header'),
-            ),
-            ListTile(
-              title: const Text('Settings'),
-              onTap: () {
-                context.push("/Settings");
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: const GripFixerDrawer(),
     );
   }
 
