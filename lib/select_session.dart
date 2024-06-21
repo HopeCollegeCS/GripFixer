@@ -37,7 +37,6 @@ class _SelectSession extends State<SelectSession> {
         });
       });
     }
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF5482ab),
@@ -50,13 +49,14 @@ class _SelectSession extends State<SelectSession> {
         ),
         title: SizedBox(
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              const Text('Grip Strength Tool'),
-              const SizedBox(width: 10),
-              // const Icon(
-              //   Icons.sports_tennis,
-              // ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 24),
+              const Text('Grip Strength Tool',
+                  style: TextStyle(
+                    color: Color(0xFFFFFFFF),
+                  )),
+              const SizedBox(width: 45),
               Builder(
                 builder: (context) {
                   return IconButton(
@@ -76,23 +76,14 @@ class _SelectSession extends State<SelectSession> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              'Grip Strength Tool',
-              style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20.0),
-            const Icon(
-              Icons.sports_tennis,
-              size: 130,
-            ),
-            const SizedBox(height: 20.0),
+            const SizedBox(height: 60.0),
             const Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(width: 20),
+                SizedBox(width: 10),
                 Text(
                   'Available Sessions',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(width: 16.0),
               ],
@@ -112,8 +103,7 @@ class _SelectSession extends State<SelectSession> {
                 rows: sessions?.map((session) {
                       final formattedDate = session.session_date != null
                           ? DateFormat('MMM d').format(
-                              DateTime.fromMillisecondsSinceEpoch(
-                                  session.session_date),
+                              DateTime.fromMillisecondsSinceEpoch(session.session_date),
                             )
                           : 'N/A';
                       return DataRow(
@@ -126,8 +116,7 @@ class _SelectSession extends State<SelectSession> {
                                 groupValue: selectedValue,
                                 onChanged: (value) {
                                   setState(() {
-                                    selectedValue =
-                                        selectedValue == value ? null : value;
+                                    selectedValue = selectedValue == value ? null : value;
                                   });
                                 },
                               ),

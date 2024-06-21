@@ -30,6 +30,7 @@ class RecordingScreenState extends State<RecordingScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF5482ab),
+        centerTitle: true,
         leading: IconButton(
           color: (const Color(0xFFFFFFFF)),
           onPressed: () {
@@ -40,12 +41,12 @@ class RecordingScreenState extends State<RecordingScreen> {
         title: SizedBox(
           child: Row(
             children: [
-              const Text('Grip Strength Tool'),
-              const SizedBox(width: 10),
-              // const Icon(
-              //   Icons.sports_tennis,
-              // ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 24),
+              const Text('Grip Strength Tool',
+                  style: TextStyle(
+                    color: Color(0xFFFFFFFF),
+                  )),
+              const SizedBox(width: 45),
               Builder(
                 builder: (context) {
                   return IconButton(
@@ -62,38 +63,15 @@ class RecordingScreenState extends State<RecordingScreen> {
         ),
       ),
       body: Center(
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const Align(
-            alignment: Alignment.center,
-            child: Text(
-              "Grip Strength Tool",
-              style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
-            ),
-          ),
-          const SizedBox(height: 20.0),
-          const Icon(
-            Icons.sports_tennis,
-            size: 130,
-          ),
-          const SizedBox(height: 15),
+        child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+          const SizedBox(height: 100),
           Container(
             margin: const EdgeInsets.only(left: 12),
             child: Row(
               children: [
-                const Text('Practicing', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Text('Target Grip Strength:', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                 const SizedBox(width: 10.0),
-                Text('${state.session?.shot_type}', style: const TextStyle(fontSize: 18))
-              ],
-            ),
-          ),
-          const SizedBox(height: 6),
-          Container(
-            margin: const EdgeInsets.only(left: 12),
-            child: Row(
-              children: [
-                const Text('Target Grip Strength', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                const SizedBox(width: 10.0),
-                Text('${state.target?.grip_strength}', style: const TextStyle(fontSize: 18))
+                Text('${state.target?.grip_strength}', style: const TextStyle(fontSize: 24))
               ],
             ),
           ),
@@ -101,7 +79,7 @@ class RecordingScreenState extends State<RecordingScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               const SizedBox(width: 15),
-              const Text('Enable Feedback', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const Text('Enable Feedback ', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               Switch(
                   value: enableFeedback,
                   onChanged: (value) {
@@ -112,6 +90,35 @@ class RecordingScreenState extends State<RecordingScreen> {
             ],
           ),
           Container(
+            margin: const EdgeInsets.only(left: 12),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Practicing: ', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                    SizedBox(height: 10.0),
+                  ],
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${state.session?.shot_type}',
+                        style: const TextStyle(fontSize: 24),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          Container(
             margin: const EdgeInsets.only(left: 12, right: 12),
             child: const Text(
               "Adjust the camera to ensure players is visible, then start recording.",
@@ -119,50 +126,26 @@ class RecordingScreenState extends State<RecordingScreen> {
               textAlign: TextAlign.left,
             ),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 10),
           // CAMERA GOES HERE
-          Center(
-            child: ElevatedButton(
-              onPressed: () async {
-                final enableFeedbackCharacteristic = state.enableFeedbackCharacteristic;
-                await enableFeedbackCharacteristic?.write([enableFeedback ? 1 : 0]); // 1 for true, 0 for false
-                state.enableFeedback = enableFeedback;
-                print('enable feedback $enableFeedback');
-                context.push("/VideoRecording");
-              },
-              style: ElevatedButton.styleFrom(
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.zero,
-                ),
-              ),
-              child: const Text(
-                'Done',
-                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+          ElevatedButton(
+            onPressed: () async {
+              final enableFeedbackCharacteristic = state.enableFeedbackCharacteristic;
+              await enableFeedbackCharacteristic?.write([enableFeedback ? 1 : 0]); // 1 for true, 0 for false
+              state.enableFeedback = enableFeedback;
+              print('enable feedback $enableFeedback');
+              context.push("/VideoRecording");
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF5482ab),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.zero,
               ),
             ),
-          ),
-          const SizedBox(height: 10.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  context.push("/ShotSelectionPage");
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero,
-                  ),
-                ),
-                child: const Text(
-                  'Back',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              )
-            ],
+            child: const Text(
+              'Done',
+              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 20),
+            ),
           ),
         ]),
       ),

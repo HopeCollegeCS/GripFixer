@@ -113,6 +113,7 @@ class _MatchingScreen extends State<MatchingScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF5482ab),
+        centerTitle: true,
         leading: IconButton(
           color: (const Color(0xFFFFFFFF)),
           onPressed: () {
@@ -123,8 +124,12 @@ class _MatchingScreen extends State<MatchingScreen> {
         title: SizedBox(
           child: Row(
             children: [
-              const Text('Grip Strength Tool'),
-              const SizedBox(width: 10),
+              const SizedBox(width: 24),
+              const Text('Grip Strength Tool',
+                  style: TextStyle(
+                    color: Color(0xFFFFFFFF),
+                  )),
+              const SizedBox(width: 45),
               Builder(
                 builder: (context) {
                   return IconButton(

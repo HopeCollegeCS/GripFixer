@@ -31,8 +31,7 @@ class _ConnectToSensor extends State<ConnectToSensor> {
 
   // checks if the Bluetooth adapter is on
   Future<void> initBluetoothState() async {
-    bool isOn =
-        await FlutterBluePlus.adapterState.first == BluetoothAdapterState.on;
+    bool isOn = await FlutterBluePlus.adapterState.first == BluetoothAdapterState.on;
     if (!isOn) {
       await FlutterBluePlus.turnOn();
     }
@@ -72,36 +71,20 @@ class _ConnectToSensor extends State<ConnectToSensor> {
         device.discoverServices(timeout: 30).then((services) {
           // Discover services and characteristics
           //List<BluetoothService> services = await device.discoverServices();
-          var service = services
-              .where(
-                  (s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214"))
-              .first;
-          var requestCharacteristic = service.characteristics
-              .where(
-                  (s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1215"))
-              .first;
-          var responseCharacteristic = service.characteristics
-              .where(
-                  (s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216"))
-              .first;
-          var maxGripStrengthCharacteristic = service.characteristics
-              .where(
-                  (s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1217"))
-              .first;
-          var targetGripPercentageCharacteristic = service.characteristics
-              .where(
-                  (s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1218"))
-              .first;
-          var enableFeedbackCharacteristic = service.characteristics
-              .where(
-                  (s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1219"))
-              .first;
-          var sensorNumberCharacteristic = service.characteristics
-              .where(
-                  (s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1220"))
-              .first;
-          state.targetGripPercentageCharacteristic =
-              targetGripPercentageCharacteristic;
+          var service = services.where((s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214")).first;
+          var requestCharacteristic =
+              service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1215")).first;
+          var responseCharacteristic =
+              service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216")).first;
+          var maxGripStrengthCharacteristic =
+              service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1217")).first;
+          var targetGripPercentageCharacteristic =
+              service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1218")).first;
+          var enableFeedbackCharacteristic =
+              service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1219")).first;
+          var sensorNumberCharacteristic =
+              service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1220")).first;
+          state.targetGripPercentageCharacteristic = targetGripPercentageCharacteristic;
           state.maxGripStrengthCharacteristic = maxGripStrengthCharacteristic;
           state.enableFeedbackCharacteristic = enableFeedbackCharacteristic;
           state.sensorNumberCharacteristic = sensorNumberCharacteristic;
@@ -137,12 +120,12 @@ class _ConnectToSensor extends State<ConnectToSensor> {
 
   @override
   Widget build(BuildContext context) {
-    if (_selectedDevice == null &&
-        FlutterBluePlus.adapterState.first == BluetoothAdapterState.on) {
+    if (_selectedDevice == null && FlutterBluePlus.adapterState.first == BluetoothAdapterState.on) {
     } else {}
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF5482ab),
+        centerTitle: true,
         leading: IconButton(
           color: (const Color(0xFFFFFFFF)),
           onPressed: () async {
@@ -154,16 +137,12 @@ class _ConnectToSensor extends State<ConnectToSensor> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              const SizedBox(width: 10),
+              const SizedBox(width: 24),
               const Text('Grip Strength Tool',
                   style: TextStyle(
                     color: Color(0xFFFFFFFF),
                   )),
-              // const SizedBox(width: 10),
-              // const Icon(
-              //   Icons.sports_tennis,
-              // ),
-              // const SizedBox(width: 10),
+              const SizedBox(width: 45),
               Builder(
                 builder: (context) {
                   return IconButton(
@@ -181,37 +160,28 @@ class _ConnectToSensor extends State<ConnectToSensor> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            // const Text(
-            //   'Grip Strength Tool',
-            //   style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
-            // ),
-            // const SizedBox(height: 20.0),
-            // const Icon(
-            //   Icons.sports_tennis,
-            //   size: 130,
-            // ),
-            const SizedBox(height: 20.0),
+            const SizedBox(height: 100.0),
             const Padding(
               padding: EdgeInsets.only(left: 16.0),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child:
-                    Text('Select a sensor to connect to, then click Connect'),
+                child: Text('Available sensors:', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+              ),
+            ),
+            const SizedBox(height: 6),
+            const Padding(
+              padding: EdgeInsets.only(left: 16.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text('Select a sensor, then click Connect', style: TextStyle(fontSize: 16)),
               ),
             ),
             const SizedBox(height: 10.0),
-            const Padding(
-              padding: EdgeInsets.only(left: 16.0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text('Available sensors'),
-              ),
-            ),
             // AVAILABLE SENSORS GO HERE
             ...(_discoveredDevices.map((device) => ListTile(
-                title: Text(device.platformName),
+                title: Text(device.platformName, style: const TextStyle(fontSize: 16)),
                 leading: Radio<BluetoothDevice>(
                   value: device,
                   groupValue: _selectedDevice,
@@ -229,8 +199,7 @@ class _ConnectToSensor extends State<ConnectToSensor> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Stack(
-                    alignment: Alignment
-                        .center, // Center the CircularProgressIndicator
+                    alignment: Alignment.center, // Center the CircularProgressIndicator
                     children: [
                       Align(
                         alignment: Alignment.centerLeft,
@@ -241,25 +210,21 @@ class _ConnectToSensor extends State<ConnectToSensor> {
                               connectToDevice(_selectedDevice!);
                             }
                             if (_selectedDevice == null &&
-                                await FlutterBluePlus.adapterState.first ==
-                                    BluetoothAdapterState.on) {
+                                await FlutterBluePlus.adapterState.first == BluetoothAdapterState.on) {
                               context.push("/${widget.nextRoute}");
                             }
-                            await completer
-                                .future; //wait for the characteristic value to be received
+                            await completer.future; //wait for the characteristic value to be received
                             context.push("/${widget.nextRoute}");
                           },
                           style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF5482ab),
                             shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.zero,
                             ),
                           ),
                           child: const Text(
                             'Connect',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
+                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
                           ),
                         ),
                       ),
@@ -270,26 +235,6 @@ class _ConnectToSensor extends State<ConnectToSensor> {
                     ],
                   ),
                   const SizedBox(height: 10.0),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        context.push("/WelcomePage");
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.zero,
-                        ),
-                      ),
-                      child: const Text(
-                        'Back',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             )

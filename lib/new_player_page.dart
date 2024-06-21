@@ -46,6 +46,7 @@ class _NewPlayer extends State<NewPlayerPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF5482ab),
+        centerTitle: true,
         leading: IconButton(
           color: (const Color(0xFFFFFFFF)),
           onPressed: () {
@@ -56,12 +57,12 @@ class _NewPlayer extends State<NewPlayerPage> {
         title: SizedBox(
           child: Row(
             children: [
-              const Text('Grip Strength Tool'),
-              const SizedBox(width: 10),
-              // const Icon(
-              //   Icons.sports_tennis,
-              // ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 24),
+              const Text('Grip Strength Tool',
+                  style: TextStyle(
+                    color: Color(0xFFFFFFFF),
+                  )),
+              const SizedBox(width: 45),
               Builder(
                 builder: (context) {
                   return IconButton(
@@ -80,24 +81,17 @@ class _NewPlayer extends State<NewPlayerPage> {
       body: SingleChildScrollView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-            const Text(
-              'Grip Strength Tool',
-              style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20.0),
+            const SizedBox(height: 30.0),
             const Row(
-              mainAxisAlignment: MainAxisAlignment.start, // Align to the left
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 SizedBox(width: 28),
-                Text(
-                  'Add a new Player',
-                  style: TextStyle(fontSize: 25),
-                ),
+                Text('Add a new Player', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
               ],
             ),
             const SizedBox(height: 20.0),
             Row(
-              mainAxisAlignment: MainAxisAlignment.start, // Align to the left
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 const SizedBox(width: 28),
                 const Text(
@@ -107,7 +101,7 @@ class _NewPlayer extends State<NewPlayerPage> {
                 const SizedBox(width: 17),
                 Expanded(
                   child: SizedBox(
-                    height: 32, // Adjust this value to change the height
+                    height: 32,
                     child: TextField(
                       onChanged: (text) {
                         firstName = text;
@@ -115,8 +109,7 @@ class _NewPlayer extends State<NewPlayerPage> {
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.zero,
-                          borderSide:
-                              BorderSide(color: Colors.black, width: 5.0),
+                          borderSide: BorderSide(color: Colors.black, width: 5.0),
                         ),
                         contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
                       ),
@@ -129,7 +122,7 @@ class _NewPlayer extends State<NewPlayerPage> {
             ),
             const SizedBox(height: 10),
             Row(
-              mainAxisAlignment: MainAxisAlignment.start, // Align to the left
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 const SizedBox(width: 28),
                 const Text(
@@ -139,7 +132,7 @@ class _NewPlayer extends State<NewPlayerPage> {
                 const SizedBox(width: 19),
                 Expanded(
                   child: SizedBox(
-                    height: 32, // Adjust this value to change the height
+                    height: 32,
                     child: TextField(
                       onChanged: (text) {
                         lastName = text;
@@ -147,8 +140,7 @@ class _NewPlayer extends State<NewPlayerPage> {
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.zero,
-                          borderSide:
-                              BorderSide(color: Colors.black, width: 5.0),
+                          borderSide: BorderSide(color: Colors.black, width: 5.0),
                         ),
                         contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
                       ),
@@ -161,7 +153,7 @@ class _NewPlayer extends State<NewPlayerPage> {
             ),
             const SizedBox(height: 10),
             Row(
-              mainAxisAlignment: MainAxisAlignment.start, // Align to the left
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 const SizedBox(width: 32),
                 const Text(
@@ -171,7 +163,7 @@ class _NewPlayer extends State<NewPlayerPage> {
                 const SizedBox(width: 93),
                 Expanded(
                   child: SizedBox(
-                    height: 32, // Adjust this value to change the height
+                    height: 32,
                     child: TextField(
                       onChanged: (text) {
                         //age = int.tryParse(text)!;
@@ -180,8 +172,7 @@ class _NewPlayer extends State<NewPlayerPage> {
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.zero,
-                          borderSide:
-                              BorderSide(color: Colors.black, width: 5.0),
+                          borderSide: BorderSide(color: Colors.black, width: 5.0),
                         ),
                         contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
                       ),
@@ -193,52 +184,48 @@ class _NewPlayer extends State<NewPlayerPage> {
               ],
             ),
             const SizedBox(height: 10),
-            Row(
-                mainAxisAlignment: MainAxisAlignment.start, // Align to the left
+            Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+              const SizedBox(width: 28),
+              const Text(
+                'Gender',
+                style: TextStyle(fontSize: 25),
+              ),
+              Column(
                 children: [
-                  const SizedBox(width: 28),
-                  const Text(
-                    'Gender',
-                    style: TextStyle(fontSize: 25),
-                  ),
-                  Column(
+                  Row(
                     children: [
-                      Row(
-                        children: [
-                          const SizedBox(
-                              width: 45.0), // Move the radio button to the left
-                          Radio(
-                            value: 'Male',
-                            groupValue: gender,
-                            onChanged: (value) {
-                              setState(() {
-                                gender = 'Male';
-                              });
-                            },
-                          ),
-                          const Text('Male'),
-                        ],
+                      const SizedBox(width: 45.0),
+                      Radio(
+                        value: 'Male',
+                        groupValue: gender,
+                        onChanged: (value) {
+                          setState(() {
+                            gender = 'Male';
+                          });
+                        },
                       ),
-                      const SizedBox(height: 2),
-                      Row(
-                        children: [
-                          const SizedBox(
-                              width: 59.0), // Move the radio button to the left
-                          Radio(
-                            value: 'Female',
-                            groupValue: gender,
-                            onChanged: (value) {
-                              setState(() {
-                                gender = 'Female';
-                              });
-                            },
-                          ),
-                          const Text('Female'),
-                        ],
-                      ),
+                      const Text('Male'),
                     ],
-                  )
-                ]),
+                  ),
+                  const SizedBox(height: 2),
+                  Row(
+                    children: [
+                      const SizedBox(width: 59.0),
+                      Radio(
+                        value: 'Female',
+                        groupValue: gender,
+                        onChanged: (value) {
+                          setState(() {
+                            gender = 'Female';
+                          });
+                        },
+                      ),
+                      const Text('Female'),
+                    ],
+                  ),
+                ],
+              )
+            ]),
             Center(
                 child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -313,45 +300,20 @@ class _NewPlayer extends State<NewPlayerPage> {
                     age = int.tryParse(placeholderAge)!;
                     //use SQFlite class to insert new player, async so call .then and context.go goes inside
                     buttonAction(context).then((newPlayerId) {
-                      var appState =
-                          Provider.of<AppState>(context, listen: false);
+                      var appState = Provider.of<AppState>(context, listen: false);
                       appState.person?.player_id = newPlayerId;
                       context.push("/MeasurePage");
                     });
                   },
                   style: ElevatedButton.styleFrom(
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero, // Make the button square
-                    ),
-                  ),
-                  child: const Text(
-                    'Measure Grip Strength',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.black),
-                  ),
-                )
-              ],
-            ),
-            const SizedBox(height: 10.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(width: 20.0),
-                ElevatedButton(
-                  onPressed: () {
-                    context.push("/PlayerSelectPage");
-                  },
-                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF5482ab),
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.zero,
                     ),
                   ),
                   child: const Text(
-                    'Back',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+                    'Measure Grip Strength',
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
                   ),
                 )
               ],

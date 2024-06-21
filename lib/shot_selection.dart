@@ -98,6 +98,7 @@ class ShotSelection extends State<ShotSelectionPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF5482ab),
+        centerTitle: true,
         leading: IconButton(
           color: (const Color(0xFFFFFFFF)),
           onPressed: () {
@@ -108,12 +109,12 @@ class ShotSelection extends State<ShotSelectionPage> {
         title: SizedBox(
           child: Row(
             children: [
-              const Text('Grip Strength Tool'),
-              const SizedBox(width: 10),
-              // const Icon(
-              //   Icons.sports_tennis,
-              // ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 24),
+              const Text('Grip Strength Tool',
+                  style: TextStyle(
+                    color: Color(0xFFFFFFFF),
+                  )),
+              const SizedBox(width: 45),
               Builder(
                 builder: (context) {
                   return IconButton(
@@ -133,35 +134,21 @@ class ShotSelection extends State<ShotSelectionPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              'Grip Strength Tool',
-              style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20.0),
-            const Icon(
-              Icons.sports_tennis,
-              size: 130,
-            ),
-            const SizedBox(height: 20.0),
+            const SizedBox(height: 90.0),
             const Row(
               children: [
                 SizedBox(width: 20.0),
-                Text(
-                  'What shot do you want to work on?',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                ),
+                Text('Select shot:', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
               ],
             ),
-            const SizedBox(height: 10.0),
+            const SizedBox(height: 1.0),
             SizedBox(
               child: DataTable(
                 columnSpacing: 13,
                 columns: const [
                   DataColumn(label: SizedBox(width: 20)),
-                  DataColumn(label: Text('Shots')),
+                  DataColumn(label: Text('Shots', style: TextStyle(fontSize: 20))),
                 ],
-                //border: TableBorder.all(),
-                //rows: appState.targetMap.keys.toList() ?? [],
                 rows: appState.targetMap.keys.toList().map((target) {
                   return DataRow(
                     cells: [
@@ -179,12 +166,13 @@ class ShotSelection extends State<ShotSelectionPage> {
                           ),
                         ),
                       ),
-                      DataCell(Text('$target')),
+                      DataCell(Text('$target', style: const TextStyle(fontSize: 20))),
                     ],
                   );
                 }).toList(),
               ),
             ),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -203,37 +191,14 @@ class ShotSelection extends State<ShotSelectionPage> {
                     });
                   },
                   style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF5482ab),
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.zero,
                     ),
                   ),
                   child: const Text(
                     'Let\'s Hit!',
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-                  ),
-                )
-              ],
-            ),
-            const SizedBox(height: 10.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const SizedBox(width: 20.0),
-                ElevatedButton(
-                  onPressed: () {
-                    context.push("/PlayerSelectPage");
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero,
-                    ),
-                  ),
-                  child: const Text(
-                    'Back',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
                   ),
                 )
               ],

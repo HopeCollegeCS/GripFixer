@@ -53,12 +53,12 @@ class _PlayerSelection extends State<PlayerSelection> {
         title: SizedBox(
           child: Row(
             children: [
-              const Text('Grip Strength Tool'),
-              const SizedBox(width: 10),
-              // const Icon(
-              //   Icons.sports_tennis,
-              // ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 24),
+              const Text('Grip Strength Tool',
+                  style: TextStyle(
+                    color: Color(0xFFFFFFFF),
+                  )),
+              const SizedBox(width: 45),
               Builder(
                 builder: (context) {
                   return IconButton(
@@ -76,26 +76,17 @@ class _PlayerSelection extends State<PlayerSelection> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const Text(
-              'Grip Strength Tool',
-              style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20.0),
-            const Icon(
-              Icons.sports_tennis,
-              size: 130,
-            ),
-            const SizedBox(height: 20.0),
+            const SizedBox(height: 120.0),
             Row(
               children: [
-                const SizedBox(width: 28.0),
+                const SizedBox(width: 20.0),
                 const Text(
                   'Player',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(width: 30.0),
+                const SizedBox(width: 14.0),
                 Container(
                   width: 250,
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -139,21 +130,18 @@ class _PlayerSelection extends State<PlayerSelection> {
                             }
                           : () {
                               context.push("/ShotSelectionPage");
-                              var state =
-                                  Provider.of<AppState>(context, listen: false);
+                              var state = Provider.of<AppState>(context, listen: false);
                               state.person = selectedPlayer;
                             },
                   style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF5482ab),
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.zero,
                     ),
                   ),
                   child: const Text(
                     'Get Started',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
                   ),
                 )
               ],
