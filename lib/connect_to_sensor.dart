@@ -127,6 +127,7 @@ class _ConnectToSensor extends State<ConnectToSensor> {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: const Color(0xFF5482ab),
+          centerTitle: true,
           leading: IconButton(
             color: (const Color(0xFFFFFFFF)),
             onPressed: () async {
@@ -138,16 +139,12 @@ class _ConnectToSensor extends State<ConnectToSensor> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                const SizedBox(width: 10),
+                const SizedBox(width: 24),
                 const Text('Grip Strength Tool',
                     style: TextStyle(
                       color: Color(0xFFFFFFFF),
                     )),
-                // const SizedBox(width: 10),
-                // const Icon(
-                //   Icons.sports_tennis,
-                // ),
-                // const SizedBox(width: 10),
+                const SizedBox(width: 45),
                 Builder(
                   builder: (context) {
                     return IconButton(
@@ -165,36 +162,28 @@ class _ConnectToSensor extends State<ConnectToSensor> {
         ),
         body: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              // const Text(
-              //   'Grip Strength Tool',
-              //   style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
-              // ),
-              // const SizedBox(height: 20.0),
-              // const Icon(
-              //   Icons.sports_tennis,
-              //   size: 130,
-              // ),
-              const SizedBox(height: 20.0),
+              const SizedBox(height: 100.0),
               const Padding(
                 padding: EdgeInsets.only(left: 16.0),
                 child: Align(
                   alignment: Alignment.centerLeft,
-                  child: Text('Select a sensor to connect to, then click Connect'),
+                  child: Text('Available sensors:', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+                ),
+              ),
+              const SizedBox(height: 6),
+              const Padding(
+                padding: EdgeInsets.only(left: 16.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text('Select a sensor, then click Connect', style: TextStyle(fontSize: 16)),
                 ),
               ),
               const SizedBox(height: 10.0),
-              const Padding(
-                padding: EdgeInsets.only(left: 16.0),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text('Available sensors'),
-                ),
-              ),
               // AVAILABLE SENSORS GO HERE
               ...(_discoveredDevices.map((device) => ListTile(
-                  title: Text(device.platformName),
+                  title: Text(device.platformName, style: const TextStyle(fontSize: 16)),
                   leading: Radio<BluetoothDevice>(
                     value: device,
                     groupValue: _selectedDevice,
@@ -230,16 +219,14 @@ class _ConnectToSensor extends State<ConnectToSensor> {
                               context.push("/${widget.nextRoute}");
                             },
                             style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF5482ab),
                               shape: const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.zero,
                               ),
                             ),
                             child: const Text(
                               'Connect',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
+                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
                             ),
                           ),
                         ),
@@ -248,27 +235,6 @@ class _ConnectToSensor extends State<ConnectToSensor> {
                             child: CircularProgressIndicator(),
                           ),
                       ],
-                    ),
-                    const SizedBox(height: 10.0),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          context.push("/WelcomePage");
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.zero,
-                          ),
-                        ),
-                        child: const Text(
-                          'Back',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
                     ),
                   ],
                 ),
