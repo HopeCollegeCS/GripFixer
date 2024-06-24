@@ -103,6 +103,7 @@ class _VideoRecorderScreenState extends State<VideoRecorderScreen> {
               ((value[2] & 0xFF) << 16) |
               ((value[3] & 0xFF) << 24),
         );
+        currentResponseValue = sessionMeasurements.value;
         saveToDatabase(state);
         _characteristicTimer?.cancel();
         _characteristicTimer =
