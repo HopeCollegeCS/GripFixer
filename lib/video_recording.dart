@@ -1,10 +1,12 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:grip_fixer/connect_to_sensor.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
 import 'package:grip_fixer/session_measurements.dart';
 import 'video_playing.dart';
+import 'dart:async';
 
 class VideoRecorderScreen extends StatefulWidget {
   const VideoRecorderScreen({
@@ -22,11 +24,12 @@ class _VideoRecorderScreenState extends State<VideoRecorderScreen> {
   AppState state = AppState();
   BluetoothCharacteristic? responseCharacteristic;
   int? currentResponseValue;
+  Timer? _characteristicTimer;
+  String? _videoFilePath;
 
   @override
   void initState() {
     super.initState();
-
     _initializeCamera();
   }
 
@@ -42,7 +45,10 @@ class _VideoRecorderScreenState extends State<VideoRecorderScreen> {
     saveToDatabase(state);
     if (_isRecording) {
       final file = await _controller.stopVideoRecording();
-      setState(() => _isRecording = false);
+      setState(() {
+        _isRecording = false;
+        _videoFilePath = file.path;
+      });
       final route = MaterialPageRoute(
         fullscreenDialog: true,
         builder: (_) => VideoPage(filePath: file.path),
@@ -58,6 +64,7 @@ class _VideoRecorderScreenState extends State<VideoRecorderScreen> {
   @override
   void dispose() {
     _controller.dispose();
+    _characteristicTimer?.cancel();
     super.dispose();
   }
 
@@ -87,12 +94,54 @@ class _VideoRecorderScreenState extends State<VideoRecorderScreen> {
           timestamp: DateTime.now().millisecondsSinceEpoch,
           value: value[0] & 0xFF | ((value[1] & 0xFF) << 8) | ((value[2] & 0xFF) << 16) | ((value[3] & 0xFF) << 24),
         );
-        //sessionMeasurementsList.add(sessionMeasurements);
         saveToDatabase(state);
+        _characteristicTimer?.cancel();
+        _characteristicTimer = Timer(const Duration(seconds: 3), _onCharacteristicTimeout);
       });
       responseCharacteristic!.setNotifyValue(true);
       requestCharacteristic.write([1]);
+      _characteristicTimer = Timer(const Duration(seconds: 3), _onCharacteristicTimeout);
     });
+  }
+
+  void _onCharacteristicTimeout() async {
+    if (_isRecording) {
+      final file = await _controller.stopVideoRecording();
+      setState(() {
+        _isRecording = false;
+        _videoFilePath = file.path;
+      });
+    }
+    _showBluetoothDisconnectedDialog();
+  }
+
+  void _showBluetoothDisconnectedDialog() {
+    // Save session measurements if not already saved
+    if (state.session != null && state.sessionMeasurements != null) {
+      saveToDatabase(state);
+    }
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Bluetooth Disconnected'),
+          actions: [
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                setState(() => _isRecording = false);
+                final route = MaterialPageRoute(
+                  fullscreenDialog: true,
+                  builder: (_) => VideoPage(filePath: _videoFilePath ?? ''),
+                );
+                Navigator.push(context, route);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   SessionMeasurements createSessionMeasurements(int sessionID) {

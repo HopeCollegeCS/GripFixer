@@ -25,7 +25,7 @@ class GripFixerDrawer extends StatelessWidget {
           ListTile(
             title: const Text('Connect to Sensor'),
             onTap: () {
-              context.push("/RacketSelectPage/:PlayerSelectPage");
+              context.push("/RacketSelectPage/PlayerSelectPage");
             },
           ),
         ],
