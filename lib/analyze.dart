@@ -57,6 +57,7 @@ Future<void> showMyDialog(BuildContext context) async {
   );
 }
 
+//
 class _AnalyzeScreen extends State<AnalyzeScreen> {
   bool watchViolations = false;
   late VideoPlayerController _controller;
@@ -137,9 +138,12 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
             margin: const EdgeInsets.only(left: 12),
             child: Row(
               children: [
-                const Text('Practicing', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Text('Practicing',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(width: 10.0),
-                Text('${state.session?.shot_type}', style: const TextStyle(fontSize: 18))
+                Text('${state.session?.shot_type}',
+                    style: const TextStyle(fontSize: 18))
               ],
             ),
           ),
@@ -147,9 +151,12 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
             margin: const EdgeInsets.only(left: 12),
             child: Row(
               children: [
-                const Text('Target Grip Strength', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Text('Target Grip Strength',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(width: 10.0),
-                Text('${state.person?.strength}', style: const TextStyle(fontSize: 18))
+                Text('${state.person?.strength}',
+                    style: const TextStyle(fontSize: 18))
               ],
             ),
           ),
@@ -157,7 +164,9 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
             margin: const EdgeInsets.only(left: 12),
             child: Row(
               children: [
-                const Text('Show violations only', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Text('Show violations only',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 Switch(
                   // This bool value toggles the switch.
                   value: watchViolations,
@@ -200,7 +209,8 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
                         Duration currentPosition = _controller.value.position;
                         late int newTime;
                         for (int i = 0; i < numbers.length; i++) {
-                          if (currentPosition.inSeconds >= numbers[numbers.length - 1]) {
+                          if (currentPosition.inSeconds >=
+                              numbers[numbers.length - 1]) {
                             newTime = numbers[numbers.length - 2];
                             break;
                           }

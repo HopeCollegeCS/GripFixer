@@ -21,7 +21,6 @@ class _ConnectToSensor extends State<ConnectToSensor> {
   AppState state = AppState();
   final Completer<void> completer = Completer();
   bool isConnecting = false;
-  late bool firstTime = false;
 
   //initializes the Bluetooth state
   @override
@@ -36,7 +35,6 @@ class _ConnectToSensor extends State<ConnectToSensor> {
     bool isOn =
         await FlutterBluePlus.adapterState.first == BluetoothAdapterState.on;
     if (!isOn) {
-      firstTime = true;
       await FlutterBluePlus.turnOn();
     }
     //sets the log level for the flutter_blue_plus package and checks if Bluetooth is supported on the device
@@ -138,10 +136,9 @@ class _ConnectToSensor extends State<ConnectToSensor> {
     }
   }
 
-//test later bc of arduino overheating
   @override
   Widget build(BuildContext context) {
-    if (!firstTime) {
+    if (state.bluetoothDevice == null) {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: const Color(0xFF5482ab),

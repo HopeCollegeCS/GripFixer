@@ -160,7 +160,10 @@ class _WelcomePage extends State<WelcomePage> {
                   ),
                   child: const Text(
                     'Get Started',
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 18),
                   ),
                 )
               ],
