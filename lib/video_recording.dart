@@ -25,6 +25,7 @@ class _VideoRecorderScreenState extends State<VideoRecorderScreen> {
   int? currentResponseValue;
   Timer? _characteristicTimer;
   String? _videoFilePath;
+  bool violating = false;
 
   @override
   void initState() {
@@ -34,7 +35,8 @@ class _VideoRecorderScreenState extends State<VideoRecorderScreen> {
 
   void _initializeCamera() async {
     final cameras = await availableCameras();
-    final front = cameras.firstWhere((camera) => camera.lensDirection == CameraLensDirection.back);
+    final front = cameras.firstWhere(
+        (camera) => camera.lensDirection == CameraLensDirection.back);
     _controller = CameraController(front, ResolutionPreset.max);
     await _controller.initialize();
     setState(() => _isLoading = false);
@@ -80,26 +82,35 @@ class _VideoRecorderScreenState extends State<VideoRecorderScreen> {
 
   void subscribeToCharacteristic(BluetoothDevice device) {
     device.discoverServices().then((services) {
-      var service = services.where((s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214")).first;
-      var requestCharacteristic =
-          service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1215")).first;
-      responseCharacteristic =
-          service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216")).first;
+      var service = services
+          .where((s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214"))
+          .first;
+      var requestCharacteristic = service.characteristics
+          .where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1215"))
+          .first;
+      responseCharacteristic = service.characteristics
+          .where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216"))
+          .first;
 
       responseCharacteristic!.onValueReceived.listen((value) {
         int sessionID = state.session?.session_id ?? 0;
         SessionMeasurements sessionMeasurements = SessionMeasurements(
           session_id: sessionID,
           timestamp: DateTime.now().millisecondsSinceEpoch,
-          value: value[0] & 0xFF | ((value[1] & 0xFF) << 8) | ((value[2] & 0xFF) << 16) | ((value[3] & 0xFF) << 24),
+          value: value[0] & 0xFF |
+              ((value[1] & 0xFF) << 8) |
+              ((value[2] & 0xFF) << 16) |
+              ((value[3] & 0xFF) << 24),
         );
         saveToDatabase(state);
         _characteristicTimer?.cancel();
-        _characteristicTimer = Timer(const Duration(seconds: 3), _onCharacteristicTimeout);
+        _characteristicTimer =
+            Timer(const Duration(seconds: 3), _onCharacteristicTimeout);
       });
       responseCharacteristic!.setNotifyValue(true);
       requestCharacteristic.write([1]);
-      _characteristicTimer = Timer(const Duration(seconds: 3), _onCharacteristicTimeout);
+      _characteristicTimer =
+          Timer(const Duration(seconds: 3), _onCharacteristicTimeout);
     });
   }
 
@@ -154,6 +165,14 @@ class _VideoRecorderScreenState extends State<VideoRecorderScreen> {
   void saveToDatabase(AppState state) {
     int id = state.session?.session_id ?? 0;
     SessionMeasurements sessionMeasurements = createSessionMeasurements(id);
+    //if session measurement is bad and the last one wasn't
+    if (sessionMeasurements.value! > state.target!.grip_strength!.toInt() &&
+        violating == false) {
+      violating == true;
+    } else {
+      violating == false;
+    }
+    //add it to a list
     state.setSessionMeasurements(sessionMeasurements);
     var db = state.sqfl;
     db.insertSessionMeasurement(sessionMeasurements);
