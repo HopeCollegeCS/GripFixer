@@ -257,11 +257,12 @@ class _ConnectToSensor extends State<ConnectToSensor> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                const SizedBox(width: 10),
+                const SizedBox(width: 24),
                 const Text('Grip Strength Tool',
                     style: TextStyle(
                       color: Color(0xFFFFFFFF),
                     )),
+                const SizedBox(width: 45),
                 Builder(
                   builder: (context) {
                     return IconButton(
@@ -286,7 +287,7 @@ class _ConnectToSensor extends State<ConnectToSensor> {
                 padding: EdgeInsets.only(left: 16.0),
                 child: Align(
                   alignment: Alignment.centerLeft,
-                  child: Text('You have already connected to a sensor'),
+                  child: Text('You have already connected to a sensor', style: TextStyle(fontSize: 16)),
                 ),
               ),
               const SizedBox(height: 10.0),
@@ -335,16 +336,14 @@ class _ConnectToSensor extends State<ConnectToSensor> {
                               context.push("/${widget.nextRoute}");
                             },
                             style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF5482ab),
                               shape: const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.zero,
                               ),
                             ),
                             child: const Text(
                               'Connect',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
+                              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
                             ),
                           ),
                         ),
@@ -353,27 +352,6 @@ class _ConnectToSensor extends State<ConnectToSensor> {
                             child: CircularProgressIndicator(),
                           ),
                       ],
-                    ),
-                    const SizedBox(height: 10.0),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          context.push("/WelcomePage");
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.zero,
-                          ),
-                        ),
-                        child: const Text(
-                          'Back',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
                     ),
                   ],
                 ),
