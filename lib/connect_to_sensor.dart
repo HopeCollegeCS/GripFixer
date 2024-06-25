@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:grip_fixer/gripFixerDrawer.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
 
@@ -52,12 +53,21 @@ class _ConnectToSensor extends State<ConnectToSensor> {
     );
 
     FlutterBluePlus.scanResults.listen((results) {
-      setState(() {
-        _discoveredDevices = results.map((result) => result.device).toList();
-      });
+      if (mounted) {
+        setState(() {
+          _discoveredDevices = results.map((result) => result.device).toList();
+        });
+      }
     }).onDone(() {
       print('Scan finished');
     });
+  }
+
+  String screenText() {
+    if (state.bluetoothDevice != null) {
+      return "You have already connected to a sensor";
+    }
+    return "Select a sensor, then click Connect";
   }
 
   // when the tile is clicked, this method is called and the device connects
@@ -103,7 +113,9 @@ class _ConnectToSensor extends State<ConnectToSensor> {
           state.maxGripStrengthCharacteristic = maxGripStrengthCharacteristic;
           state.enableFeedbackCharacteristic = enableFeedbackCharacteristic;
           state.sensorNumberCharacteristic = sensorNumberCharacteristic;
-          completer.complete();
+          if (!completer.isCompleted) {
+            completer.complete();
+          }
           isConnecting = false;
           // final subscription =
           //     responseCharacteristic.onValueReceived.listen((value) {
@@ -136,9 +148,10 @@ class _ConnectToSensor extends State<ConnectToSensor> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF5482ab),
+        centerTitle: true,
         leading: IconButton(
           color: (const Color(0xFFFFFFFF)),
-          onPressed: () {
+          onPressed: () async {
             context.pop();
           },
           icon: const Icon(Icons.arrow_back),
@@ -147,16 +160,12 @@ class _ConnectToSensor extends State<ConnectToSensor> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              const SizedBox(width: 10),
+              const SizedBox(width: 24),
               const Text('Grip Strength Tool',
                   style: TextStyle(
                     color: Color(0xFFFFFFFF),
                   )),
-              // const SizedBox(width: 10),
-              // const Icon(
-              //   Icons.sports_tennis,
-              // ),
-              // const SizedBox(width: 10),
+              const SizedBox(width: 45),
               Builder(
                 builder: (context) {
                   return IconButton(
@@ -174,37 +183,31 @@ class _ConnectToSensor extends State<ConnectToSensor> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            // const Text(
-            //   'Grip Strength Tool',
-            //   style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
-            // ),
-            // const SizedBox(height: 20.0),
-            // const Icon(
-            //   Icons.sports_tennis,
-            //   size: 130,
-            // ),
-            const SizedBox(height: 20.0),
+            const SizedBox(height: 100.0),
             const Padding(
               padding: EdgeInsets.only(left: 16.0),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child:
-                    Text('Select the sensor to connect to then click Connect'),
+                child: Text('Available sensors:',
+                    style:
+                        TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+              ),
+            ),
+            const SizedBox(height: 6),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(screenText(), style: const TextStyle(fontSize: 16)),
               ),
             ),
             const SizedBox(height: 10.0),
-            const Padding(
-              padding: EdgeInsets.only(left: 16.0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text('Available sensors'),
-              ),
-            ),
             // AVAILABLE SENSORS GO HERE
             ...(_discoveredDevices.map((device) => ListTile(
-                title: Text(device.platformName),
+                title: Text(device.platformName,
+                    style: const TextStyle(fontSize: 16)),
                 leading: Radio<BluetoothDevice>(
                   value: device,
                   groupValue: _selectedDevice,
@@ -233,11 +236,17 @@ class _ConnectToSensor extends State<ConnectToSensor> {
                               state.bluetoothDevice = _selectedDevice;
                               connectToDevice(_selectedDevice!);
                             }
+                            if (_selectedDevice == null &&
+                                await FlutterBluePlus.adapterState.first ==
+                                    BluetoothAdapterState.on) {
+                              context.push("/${widget.nextRoute}");
+                            }
                             await completer
                                 .future; //wait for the characteristic value to be received
                             context.push("/${widget.nextRoute}");
                           },
                           style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF5482ab),
                             shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.zero,
                             ),
@@ -245,9 +254,9 @@ class _ConnectToSensor extends State<ConnectToSensor> {
                           child: const Text(
                             'Connect',
                             style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: 18),
                           ),
                         ),
                       ),
@@ -257,52 +266,13 @@ class _ConnectToSensor extends State<ConnectToSensor> {
                         ),
                     ],
                   ),
-                  const SizedBox(height: 10.0),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        context.push("/WelcomePage");
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.zero,
-                        ),
-                      ),
-                      child: const Text(
-                        'Back',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             )
           ],
         ),
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text('Drawer Header'),
-            ),
-            ListTile(
-              title: const Text('Settings'),
-              onTap: () {
-                context.push("/Settings");
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: const GripFixerDrawer(),
     );
   }
 }

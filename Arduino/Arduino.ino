@@ -194,7 +194,7 @@ void loop() {
       //Serial.print("Threshold: ");
       //Serial.println(threshold);
 
-      delay(1000);
+      delay(100);
     }
     Serial.println("* Disconnected to central device!");
   }

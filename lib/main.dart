@@ -124,7 +124,7 @@ void main() async {
       );
       //Session ID incrementing is not relative to player (so you can't have 2 session 1s). Problem?
       batch.execute(
-        'CREATE TABLE sessions(session_id INTEGER PRIMARY KEY AUTOINCREMENT, player_id INTEGER, session_date INTEGER, shot_type STRING)',
+        'CREATE TABLE sessions(session_id INTEGER PRIMARY KEY AUTOINCREMENT, player_id INTEGER, session_date INTEGER, shot_type STRING, violations LIST)',
       );
 
       batch.execute(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:grip_fixer/settings.dart';
+import 'package:grip_fixer/gripFixerDrawer.dart';
+// import 'package:grip_fixer/state.dart';
+// import 'package:provider/provider.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -27,18 +29,16 @@ class _WelcomePage extends State<WelcomePage> {
       appBar: AppBar(
         backgroundColor: const Color(0xFF5482ab),
         leading: const SizedBox(),
+        centerTitle: true,
         title: SizedBox(
           child: Row(
             children: [
+              const SizedBox(width: 24),
               const Text('Grip Strength Tool',
                   style: TextStyle(
                     color: Color(0xFFFFFFFF),
                   )),
-              const SizedBox(width: 10),
-              // const Icon(
-              //   Icons.sports_tennis,
-              // ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 45),
               Builder(
                 builder: (context) {
                   return IconButton(
@@ -58,116 +58,116 @@ class _WelcomePage extends State<WelcomePage> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            // const Text(
-            //   'Grip Strength Tool',
-            //   style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
-            // ),
-            // const SizedBox(height: 20.0),
-            // const Icon(
-            //   Icons.sports_tennis,
-            //   size: 130,
-            // ),
-            // const SizedBox(height: 20.0),
+            const SizedBox(height: 140),
             const Row(
               children: [
                 SizedBox(width: 20.0),
                 Text(
                   'What do you want to do?',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
-            const SizedBox(height: 16.0), // Add some spacing
+            const SizedBox(height: 16.0),
             Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start, // Align the column to the start
-                children: [
-                  SizedBox(
-                    height: 20,
-                    child: Row(
-                      children: [
-                        const SizedBox(
-                            width: 10.0), // Move the radio button to the left
-                        Radio(
-                          value: 1, // Assign a value of 1 to this option
-                          groupValue:
-                              _selectedValue, // Use _selectedValue to track the selected option
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedValue =
-                                  value!; // Update _selectedValue when option 1 is selected
-                            });
-                          },
-                        ),
-                        const Text('Start a hitting session'),
-                      ],
-                    ),
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 30,
+                  child: Row(
+                    children: [
+                      const SizedBox(width: 10.0),
+                      Radio(
+                        value: 1,
+                        groupValue: _selectedValue,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedValue = value!;
+                          });
+                        },
+                      ),
+                      const Text(
+                        'Start a hitting session',
+                        style: TextStyle(fontSize: 22),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 5.0), // Add some spacing
-                  SizedBox(
-                    height: 20,
-                    child: Row(
-                      children: [
-                        const SizedBox(
-                            width: 10.0), // Move the radio button to the left
-                        Radio(
-                          value: 2, // Assign a value of 1 to this option
-                          groupValue:
-                              _selectedValue, // Use _selectedValue to track the selected option
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedValue =
-                                  value!; // Update _selectedValue when option 1 is selected
-                            });
-                          }, // Disable the radio button for now
-                        ),
-                        const Text('Analyze a previous session'),
-                      ],
-                    ),
+                ),
+                const SizedBox(height: 14.0),
+                SizedBox(
+                  height: 30,
+                  child: Row(
+                    children: [
+                      const SizedBox(width: 10.0),
+                      Radio(
+                        value: 2,
+                        groupValue: _selectedValue,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedValue = value!;
+                          });
+                        },
+                      ),
+                      const Text(
+                        'Analyze a previous session',
+                        style: TextStyle(fontSize: 22),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 5.0), // Add some spacing
-                  SizedBox(
-                    height: 20,
-                    child: Row(
-                      children: [
-                        const SizedBox(
-                            width: 10.0), // Move the radio button to the left
-                        Radio(
-                          value: 3, // Assign a value of 1 to this option
-                          groupValue:
-                              _selectedValue, // Use _selectedValue to track the selected option
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedValue =
-                                  value!; // Update _selectedValue when option 1 is selected
-                            });
-                          }, // Disable the radio button for now
+                ),
+                const SizedBox(height: 14.0),
+                SizedBox(
+                  height: 30,
+                  child: Row(
+                    children: [
+                      const SizedBox(width: 10.0),
+                      Radio(
+                        value: 3,
+                        groupValue: _selectedValue,
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedValue = value!;
+                          });
+                        },
+                      ),
+                      const Expanded(
+                        child: Text(
+                          'Practice hitting target grip tensions',
+                          style: TextStyle(fontSize: 22),
+                          softWrap: true,
+                          overflow: TextOverflow.visible,
                         ),
-                        const Text('Practice hitting target grip tensions'),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ]),
-            const SizedBox(height: 16.0), // Add some spacing
+                ),
+              ],
+            ),
+            const SizedBox(height: 54.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const SizedBox(width: 20.0), // Add some spacing
+                const SizedBox(width: 26.0),
                 ElevatedButton(
                   onPressed: () {
+                    // var state = Provider.of<AppState>(context, listen: false);
+                    // print(state.session?.violations);
                     context.push(getButtonPath(_selectedValue!));
                   },
                   style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF5482ab),
                     shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero, // Make the button square
+                      borderRadius: BorderRadius.zero,
                     ),
                   ),
                   child: const Text(
                     'Get Started',
                     style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.black),
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 18),
                   ),
                 )
               ],
@@ -175,25 +175,7 @@ class _WelcomePage extends State<WelcomePage> {
           ],
         ),
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text('Drawer Header'),
-            ),
-            ListTile(
-              title: const Text('Settings'),
-              onTap: () {
-                context.push("/Settings");
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: const GripFixerDrawer(),
     );
   }
 }

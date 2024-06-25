@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:collection';
 import 'package:grip_fixer/grip_target.dart';
 import 'package:grip_fixer/session.dart';
 import 'package:grip_fixer/session_measurements.dart';
@@ -107,12 +106,14 @@ class SqfliteClass {
             'player_id': player_id as int,
             'session_date': session_date as int,
             'shot_type': shot_type as String,
+            'violations': violations as List?,
           } in sessionMaps)
         Session(
           session_id: session_id,
           player_id: player_id,
           session_date: session_date,
           shot_type: shot_type,
+          violations: violations,
         ),
     ];
   }
@@ -152,6 +153,21 @@ class SqfliteClass {
     );
   }
 
+  Future<void> updateSession(Session session) async {
+    // Get a reference to the database.
+    final db = await database;
+
+    // Update the given Person.
+    await db.update(
+      'sessions',
+      session.toMap(),
+      // Ensure that the Person has a matching id.
+      where: 'session_id = ?',
+      // Pass the Person's id as a whereArg to prevent SQL injection.
+      whereArgs: [session.session_id],
+    );
+  }
+
   Future<int> updateTarget(Target target) async {
     // Get a reference to the database.
     final db = await database;
@@ -187,8 +203,7 @@ class SqfliteClass {
     final db = await database;
 
     // Query the table for all the players.
-    final List<Map<String, Object?>> sessionMeasurementMaps =
-        await db.query('sessionMeasurements');
+    final List<Map<String, Object?>> sessionMeasurementMaps = await db.query('sessionMeasurements');
 
     // Convert the list of each player's fields into a list of `Person` objects.
     return [
@@ -205,14 +220,12 @@ class SqfliteClass {
     ];
   }
 
-  Future<int> insertSessionMeasurement(
-      SessionMeasurements sessionMeasurement) async {
+  Future<int> insertSessionMeasurement(SessionMeasurements sessionMeasurement) async {
     // Get a reference to the database.
     final db = await database;
 
     bool tableExists = await db
-            .rawQuery(
-                "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='session_measurements'")
+            .rawQuery("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='session_measurements'")
             .then((value) => Sqflite.firstIntValue(value) ?? 0) >
         0;
     if (!tableExists) {

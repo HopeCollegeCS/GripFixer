@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:grip_fixer/gripFixerDrawer.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
@@ -16,7 +17,6 @@ class AnalyzeScreen extends StatefulWidget {
 
 int excess = 0;
 int seconds = 0;
-List numbers = [10, 20, 30, 40, 50];
 
 Future<void> showMyDialog(BuildContext context) async {
   return showDialog<void>(
@@ -56,6 +56,7 @@ Future<void> showMyDialog(BuildContext context) async {
   );
 }
 
+//
 class _AnalyzeScreen extends State<AnalyzeScreen> {
   bool watchViolations = false;
   late VideoPlayerController _controller;
@@ -84,7 +85,8 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
   }
 
   Widget build(BuildContext context) {
-    var state = Provider.of<AppState>(context);
+    var state = Provider.of<AppState>(context, listen: false);
+    List? numbers = state.session!.violations;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF5482ab),
@@ -170,10 +172,28 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
                   value: watchViolations,
                   activeColor: Colors.black,
                   onChanged: (value) {
+                    if (state.session?.violations?.isEmpty == true ||
+                        state.session?.violations == null) {
+                      showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                                title: const Text('No available violations'),
+                                content: const Text(
+                                    'There are no violations associated with this session'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, 'OK'),
+                                    child: const Text('OK'),
+                                  ),
+                                ],
+                              ));
+                    } else {
+                      setState(() {
+                        watchViolations = value;
+                      });
+                    }
                     // This is called when the user toggles the switch.
-                    setState(() {
-                      watchViolations = value;
-                    });
                   },
                 ),
                 IconButton(
@@ -206,7 +226,8 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
                         _controller.play();
                         Duration currentPosition = _controller.value.position;
                         late int newTime;
-                        for (int i = 0; i < numbers.length; i++) {
+
+                        for (int i = 0; i < numbers!.length; i++) {
                           if (currentPosition.inSeconds >=
                               numbers[numbers.length - 1]) {
                             newTime = numbers[numbers.length - 2];
@@ -234,7 +255,7 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
                         _controller.play();
                         Duration currentPosition = _controller.value.position;
                         late int newTime;
-                        for (int i = 0; i < numbers.length; i++) {
+                        for (int i = 0; i < numbers!.length; i++) {
                           if (numbers[i] > currentPosition.inSeconds) {
                             newTime = numbers[i];
                             break;
@@ -295,25 +316,7 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
           ),
         ]),
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text('Drawer Header'),
-            ),
-            ListTile(
-              title: const Text('Settings'),
-              onTap: () {
-                context.push("/Settings");
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: const GripFixerDrawer(),
     );
   }
 }

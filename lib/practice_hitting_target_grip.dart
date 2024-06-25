@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:go_router/go_router.dart';
+import 'package:grip_fixer/gripFixerDrawer.dart';
 import 'package:grip_fixer/person.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
@@ -28,12 +29,14 @@ class _MatchingScreen extends State<MatchingScreen> {
   BluetoothCharacteristic? responseCharacteristic;
   late double currentValue;
   late bool isStarted;
+  late bool isPaused;
 
   @override
   void initState() {
     super.initState();
     isConnectedToBluetooth = false;
     isStarted = false;
+    isPaused = false;
     currentValue = 0;
     strengthQueue.add(0);
     if (playersList.isNotEmpty) {
@@ -54,10 +57,12 @@ class _MatchingScreen extends State<MatchingScreen> {
         if (!isStarted) {
           receivedValue =
               (value[0] & 0xFF | ((value[1] & 0xFF) << 8) | ((value[2] & 0xFF) << 16) | ((value[3] & 0xFF) << 24));
-          setState(() {
-            isConnectedToBluetooth = true; // bluetooth connected
-            currentValue = receivedValue.toDouble();
-          });
+          if (!isPaused) {
+            setState(() {
+              isConnectedToBluetooth = true; // bluetooth connected
+              currentValue = receivedValue.toDouble();
+            });
+          }
         }
       });
       responseCharacteristic!.setNotifyValue(true);
@@ -74,10 +79,14 @@ class _MatchingScreen extends State<MatchingScreen> {
                 1)
             .round()
         : 0;
-    //strengthQueue.add(calculatedIncomingStrength);
-    //if (strengthQueue.length > 10) {
-    //  strengthQueue.removeLast();
-    //}
+    strengthQueue.add(calculatedIncomingStrength);
+    if (strengthQueue.length > 10) {
+      strengthQueue.removeFirst();
+    }
+    setState(() {
+      values = strengthQueue.toList();
+    });
+
     state = Provider.of<AppState>(context);
     Map<String, int>? shots = state.targetMap.cast<String, int>();
     //get the player list
@@ -105,6 +114,7 @@ class _MatchingScreen extends State<MatchingScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF5482ab),
+        centerTitle: true,
         leading: IconButton(
           color: (const Color(0xFFFFFFFF)),
           onPressed: () {
@@ -115,12 +125,12 @@ class _MatchingScreen extends State<MatchingScreen> {
         title: SizedBox(
           child: Row(
             children: [
-              const Text('Grip Strength Tool'),
-              const SizedBox(width: 10),
-              // const Icon(
-              //   Icons.sports_tennis,
-              // ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 24),
+              const Text('Grip Strength Tool',
+                  style: TextStyle(
+                    color: Color(0xFFFFFFFF),
+                  )),
+              const SizedBox(width: 45),
               Builder(
                 builder: (context) {
                   return IconButton(
@@ -142,14 +152,6 @@ class _MatchingScreen extends State<MatchingScreen> {
             child: Container(
               margin: const EdgeInsets.only(left: 12, right: 12, top: 10),
               child: Column(children: [
-                const Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "Grip Strength Tool",
-                    style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                const SizedBox(height: 20.0),
                 const Align(
                   alignment: Alignment.topLeft,
                   child: Text(
@@ -257,7 +259,7 @@ class _MatchingScreen extends State<MatchingScreen> {
                   ],
                 ),
                 const SizedBox(height: 20),
-                /*Expanded(
+                Expanded(
                   child: SfCartesianChart(
                     primaryXAxis: const NumericAxis(
                       minimum: 0,
@@ -271,13 +273,28 @@ class _MatchingScreen extends State<MatchingScreen> {
                     ),
                     series: <LineSeries<int, int>>[
                       LineSeries<int, int>(
-                        dataSource: strengthQueue.toList(),
+                        dataSource: values,
                         xValueMapper: (int value, int index) => index,
                         yValueMapper: (int value, int index) => value,
+                        animationDuration: 200,
                       ),
                     ],
                   ),
-                )*/
+                ),
+                const SizedBox(height: 5),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          isPaused = !isPaused;
+                        });
+                      },
+                      child: Text(isPaused ? 'Resume' : 'Pause'),
+                    ),
+                  ],
+                ),
               ]),
             ),
           ),
@@ -299,25 +316,7 @@ class _MatchingScreen extends State<MatchingScreen> {
             ),
           ),
       ]),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text('Drawer Header'),
-            ),
-            ListTile(
-              title: const Text('Settings'),
-              onTap: () {
-                context.push("/Settings");
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: const GripFixerDrawer(),
     );
   }
 

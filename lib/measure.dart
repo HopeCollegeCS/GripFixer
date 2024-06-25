@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:go_router/go_router.dart';
-import 'package:grip_fixer/sqflite.dart';
+import 'package:grip_fixer/gripFixerDrawer.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
 
@@ -47,24 +47,18 @@ class _MeasureScreenState extends State<MeasureScreen> {
 
   void subscribeToCharacteristic(BluetoothDevice device) {
     device.discoverServices().then((services) {
-      var service = services
-          .where((s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214"))
-          .first;
-      var requestCharacteristic = service.characteristics
-          .where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1215"))
-          .first;
-      responseCharacteristic = service.characteristics
-          .where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216"))
-          .first;
+      var service = services.where((s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214")).first;
+      var requestCharacteristic =
+          service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1215")).first;
+      responseCharacteristic =
+          service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216")).first;
 
       bool averageCalculated = false;
 
       responseCharacteristic!.onValueReceived.listen((value) {
         if (!averageCalculated) {
-          values.add(value[0] & 0xFF |
-              ((value[1] & 0xFF) << 8) |
-              ((value[2] & 0xFF) << 16) |
-              ((value[3] & 0xFF) << 24));
+          values
+              .add(value[0] & 0xFF | ((value[1] & 0xFF) << 8) | ((value[2] & 0xFF) << 16) | ((value[3] & 0xFF) << 24));
         }
       });
       responseCharacteristic!.setNotifyValue(true);
@@ -100,6 +94,7 @@ class _MeasureScreenState extends State<MeasureScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF5482ab),
+        centerTitle: true,
         leading: IconButton(
           color: (const Color(0xFFFFFFFF)),
           onPressed: () {
@@ -110,12 +105,12 @@ class _MeasureScreenState extends State<MeasureScreen> {
         title: SizedBox(
           child: Row(
             children: [
-              const Text('Grip Strength Tool'),
-              const SizedBox(width: 10),
-              // const Icon(
-              //   Icons.sports_tennis,
-              // ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 24),
+              const Text('Grip Strength Tool',
+                  style: TextStyle(
+                    color: Color(0xFFFFFFFF),
+                  )),
+              const SizedBox(width: 45),
               Builder(
                 builder: (context) {
                   return IconButton(
@@ -143,16 +138,14 @@ class _MeasureScreenState extends State<MeasureScreen> {
                       alignment: Alignment.topLeft,
                       child: Text(
                         "Grip Strength Tool",
-                        style: TextStyle(
-                            fontSize: 42, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
                       ),
                     ),
                     Align(
                       alignment: Alignment.topLeft,
                       child: Text(
                         "Measure ${state.person?.firstName}'s strength",
-                        style: const TextStyle(
-                            fontSize: 30, fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                       ),
                     ),
                     const Align(
@@ -169,14 +162,14 @@ class _MeasureScreenState extends State<MeasureScreen> {
                         startCountdownTimer(); // start the countdown timer when the button is pressed
                       },
                       style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF5482ab),
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.zero,
                         ),
                       ),
                       child: const Text(
                         'Start',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.black),
+                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
                       ),
                     ),
                     const SizedBox(height: 12.0),
@@ -206,8 +199,7 @@ class _MeasureScreenState extends State<MeasureScreen> {
                       ),
                       child: const Text(
                         'Let\'s Hit!',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.black),
+                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                       ),
                     ),
                   ],
@@ -233,25 +225,7 @@ class _MeasureScreenState extends State<MeasureScreen> {
             ),
         ],
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text('Drawer Header'),
-            ),
-            ListTile(
-              title: const Text('Settings'),
-              onTap: () {
-                context.push("/Settings");
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: const GripFixerDrawer(),
     );
   }
 }
