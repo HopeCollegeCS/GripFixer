@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:grip_fixer/gripFixerDrawer.dart';
@@ -219,8 +217,7 @@ class _SettingsPage extends State<SettingsPage> {
               onPressed: () {
                 //use SQFlite class to insert new player, async so call .then and context.go goes inside
 
-                buttonAction(
-                    context, "Forehand Groundstroke", forehandGroundstroke);
+                buttonAction(context, "Forehand Groundstroke", forehandGroundstroke);
                 buttonAction(context, "Forehand Volley", forehandVolley);
                 buttonAction(context, "Overhead", overhead);
                 buttonAction(context, "Serve", serve).then((newTarget) {
@@ -229,8 +226,7 @@ class _SettingsPage extends State<SettingsPage> {
                   appState.sqfl.grip_strength_targets().then((targets) {
                     print("Targets: ");
                     for (Target target in targets) {
-                      print(
-                          "Stroke: ${target.stroke}: ${target.grip_strength}");
+                      print("Stroke: ${target.stroke}: ${target.grip_strength}");
                     }
                     context.pop();
                   });
@@ -243,8 +239,7 @@ class _SettingsPage extends State<SettingsPage> {
               ),
               child: const Text(
                 'Confirm',
-                style:
-                    TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
               ),
             )
           ],
