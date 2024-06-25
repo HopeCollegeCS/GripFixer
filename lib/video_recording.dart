@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -25,7 +27,10 @@ class _VideoRecorderScreenState extends State<VideoRecorderScreen> {
   int? currentResponseValue;
   Timer? _characteristicTimer;
   String? _videoFilePath;
-  bool violating = false;
+  late bool violating = false;
+  List sessionData = [];
+  late int startTime;
+  int start = DateTime.now().millisecondsSinceEpoch;
   bool isConnecting = false;
 
   @override
@@ -52,12 +57,17 @@ class _VideoRecorderScreenState extends State<VideoRecorderScreen> {
         _isRecording = false;
         _videoFilePath = file.path;
       });
+      state.session?.violations = sessionData;
+      var db = state.sqfl;
+      db.updateSession(state.session!);
       final route = MaterialPageRoute(
         fullscreenDialog: true,
         builder: (_) => VideoPage(filePath: file.path),
       );
       Navigator.push(context, route);
     } else {
+      startTime = DateTime.now().millisecondsSinceEpoch;
+      sessionData = [];
       await _controller.prepareForVideoRecording();
       await _controller.startVideoRecording();
       setState(() => _isRecording = true);
@@ -129,13 +139,13 @@ class _VideoRecorderScreenState extends State<VideoRecorderScreen> {
   void saveToDatabase(AppState state) {
     int id = state.session?.session_id ?? 0;
     SessionMeasurements sessionMeasurements = createSessionMeasurements(id);
-    //if session measurement is bad and the last one wasn't
     if (sessionMeasurements.value! > state.target!.grip_strength!.toInt() && violating == false) {
+      sessionData.add((sessionMeasurements.timestamp! - start) ~/ 1000);
       violating = true;
-    } else {
+    } else if (sessionMeasurements.value! < state.target!.grip_strength!.toInt() && violating == true) {
       violating = false;
     }
-    //add it to a list
+
     state.setSessionMeasurements(sessionMeasurements);
     var db = state.sqfl;
     db.insertSessionMeasurement(sessionMeasurements);

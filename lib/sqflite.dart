@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:ffi';
 import 'package:grip_fixer/grip_target.dart';
 import 'package:grip_fixer/session.dart';
 import 'package:grip_fixer/session_measurements.dart';
@@ -107,12 +108,14 @@ class SqfliteClass {
             'player_id': player_id as int,
             'session_date': session_date as int,
             'shot_type': shot_type as String,
+            'violations': violations as List?,
           } in sessionMaps)
         Session(
           session_id: session_id,
           player_id: player_id,
           session_date: session_date,
           shot_type: shot_type,
+          violations: violations,
         ),
     ];
   }
@@ -149,6 +152,21 @@ class SqfliteClass {
       where: 'player_id = ?',
       // Pass the Person's id as a whereArg to prevent SQL injection.
       whereArgs: [player.player_id],
+    );
+  }
+
+  Future<void> updateSession(Session session) async {
+    // Get a reference to the database.
+    final db = await database;
+
+    // Update the given Person.
+    await db.update(
+      'sessions',
+      session.toMap(),
+      // Ensure that the Person has a matching id.
+      where: 'session_id = ?',
+      // Pass the Person's id as a whereArg to prevent SQL injection.
+      whereArgs: [session.session_id],
     );
   }
 

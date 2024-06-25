@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:grip_fixer/gripFixerDrawer.dart';
+// import 'package:grip_fixer/state.dart';
+// import 'package:provider/provider.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -150,6 +152,8 @@ class _WelcomePage extends State<WelcomePage> {
                 const SizedBox(width: 26.0),
                 ElevatedButton(
                   onPressed: () {
+                    // var state = Provider.of<AppState>(context, listen: false);
+                    // print(state.session?.violations);
                     context.push(getButtonPath(_selectedValue!));
                   },
                   style: ElevatedButton.styleFrom(
