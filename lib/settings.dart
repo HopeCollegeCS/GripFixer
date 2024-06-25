@@ -232,7 +232,7 @@ class _SettingsPage extends State<SettingsPage> {
                       print(
                           "Stroke: ${target.stroke}: ${target.grip_strength}");
                     }
-                    context.push("/SelectSession");
+                    context.pop();
                   });
                 });
               },
@@ -242,7 +242,7 @@ class _SettingsPage extends State<SettingsPage> {
                 ),
               ),
               child: const Text(
-                'Measure Grip Strength',
+                'Confirm',
                 style:
                     TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
               ),

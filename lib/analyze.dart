@@ -172,10 +172,32 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
                   value: watchViolations,
                   activeColor: Colors.black,
                   onChanged: (value) {
+                    if (state.session?.violations?.isEmpty == true ||
+                        state.session?.violations == null) {
+                      showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                                title: const Text('AlertDialog Title'),
+                                content: const Text('AlertDialog description'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, 'Cancel'),
+                                    child: const Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, 'OK'),
+                                    child: const Text('OK'),
+                                  ),
+                                ],
+                              ));
+                    } else {
+                      setState(() {
+                        watchViolations = value;
+                      });
+                    }
                     // This is called when the user toggles the switch.
-                    setState(() {
-                      watchViolations = value;
-                    });
                   },
                 ),
                 IconButton(
