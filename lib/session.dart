@@ -5,12 +5,14 @@ class Session {
   int? player_id;
   int session_date;
   String? shot_type;
+  List? violations;
 
   Session({
     this.session_id,
     this.player_id,
     required this.session_date,
     this.shot_type,
+    this.violations,
   });
 
   Session setSession(Session session) {
@@ -18,6 +20,7 @@ class Session {
     player_id = session.player_id;
     session_date = session.session_date;
     shot_type = session.shot_type;
+    violations = session.violations;
     return this;
   }
 
@@ -29,6 +32,7 @@ class Session {
       'player_id': player_id,
       'session_date': session_date,
       'shot_type': shot_type,
+      'violations': violations,
     };
   }
 
@@ -36,6 +40,6 @@ class Session {
   // each player when using the print statement.
   @override
   String toString() {
-    return 'Session{session_id: $session_id, player_id: $player_id, session_date: $session_date, shot_type: $shot_type,}';
+    return 'Session{session_id: $session_id, player_id: $player_id, session_date: $session_date, shot_type: $shot_type, violations: $violations,}';
   }
 }
