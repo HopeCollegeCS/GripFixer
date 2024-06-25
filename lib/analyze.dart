@@ -177,14 +177,10 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
                       showDialog(
                           context: context,
                           builder: (_) => AlertDialog(
-                                title: const Text('AlertDialog Title'),
-                                content: const Text('AlertDialog description'),
+                                title: const Text('No available violations'),
+                                content: const Text(
+                                    'There are no violations associated with this session'),
                                 actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(context, 'Cancel'),
-                                    child: const Text('Cancel'),
-                                  ),
                                   TextButton(
                                     onPressed: () =>
                                         Navigator.pop(context, 'OK'),
