@@ -100,12 +100,12 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
         title: SizedBox(
           child: Row(
             children: [
-              const Text('Grip Strength Tool'),
-              const SizedBox(width: 10),
-              // const Icon(
-              //   Icons.sports_tennis,
-              // ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 24),
+              const Text('Grip Strength Tool',
+                  style: TextStyle(
+                    color: Color(0xFFFFFFFF),
+                  )),
+              const SizedBox(width: 45),
               Builder(
                 builder: (context) {
                   return IconButton(
@@ -138,12 +138,9 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
             margin: const EdgeInsets.only(left: 12),
             child: Row(
               children: [
-                const Text('Practicing',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Text('Practicing', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(width: 10.0),
-                Text('${state.session?.shot_type}',
-                    style: const TextStyle(fontSize: 18))
+                Text('${state.session?.shot_type}', style: const TextStyle(fontSize: 18))
               ],
             ),
           ),
@@ -151,12 +148,9 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
             margin: const EdgeInsets.only(left: 12),
             child: Row(
               children: [
-                const Text('Target Grip Strength',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Text('Target Grip Strength', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(width: 10.0),
-                Text('${state.person?.strength}',
-                    style: const TextStyle(fontSize: 18))
+                Text('${state.person?.strength}', style: const TextStyle(fontSize: 18))
               ],
             ),
           ),
@@ -164,26 +158,21 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
             margin: const EdgeInsets.only(left: 12),
             child: Row(
               children: [
-                const Text('Show violations only',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Text('Show violations only', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 Switch(
                   // This bool value toggles the switch.
                   value: watchViolations,
                   activeColor: Colors.black,
                   onChanged: (value) {
-                    if (state.session?.violations?.isEmpty == true ||
-                        state.session?.violations == null) {
+                    if (state.session?.violations?.isEmpty == true || state.session?.violations == null) {
                       showDialog(
                           context: context,
                           builder: (_) => AlertDialog(
                                 title: const Text('No available violations'),
-                                content: const Text(
-                                    'There are no violations associated with this session'),
+                                content: const Text('There are no violations associated with this session'),
                                 actions: <Widget>[
                                   TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(context, 'OK'),
+                                    onPressed: () => Navigator.pop(context, 'OK'),
                                     child: const Text('OK'),
                                   ),
                                 ],
@@ -228,8 +217,7 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
                         late int newTime;
 
                         for (int i = 0; i < numbers!.length; i++) {
-                          if (currentPosition.inSeconds >=
-                              numbers[numbers.length - 1]) {
+                          if (currentPosition.inSeconds >= numbers[numbers.length - 1]) {
                             newTime = numbers[numbers.length - 2];
                             break;
                           }
