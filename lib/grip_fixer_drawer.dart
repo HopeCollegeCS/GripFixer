@@ -2,9 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
-class GripFixerDrawer extends StatelessWidget {
+class GripFixerDrawer extends StatefulWidget {
   const GripFixerDrawer({super.key});
+
+  @override
+  GripFixerDrawerState createState() => GripFixerDrawerState();
+}
+
+getVersion() {
+  PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+    return packageInfo.version;
+  });
+}
+
+getBuildNumber() async {
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  return packageInfo.buildNumber;
+}
+
+class GripFixerDrawerState extends State<GripFixerDrawer> {
+  late String version;
+  late String buildNumber;
 
   Future<void> deletePlayerDatabase() async {
     final databasesPath = await getDatabasesPath();
