@@ -1,0 +1,71 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+
+class GripFixerDrawer extends StatelessWidget {
+  const GripFixerDrawer({super.key});
+
+  Future<void> deletePlayerDatabase() async {
+    final databasesPath = await getDatabasesPath();
+    final path = join(databasesPath, 'player_database.db');
+    await deleteDatabase(path);
+  }
+
+  void showDatabaseDeletedDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Database Successfully Deleted', textAlign: TextAlign.center),
+          content: const Text('You may need to restart the app', textAlign: TextAlign.center),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          const DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.blue,
+            ),
+            child: Text('Drawer Header'),
+          ),
+          ListTile(
+            title: const Text('Settings'),
+            onTap: () {
+              context.push("/Settings");
+            },
+          ),
+          ListTile(
+            title: const Text('Connect to Sensor'),
+            onTap: () {
+              context.push("/RacketSelectPage/PlayerSelectPage");
+            },
+          ),
+          ListTile(
+            title: const Text('Delete Database'),
+            onTap: () {
+              deletePlayerDatabase().then((_) {
+                showDatabaseDeletedDialog(context);
+              });
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
