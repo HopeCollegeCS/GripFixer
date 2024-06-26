@@ -49,6 +49,7 @@ dependencies:
   flutter_blue_plus: ^1.32.7
   syncfusion_flutter_gauges: ^25.2.7
   syncfusion_flutter_charts: ^25.2.7
+  package_info_plus: ^8.0.0
 
 dev_dependencies:
   flutter_test:
