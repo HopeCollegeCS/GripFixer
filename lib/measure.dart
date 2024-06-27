@@ -47,18 +47,24 @@ class _MeasureScreenState extends State<MeasureScreen> {
 
   void subscribeToCharacteristic(BluetoothDevice device) {
     device.discoverServices().then((services) {
-      var service = services.where((s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214")).first;
-      var requestCharacteristic =
-          service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1215")).first;
-      responseCharacteristic =
-          service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216")).first;
+      var service = services
+          .where((s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214"))
+          .first;
+      var requestCharacteristic = service.characteristics
+          .where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1215"))
+          .first;
+      responseCharacteristic = service.characteristics
+          .where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216"))
+          .first;
 
       bool averageCalculated = false;
 
       responseCharacteristic!.onValueReceived.listen((value) {
         if (!averageCalculated) {
-          values
-              .add(value[0] & 0xFF | ((value[1] & 0xFF) << 8) | ((value[2] & 0xFF) << 16) | ((value[3] & 0xFF) << 24));
+          values.add(value[0] & 0xFF |
+              ((value[1] & 0xFF) << 8) |
+              ((value[2] & 0xFF) << 16) |
+              ((value[3] & 0xFF) << 24));
         }
       });
       responseCharacteristic!.setNotifyValue(true);
@@ -76,7 +82,9 @@ class _MeasureScreenState extends State<MeasureScreen> {
           remainingTime--;
         } else {
           timer.cancel();
-          values.removeWhere((value) => value < 100); // get rid of values less than 100
+          values.removeWhere(
+              (value) => value < 100); // get rid of values less than 100
+          //all 0's exception
           strength = (values.reduce((a, b) => a + b) / values.length).round();
           state.person?.strength = strength;
           var db = state.sqfl;
@@ -138,14 +146,16 @@ class _MeasureScreenState extends State<MeasureScreen> {
                       alignment: Alignment.topLeft,
                       child: Text(
                         "Grip Strength Tool",
-                        style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 42, fontWeight: FontWeight.bold),
                       ),
                     ),
                     Align(
                       alignment: Alignment.topLeft,
                       child: Text(
                         "Measure ${state.person?.firstName}'s strength",
-                        style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                            fontSize: 30, fontWeight: FontWeight.bold),
                       ),
                     ),
                     const Align(
@@ -169,7 +179,10 @@ class _MeasureScreenState extends State<MeasureScreen> {
                       ),
                       child: const Text(
                         'Start',
-                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 18),
                       ),
                     ),
                     const SizedBox(height: 12.0),
@@ -199,7 +212,8 @@ class _MeasureScreenState extends State<MeasureScreen> {
                       ),
                       child: const Text(
                         'Let\'s Hit!',
-                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.black),
                       ),
                     ),
                   ],

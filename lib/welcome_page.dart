@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:grip_fixer/grip_fixer_drawer.dart';
+import 'package:grip_fixer/state.dart';
+import 'package:provider/provider.dart';
 // import 'package:grip_fixer/state.dart';
 // import 'package:provider/provider.dart';
 
@@ -152,8 +154,8 @@ class _WelcomePage extends State<WelcomePage> {
                 const SizedBox(width: 26.0),
                 ElevatedButton(
                   onPressed: () {
-                    // var state = Provider.of<AppState>(context, listen: false);
-                    // print(state.session?.violations);
+                    var state = Provider.of<AppState>(context, listen: false);
+                    print(state.target);
                     context.push(getButtonPath(_selectedValue!));
                   },
                   style: ElevatedButton.styleFrom(
@@ -164,7 +166,10 @@ class _WelcomePage extends State<WelcomePage> {
                   ),
                   child: const Text(
                     'Get Started',
-                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 18),
                   ),
                 )
               ],

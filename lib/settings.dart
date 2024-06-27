@@ -16,6 +16,10 @@ int forehandGroundstroke = 0;
 int forehandVolley = 0;
 int overhead = 0;
 int serve = 0;
+String forehandGroundstrokeText = "";
+String forehandVolleyText = "";
+String overheadText = "";
+String serveText = "";
 int? id;
 
 Future<int> buttonAction(BuildContext context, String stroke, int strokeValue) {
@@ -26,7 +30,11 @@ Future<int> buttonAction(BuildContext context, String stroke, int strokeValue) {
     grip_strength: strokeValue,
   );
 
-  state.setTarget(newTarget);
+  if (newTarget.stroke == state.target?.stroke) {
+    state.setTarget(newTarget);
+  }
+  state.setTargetMap(stroke, strokeValue);
+  //state.setTarget(newTarget);
   var db = state.sqfl;
   return db.updateTarget(newTarget);
 }
@@ -100,7 +108,7 @@ class _SettingsPage extends State<SettingsPage> {
                 height: 32, // Adjust this value to change the height
                 child: TextField(
                   onChanged: (text) {
-                    forehandGroundstroke = int.tryParse(text)!;
+                    forehandGroundstrokeText = text;
                   },
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(
@@ -131,7 +139,7 @@ class _SettingsPage extends State<SettingsPage> {
                 height: 32, // Adjust this value to change the height
                 child: TextField(
                   onChanged: (text) {
-                    forehandVolley = int.tryParse(text)!;
+                    forehandVolleyText = text;
                   },
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(
@@ -162,7 +170,7 @@ class _SettingsPage extends State<SettingsPage> {
                 height: 32, // Adjust this value to change the height
                 child: TextField(
                   onChanged: (text) {
-                    overhead = int.tryParse(text)!;
+                    overheadText = text;
                   },
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(
@@ -193,7 +201,7 @@ class _SettingsPage extends State<SettingsPage> {
                 height: 32, // Adjust this value to change the height
                 child: TextField(
                   onChanged: (text) {
-                    serve = int.tryParse(text)!;
+                    serveText = text;
                   },
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(
@@ -216,6 +224,10 @@ class _SettingsPage extends State<SettingsPage> {
             ElevatedButton(
               onPressed: () {
                 //use SQFlite class to insert new player, async so call .then and context.go goes inside
+                forehandGroundstroke = int.tryParse(forehandGroundstrokeText)!;
+                forehandVolley = int.tryParse(forehandVolleyText)!;
+                overhead = int.tryParse(overheadText)!;
+                serve = int.tryParse(serveText)!;
 
                 buttonAction(
                     context, "Forehand Groundstroke", forehandGroundstroke);
@@ -230,6 +242,8 @@ class _SettingsPage extends State<SettingsPage> {
                       print(
                           "Stroke: ${target.stroke}: ${target.grip_strength}");
                     }
+                    var state = Provider.of<AppState>(context, listen: false);
+                    if (state.target != null) {}
                     context.pop();
                   });
                 });

@@ -1,5 +1,5 @@
 import 'dart:collection';
-import 'dart:math';
+// import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:go_router/go_router.dart';
@@ -7,17 +7,17 @@ import 'package:grip_fixer/grip_fixer_drawer.dart';
 import 'package:grip_fixer/person.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
-import 'package:syncfusion_flutter_gauges/gauges.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
+// import 'package:syncfusion_flutter_gauges/gauges.dart';
+// import 'package:syncfusion_flutter_charts/charts.dart';
 
-class MatchingScreen extends StatefulWidget {
-  const MatchingScreen({super.key});
+class SensorReadScreen extends StatefulWidget {
+  const SensorReadScreen({super.key});
 
   @override
-  State<MatchingScreen> createState() => _MatchingScreen();
+  State<SensorReadScreen> createState() => SensorReadScreenState();
 }
 
-class _MatchingScreen extends State<MatchingScreen> {
+class SensorReadScreenState extends State<SensorReadScreen> {
   late AppState state;
   String selectedShot = "";
   Person? selectedPlayer;
@@ -79,18 +79,11 @@ class _MatchingScreen extends State<MatchingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    int calculatedIncomingStrength =
-        selectedPlayer != null && selectedPlayer!.strength != 0
-            ? (((min(currentValue, selectedPlayer!.strength!.toDouble())) /
-                            selectedPlayer!.strength!.toDouble()) *
-                        (10 - 1) +
-                    1)
-                .round()
-            : 0;
+    int calculatedIncomingStrength = currentValue.toInt();
     strengthQueue.add(calculatedIncomingStrength);
-    if (strengthQueue.length > 10) {
-      strengthQueue.removeFirst();
-    }
+    // if (strengthQueue.length > 10) {
+    //   strengthQueue.removeFirst();
+    // }
     setState(() {
       values = strengthQueue.toList();
     });
@@ -163,81 +156,18 @@ class _MatchingScreen extends State<MatchingScreen> {
                 const Align(
                   alignment: Alignment.topLeft,
                   child: Text(
-                    "Practice hitting target grip strength",
+                    "Test sensor functionality",
                     style: TextStyle(fontSize: 25),
                   ),
                 ),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    const Text(
-                      'Player',
-                      style:
-                          TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(width: 10.0),
-                    Container(
-                      width: 250,
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(4.0),
-                      ),
-                      child: DropdownButton<Person>(
-                        value: selectedPlayer,
-                        onChanged: (Person? newValue) {
-                          Person.writeToSensorNumberCharacteristic(state);
-                          setState(() {
-                            selectedPlayer = newValue;
-                          });
-                        },
-                        items: playersList.map((Person player) {
-                          return DropdownMenuItem<Person>(
-                            value: player,
-                            child: Text(player.firstName),
-                          );
-                        }).toList(),
-                        isExpanded: true,
-                        underline: const SizedBox(),
-                      ),
-                    )
-                  ],
+                const Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Resting values ranging from 0-15 is normal. However, squeezing the racket should result in values in the hundreds.",
+                    style: TextStyle(fontSize: 15),
+                  ),
                 ),
                 const SizedBox(height: 20),
-                Row(
-                  children: [
-                    const Text(
-                      'Shot',
-                      style:
-                          TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(width: 29.0),
-                    Container(
-                      width: 250,
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(4.0),
-                      ),
-                      child: DropdownButton<String>(
-                        value: selectedShot.isNotEmpty ? selectedShot : null,
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            selectedShot = newValue!;
-                          });
-                        },
-                        items: shots.keys.map((String shot) {
-                          return DropdownMenuItem<String>(
-                            value: shot,
-                            child: Text(shot),
-                          );
-                        }).toList(),
-                        isExpanded: true,
-                        underline: const SizedBox(),
-                      ),
-                    )
-                  ],
-                ),
                 const SizedBox(height: 20),
                 Row(children: [
                   const Text(
@@ -245,53 +175,12 @@ class _MatchingScreen extends State<MatchingScreen> {
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(width: 10),
-                  if (selectedPlayer != null)
-                    Text(
-                      '$calculatedIncomingStrength',
-                      style: const TextStyle(fontSize: 20),
-                    ),
+                  Text(
+                    '$calculatedIncomingStrength',
+                    style: const TextStyle(fontSize: 20),
+                  ),
                 ]),
                 const SizedBox(height: 30),
-                SfLinearGauge(
-                  minimum: 0,
-                  maximum: 10,
-                  markerPointers: [
-                    LinearShapePointer(
-                        value: shots[selectedShot]?.toDouble() ?? 0.0),
-                  ],
-                  barPointers: [
-                    LinearBarPointer(
-                      value: calculatedIncomingStrength.toDouble(),
-                      color: linearBarColor(
-                        calculatedIncomingStrength.toDouble(),
-                        shots[selectedShot]?.toDouble() ?? 0.0,
-                      ),
-                    )
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Expanded(
-                  child: SfCartesianChart(
-                    primaryXAxis: const NumericAxis(
-                      minimum: 0,
-                      maximum: 10,
-                      interval: 1,
-                    ),
-                    primaryYAxis: const NumericAxis(
-                      minimum: 0,
-                      maximum: 10,
-                      interval: 1,
-                    ),
-                    series: <LineSeries<int, int>>[
-                      LineSeries<int, int>(
-                        dataSource: values,
-                        xValueMapper: (int value, int index) => index,
-                        yValueMapper: (int value, int index) => value,
-                        animationDuration: 200,
-                      ),
-                    ],
-                  ),
-                ),
                 const SizedBox(height: 5),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -329,16 +218,5 @@ class _MatchingScreen extends State<MatchingScreen> {
       ]),
       drawer: const GripFixerDrawer(),
     );
-  }
-
-  Color linearBarColor(double barValue, double targetValue) {
-    final difference = (barValue - targetValue).abs();
-    if (difference == 0) {
-      return Colors.green;
-    } else if (difference == 1) {
-      return Colors.orange;
-    } else {
-      return Colors.red;
-    }
   }
 }

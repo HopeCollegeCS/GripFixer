@@ -70,9 +70,12 @@ class RecordingScreenState extends State<RecordingScreen> {
             margin: const EdgeInsets.only(left: 12),
             child: Row(
               children: [
-                const Text('Target Grip Strength:', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                const Text('Target Grip Strength:',
+                    style:
+                        TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                 const SizedBox(width: 10.0),
-                Text('${state.target?.grip_strength}', style: const TextStyle(fontSize: 24))
+                Text('${state.target?.grip_strength}',
+                    style: const TextStyle(fontSize: 24))
               ],
             ),
           ),
@@ -80,7 +83,8 @@ class RecordingScreenState extends State<RecordingScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               const SizedBox(width: 15),
-              const Text('Enable Feedback ', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+              const Text('Enable Feedback ',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
               Switch(
                   value: enableFeedback,
                   onChanged: (value) {
@@ -98,7 +102,9 @@ class RecordingScreenState extends State<RecordingScreen> {
                 const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Practicing: ', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                    Text('Practicing: ',
+                        style: TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.bold)),
                     SizedBox(height: 10.0),
                   ],
                 ),
@@ -131,8 +137,10 @@ class RecordingScreenState extends State<RecordingScreen> {
           // CAMERA GOES HERE
           ElevatedButton(
             onPressed: () async {
-              final enableFeedbackCharacteristic = state.enableFeedbackCharacteristic;
-              await enableFeedbackCharacteristic?.write([enableFeedback ? 1 : 0]); // 1 for true, 0 for false
+              final enableFeedbackCharacteristic =
+                  state.enableFeedbackCharacteristic;
+              await enableFeedbackCharacteristic
+                  ?.write([enableFeedback ? 1 : 0]); // 1 for true, 0 for false
               state.enableFeedback = enableFeedback;
               print('enable feedback $enableFeedback');
               context.push("/VideoRecording");
@@ -145,7 +153,10 @@ class RecordingScreenState extends State<RecordingScreen> {
             ),
             child: const Text(
               'Done',
-              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 20),
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  fontSize: 20),
             ),
           ),
         ]),

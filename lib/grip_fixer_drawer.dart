@@ -37,8 +37,10 @@ class GripFixerDrawerState extends State<GripFixerDrawer> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Database Successfully Deleted', textAlign: TextAlign.center),
-          content: const Text('You may need to restart the app', textAlign: TextAlign.center),
+          title: const Text('Database Successfully Deleted',
+              textAlign: TextAlign.center),
+          content: const Text('You may need to restart the app',
+              textAlign: TextAlign.center),
           actions: <Widget>[
             TextButton(
               child: const Text('OK'),
@@ -60,9 +62,9 @@ class GripFixerDrawerState extends State<GripFixerDrawer> {
         children: <Widget>[
           const DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.blue,
+              color: Color(0xFF5482ab),
             ),
-            child: Text('Drawer Header'),
+            child: Text(''),
           ),
           ListTile(
             title: const Text('Settings'),
@@ -84,6 +86,29 @@ class GripFixerDrawerState extends State<GripFixerDrawer> {
               });
             },
           ),
+          ListTile(
+            title: const Text('See sensor values'),
+            onTap: () {
+              context.push("/RacketSelectPage/SensorRead");
+            },
+          ),
+          FutureBuilder<PackageInfo>(
+              future: PackageInfo.fromPlatform(),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.done:
+                    return Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                          padding: const EdgeInsets.only(bottom: 40),
+                          child: Text(
+                              'Version: ${snapshot.data!.version} build ${snapshot.data!.buildNumber}')),
+                    );
+
+                  default:
+                    return const SizedBox();
+                }
+              })
         ],
       ),
     );

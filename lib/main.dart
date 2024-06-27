@@ -6,6 +6,7 @@ import 'package:grip_fixer/measure.dart';
 import 'package:grip_fixer/player_selection.dart';
 import 'package:grip_fixer/select_for_target_practice.dart';
 import 'package:grip_fixer/select_session.dart';
+import 'package:grip_fixer/sensor_read.dart';
 import 'package:grip_fixer/settings.dart';
 import 'package:grip_fixer/sqflite.dart';
 import 'package:grip_fixer/video_recording.dart';
@@ -38,7 +39,8 @@ final _router = GoRouter(
     ),
     GoRoute(
       path: "/RacketSelectPage/:nextRoute",
-      builder: (context, state) => ConnectToSensor(state.pathParameters['nextRoute']!),
+      builder: (context, state) =>
+          ConnectToSensor(state.pathParameters['nextRoute']!),
     ),
     GoRoute(
       path: "/PlayerSelectPage",
@@ -80,6 +82,10 @@ final _router = GoRouter(
       path: "/TargetGripSelect",
       builder: (context, state) => const TargetShotSelectionPage(),
     ),
+    GoRoute(
+      path: "/SensorRead",
+      builder: (context, state) => const SensorReadScreen(),
+    ),
   ],
 );
 
@@ -94,7 +100,7 @@ void createAndFillTargetsTable(var batch) {
     'insert into targets values ("Forehand Volley", 5)',
   );
   batch.execute(
-    'insert into targets values ("Overhand", 5)',
+    'insert into targets values ("Overhead", 5)',
   );
   batch.execute(
     'insert into targets values ("Serve", 5)',
