@@ -4,7 +4,6 @@
 #include <string>  
 #include <vector>  
 
-
 /*  This code sets up a Bluetooth Low Energy (BLE) peripheral device using the ArduinoBLE library. 
 It defines a BLE service and two characteristics: one for receiving requests and one for sending responses. */
 
@@ -29,24 +28,41 @@ BLEIntCharacteristic sensorNumberCharacteristic(deviceServiceSensorNumberCharact
 //2 sensors - buzz on and off until loosen and displays force values
 
 int forceSensorPin1 = A0; // Define the analog pin for the first force sensor
-const int motorPin = A1; // Define the digital pin for the motor
-int threshold = 2000; // Define the threshold value for the force sensor
+const int buzzerPin = A7; //Define the analog pin for the buzzer pin
+const int motorPin = A6; // Define the digital pin for the motor
+int threshold = 0; // Define the threshold value for the force sensor
 
 float maxGripStrength = 2000.0; // Variable to store the player's maximum grip strength
 float targetGripPercentage = 2.0; // Variable to store the target grip percentage
 bool enableFeedback = true; // Variable to store whether feedback is enabled
 int sensorNumber;
 
+// A function that audiates a beep depending on the amount of times given
+void beep(int times) {
+  for (int i = 0; i < times; i++) {
+    tone(buzzerPin, 1000); 
+    delay(1000);
+    noTone(buzzerPin);
+    delay(1000);
+  }
+}
+
 /* In the setup() function, the code initializes serial communication, sets the device name and local name for BLE, 
 starts the BLE module, sets up the BLE service and characteristics, and starts advertising the BLE service. */ 
 void setup() {
+  beep(2);
   BLE.setDeviceName("CSArduino");
   BLE.setLocalName("CSArduino");
-
+  delay(1000);
+  beep(3);
+  
   // start the BLE module
   if (!BLE.begin()) {
+    beep(2); 
     Serial.println("- Starting Bluetooth® Low Energy module failed!");
     while (1);
+  } else {
+    beep(1); // Beep once when connected
   }
 
   // The BLE service and characteristics are set up and added to the BLE device.
@@ -83,6 +99,7 @@ void setup() {
   Serial.print("Force sensor 1 is connected to analog pin: ");
   Serial.println(forceSensorPin1);
 
+  pinMode(buzzerPin, OUTPUT); // Set the motor pin as an output
   pinMode(motorPin, OUTPUT); // Set the motor pin as an output
   digitalWrite(motorPin, LOW); // Ensure motor is off initially
 }
@@ -97,6 +114,7 @@ void loop() {
   delay(500);
 
   if (central) {
+    beep(1); // Beep once when connected
     //Serial.println("* Connected to central device!");
     //Serial.print("* Device MAC address: ");
     //Serial.println(central.address());
@@ -105,6 +123,7 @@ void loop() {
     // while the central device is connected
     while (central.connected()) {
 
+      /*
       // Check if the sensor number feedback characteristic has been written to
       if (sensorNumberCharacteristic.written()) {
         sensorNumber = sensorNumberCharacteristic.value();
@@ -117,6 +136,7 @@ void loop() {
           forceSensorPin1 = A2;
         }
       }
+      */
       
       int sensorValue1 = analogRead(forceSensorPin1); // Read the analog value from the first force sensor
  
@@ -196,6 +216,8 @@ void loop() {
 
       delay(100);
     }
+    beep(2); // Beep twice when disconnected
     Serial.println("* Disconnected to central device!");
   }
 }
+
