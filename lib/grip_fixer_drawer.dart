@@ -37,10 +37,8 @@ class GripFixerDrawerState extends State<GripFixerDrawer> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Database Successfully Deleted',
-              textAlign: TextAlign.center),
-          content: const Text('You may need to restart the app',
-              textAlign: TextAlign.center),
+          title: const Text('Database Successfully Deleted', textAlign: TextAlign.center),
+          content: const Text('You may need to restart the app', textAlign: TextAlign.center),
           actions: <Widget>[
             TextButton(
               child: const Text('OK'),
@@ -87,7 +85,7 @@ class GripFixerDrawerState extends State<GripFixerDrawer> {
             },
           ),
           ListTile(
-            title: const Text('See sensor values'),
+            title: const Text('View Incoming Sensor Values'),
             onTap: () {
               context.push("/RacketSelectPage/SensorRead");
             },
@@ -101,8 +99,7 @@ class GripFixerDrawerState extends State<GripFixerDrawer> {
                       alignment: Alignment.bottomCenter,
                       child: Padding(
                           padding: const EdgeInsets.only(bottom: 40),
-                          child: Text(
-                              'Version: ${snapshot.data!.version} build ${snapshot.data!.buildNumber}')),
+                          child: Text('Version: ${snapshot.data!.version} build ${snapshot.data!.buildNumber}')),
                     );
 
                   default:
