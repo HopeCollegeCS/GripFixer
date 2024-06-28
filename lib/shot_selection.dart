@@ -162,29 +162,38 @@ class ShotSelection extends State<ShotSelectionPage> {
               child: DataTable(
                 columnSpacing: 13,
                 columns: const [
-                  DataColumn(label: SizedBox(width: 20)),
+                  //DataColumn(label: SizedBox(width: 20)),
                   DataColumn(
                       label: Text('Shots', style: TextStyle(fontSize: 20))),
                 ],
                 rows: appState.targetMap.keys.toList().map((target) {
                   return DataRow(
+                    selected:
+                        appState.targetMap.keys.toList().indexOf(target) ==
+                            selectedValue,
+                    onSelectChanged: (val) {
+                      setState(() {
+                        selectedValue =
+                            appState.targetMap.keys.toList().indexOf(target);
+                      });
+                    },
                     cells: [
-                      DataCell(
-                        SizedBox(
-                          width: 3,
-                          child: Radio(
-                            value: appState.targetMap.keys
-                                .toList()
-                                .indexOf(target),
-                            groupValue: selectedValue,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedValue = value!;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
+                      // DataCell(
+                      //   SizedBox(
+                      //     width: 3,
+                      //     child: Radio(
+                      //       groupValue: selectedValue,
+                      //       value: appState.targetMap.keys
+                      //           .toList()
+                      //           .indexOf(target),
+                      //       onChanged: (value) {
+                      //         setState(() {
+                      //           selectedValue = value!;
+                      //         });
+                      //       },
+                      //     ),
+                      //   ),
+                      // ),
                       DataCell(Text('$target',
                           style: const TextStyle(fontSize: 20))),
                     ],
