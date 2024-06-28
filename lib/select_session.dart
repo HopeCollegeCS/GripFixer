@@ -95,7 +95,7 @@ class _SelectSession extends State<SelectSession> {
               child: DataTable(
                 columnSpacing: 13,
                 columns: const [
-                  DataColumn(label: SizedBox(width: 20)),
+                  //DataColumn(label: SizedBox(width: 20)),
                   DataColumn(label: Text('Session Date')),
                   DataColumn(label: Text('Player')),
                   DataColumn(label: Text('Shot')),
@@ -104,25 +104,18 @@ class _SelectSession extends State<SelectSession> {
                 rows: sessions?.map((session) {
                       final formattedDate = session.session_date != null
                           ? DateFormat('MMM d').format(
-                              DateTime.fromMillisecondsSinceEpoch(session.session_date),
+                              DateTime.fromMillisecondsSinceEpoch(
+                                  session.session_date),
                             )
                           : 'N/A';
                       return DataRow(
+                        selected: sessions?.indexOf(session) == selectedValue,
+                        onSelectChanged: (val) {
+                          setState(() {
+                            selectedValue = sessions?.indexOf(session);
+                          });
+                        },
                         cells: [
-                          DataCell(
-                            SizedBox(
-                              width: 3,
-                              child: Radio(
-                                value: sessions?.indexOf(session),
-                                groupValue: selectedValue,
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedValue = selectedValue == value ? null : value;
-                                  });
-                                },
-                              ),
-                            ),
-                          ),
                           DataCell(Text(formattedDate)),
                           DataCell(Text('${session.player_id}')),
                           DataCell(Text('${session.shot_type}')),

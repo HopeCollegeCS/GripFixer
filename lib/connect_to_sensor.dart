@@ -48,7 +48,7 @@ class _ConnectToSensor extends State<ConnectToSensor> {
   // initiates a Bluetooth scan for 5 seconds and updates the state to trigger a rebuild
   void startScan() {
     FlutterBluePlus.startScan(
-      timeout: const Duration(seconds: 5),
+      timeout: const Duration(seconds: 30),
       withServices: <Guid>[Guid("19b10000-e8f2-537e-4f6c-d104768a1214")],
     );
 
