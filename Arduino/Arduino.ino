@@ -3,6 +3,8 @@
 // for string manipulation
 #include <string>  
 #include <vector>  
+// for IMU
+#include <Arduino_LSM6DS3.h>
 
 /*  This code sets up a Bluetooth Low Energy (BLE) peripheral device using the ArduinoBLE library. 
 It defines a BLE service and two characteristics: one for receiving requests and one for sending responses. */
@@ -26,7 +28,6 @@ BLEBoolCharacteristic enableFeedbackCharacteristic(deviceServiceEnableFeedbackCh
 BLEIntCharacteristic sensorNumberCharacteristic(deviceServiceSensorNumberCharacteristicUuid, BLEWrite | BLERead); // New characteristic for sensor number
 
 //2 sensors - buzz on and off until loosen and displays force values
-
 int forceSensorPin1 = A0; // Define the analog pin for the first force sensor
 const int buzzerPin = A7; //Define the analog pin for the buzzer pin
 const int motorPin = A6; // Define the digital pin for the motor
@@ -37,6 +38,12 @@ float targetGripPercentage = 2.0; // Variable to store the target grip percentag
 bool enableFeedback = true; // Variable to store whether feedback is enabled
 int sensorNumber;
 
+// Variables for IMU
+float x, y, z;
+float prevX, prevY, prevZ;
+float impactThreshold = 1.0; // change this to detect the threshole of hitting a tennis ball
+bool impactOccurred = false;
+
 // A function that audiates a beep depending on the amount of times given
 void beep(int times) {
   for (int i = 0; i < times; i++) {
@@ -45,6 +52,30 @@ void beep(int times) {
     noTone(buzzerPin);
     delay(1000);
   }
+}
+
+// Detects and displays impact information
+void displayImpact() {
+  // Calculate the change in acceleration
+  float deltaX = x - prevX;
+  float deltaY = y - prevY;
+  float deltaZ = z - prevZ;
+
+  // Calculate the magnitude of the impact
+  float impactMagnitude = sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+
+  // Check if the impact magnitude exceeds the threshold
+  if (impactMagnitude > impactThreshold) {
+    Serial.println("Impact detected!");
+    Serial.print("Impact magnitude: ");
+    Serial.println(impactMagnitude, 2);
+    impactOccurred = true;
+  }
+
+  // Update previous acceleration values
+  prevX = x;
+  prevY = y;
+  prevZ = z;
 }
 
 /* In the setup() function, the code initializes serial communication, sets the device name and local name for BLE, 
@@ -94,7 +125,6 @@ void setup() {
   Serial.println("Arduino R4 WiFi BLE (Peripheral Device)");
   Serial.println(" ");
 
-  // Mia and Isaac's code
   Serial.begin(9600); // Initialize serial communication at 9600 baud
   Serial.print("Force sensor 1 is connected to analog pin: ");
   Serial.println(forceSensorPin1);
@@ -102,9 +132,21 @@ void setup() {
   pinMode(buzzerPin, OUTPUT); // Set the motor pin as an output
   pinMode(motorPin, OUTPUT); // Set the motor pin as an output
   digitalWrite(motorPin, LOW); // Ensure motor is off initially
+
+  // Set up for IMU
+   if (!IMU.begin()) {
+    Serial.println("Failed to initialize IMU!");
+    while (1);
+  }
+  Serial.print("Accelerometer sample rate = ");
+  Serial.print(IMU.accelerationSampleRate());
+  Serial.println("Hz");
+
+  // Initialize previous acceleration values
+  if (IMU.accelerationAvailable()) {
+    IMU.readAcceleration(prevX, prevY, prevZ);
+  }
 }
-
-
 /* The loop() function continuously checks for a connected central device. 
 If a central device is connected, it prints a message to the serial monitor and enters a loop. */
 void loop() {
@@ -115,28 +157,13 @@ void loop() {
 
   if (central) {
     beep(1); // Beep once when connected
-    //Serial.println("* Connected to central device!");
-    //Serial.print("* Device MAC address: ");
-    //Serial.println(central.address());
-    //Serial.println(" ");
-
     // while the central device is connected
     while (central.connected()) {
-
-      /*
-      // Check if the sensor number feedback characteristic has been written to
-      if (sensorNumberCharacteristic.written()) {
-        sensorNumber = sensorNumberCharacteristic.value();
-        Serial.print("Sensor Number: ");
-        Serial.println(sensorNumber);
-        // Assign the correct sensor value
-        if(sensorNumber == 1){
-          forceSensorPin1 = A1;
-        } else if(sensorNumber == 2){
-          forceSensorPin1 = A2;
-        }
+      // Check if acceleration data is available from the IMU sensor, then read the acceleration values
+      if (IMU.accelerationAvailable()) {
+        IMU.readAcceleration(x, y, z);
+        displayImpact();
       }
-      */
       
       int sensorValue1 = analogRead(forceSensorPin1); // Read the analog value from the first force sensor
  
@@ -151,26 +178,30 @@ void loop() {
 
       if (sensorValue1 > threshold && enableFeedback) {
         digitalWrite(motorPin, HIGH); // Turn the motor on if the first force sensor value is above the threshold
-        //Serial.println("Motor ON");
-        delay(150); //on for 100 milliseconds
+        delay(150); //on for 150 milliseconds
         digitalWrite(motorPin, LOW); //
-        //Serial.println("Motor OFF");
-        delay(75); //off for 100 milliseconds
+        delay(75); //off for 75 milliseconds
       } else {
         digitalWrite(motorPin, LOW); // Turn the motor off if the first force sensor value is below the threshold
-        //Serial.println("Motor OFF");
       }
 
-      // Send the sensor values over BLE
-      if (!servoResponseCharacteristic.writeValue(sensorValue1)) {
-        Serial.println("Failed to write value for sensor 1");
+      // Check if an impact occurred
+      if (impactOccurred) {
+        // Skip sending servoResponseCharacteristic
+        Serial.println("Impact detected, skip data send");
+        delay(1000);  // Delay for 1 second
+        impactOccurred = false;  // Reset the flag
+      } else {
+        // Send the sensor values over BLE
+        if (!servoResponseCharacteristic.writeValue(sensorValue1)) {
+          Serial.println("Failed to write value for sensor 1");
+        }
       }
+
       // if the request characteristic has been written to
       if (servoRequestCharacteristic.written()) {
         // read the value from the request characteristic
         int newAngle = servoRequestCharacteristic.value();
-        //Serial.println(newAngle);
-        //Serial.println();
       }
 
       // Check if there is data available in the Serial monitor
@@ -182,8 +213,6 @@ void loop() {
         // Send the user input over BLE
         int intValue = userInput.toInt();
         servoRequestCharacteristic.writeValue(intValue);
-        //Serial.print("Sent value: ");
-        //Serial.println(intValue);
       }
 
       // Check if the max grip strength characteristic has been written to
@@ -211,8 +240,6 @@ void loop() {
 
       // Calculate the threshold based on the target grip percentage and maximum grip strength
       threshold = (maxGripStrength * targetGripPercentage);
-      //Serial.print("Threshold: ");
-      //Serial.println(threshold);
 
       delay(100);
     }
@@ -220,4 +247,3 @@ void loop() {
     Serial.println("* Disconnected to central device!");
   }
 }
-
