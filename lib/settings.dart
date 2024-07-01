@@ -46,223 +46,132 @@ class _SettingsPage extends State<SettingsPage> {
       appBar: AppBar(
         backgroundColor: const Color(0xFF5482ab),
         leading: IconButton(
-          color: (const Color(0xFFFFFFFF)),
-          onPressed: () {
-            context.pop();
-          },
+          color: const Color(0xFFFFFFFF),
+          onPressed: () => context.pop(),
           icon: const Icon(Icons.arrow_back),
         ),
-        title: SizedBox(
-          child: Row(
-            children: [
-              const Text('Grip Strength Tool'),
-              const SizedBox(width: 10),
-              // const Icon(
-              //   Icons.sports_tennis,
-              // ),
-              const SizedBox(width: 10),
-              Builder(
-                builder: (context) {
-                  return IconButton(
-                    icon: const Icon(Icons.sports_tennis),
-                    color: (const Color(0xFFFFFFFF)),
-                    onPressed: () {
-                      Scaffold.of(context).openDrawer();
-                    },
-                  );
-                },
+        title: Row(
+          children: [
+            const SizedBox(width: 24),
+            const Text(
+              'Grip Strength Tool',
+              style: TextStyle(color: Color(0xFFFFFFFF)),
+            ),
+            const Spacer(),
+            Builder(
+              builder: (context) => IconButton(
+                icon: const Icon(Icons.sports_tennis),
+                color: const Color(0xFFFFFFFF),
+                onPressed: () => Scaffold.of(context).openDrawer(),
               ),
-            ],
+            ),
+          ],
+        ),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: 28,
+              right: 28,
+              top: 20,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 30),
+                const Text(
+                  'Recommended Grip Strength',
+                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                _buildInputRow('Forehand groundstroke', (text) => forehandGroundstrokeText = text),
+                const SizedBox(height: 20),
+                _buildInputRow('Forehand volley', (text) => forehandVolleyText = text),
+                const SizedBox(height: 20),
+                _buildInputRow('Overhead', (text) => overheadText = text),
+                const SizedBox(height: 20),
+                _buildInputRow('Serve', (text) => serveText = text),
+                const SizedBox(height: 30),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () => _handleConfirm(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF5482ab),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero,
+                      ),
+                    ),
+                    child: const Text(
+                      'Confirm',
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
-      body: Center(
-          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-        const Text(
-          'Grip Strength Tool',
-          style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 20.0),
-        const Row(
-          mainAxisAlignment: MainAxisAlignment.start, // Align to the left
-          children: [
-            SizedBox(width: 28),
-            Text(
-              'Recommended Grip Strength',
-              style: TextStyle(fontSize: 25),
-            ),
-          ],
-        ),
-        const SizedBox(height: 20.0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start, // Align to the left
-          children: [
-            const SizedBox(width: 28),
-            const Text(
-              'Forehand groundstroke',
-              style: TextStyle(fontSize: 25),
-            ),
-            const SizedBox(width: 17),
-            Expanded(
-              child: SizedBox(
-                height: 32, // Adjust this value to change the height
-                child: TextField(
-                  onChanged: (text) {
-                    forehandGroundstrokeText = text;
-                  },
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.zero,
-                      borderSide: BorderSide(color: Colors.black, width: 5.0),
-                    ),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
-                  ),
-                  style: const TextStyle(fontSize: 20.0),
-                ),
-              ),
-            ),
-            const SizedBox(width: 28),
-          ],
-        ),
-        const SizedBox(height: 20.0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start, // Align to the left
-          children: [
-            const SizedBox(width: 28),
-            const Text(
-              'Forehand volley',
-              style: TextStyle(fontSize: 25),
-            ),
-            const SizedBox(width: 17),
-            Expanded(
-              child: SizedBox(
-                height: 32, // Adjust this value to change the height
-                child: TextField(
-                  onChanged: (text) {
-                    forehandVolleyText = text;
-                  },
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.zero,
-                      borderSide: BorderSide(color: Colors.black, width: 5.0),
-                    ),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
-                  ),
-                  style: const TextStyle(fontSize: 20.0),
-                ),
-              ),
-            ),
-            const SizedBox(width: 28),
-          ],
-        ),
-        const SizedBox(height: 20.0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start, // Align to the left
-          children: [
-            const SizedBox(width: 28),
-            const Text(
-              'Overhead',
-              style: TextStyle(fontSize: 25),
-            ),
-            const SizedBox(width: 17),
-            Expanded(
-              child: SizedBox(
-                height: 32, // Adjust this value to change the height
-                child: TextField(
-                  onChanged: (text) {
-                    overheadText = text;
-                  },
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.zero,
-                      borderSide: BorderSide(color: Colors.black, width: 5.0),
-                    ),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
-                  ),
-                  style: const TextStyle(fontSize: 20.0),
-                ),
-              ),
-            ),
-            const SizedBox(width: 28),
-          ],
-        ),
-        const SizedBox(height: 20.0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start, // Align to the left
-          children: [
-            const SizedBox(width: 28),
-            const Text(
-              'Serve',
-              style: TextStyle(fontSize: 25),
-            ),
-            const SizedBox(width: 17),
-            Expanded(
-              child: SizedBox(
-                height: 32, // Adjust this value to change the height
-                child: TextField(
-                  onChanged: (text) {
-                    serveText = text;
-                  },
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.zero,
-                      borderSide: BorderSide(color: Colors.black, width: 5.0),
-                    ),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
-                  ),
-                  style: const TextStyle(fontSize: 20.0),
-                ),
-              ),
-            ),
-            const SizedBox(width: 28),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(width: 20.0), // Add some spacing
-            ElevatedButton(
-              onPressed: () {
-                //use SQFlite class to insert new player, async so call .then and context.go goes inside
-                forehandGroundstroke = int.tryParse(forehandGroundstrokeText)!;
-                forehandVolley = int.tryParse(forehandVolleyText)!;
-                overhead = int.tryParse(overheadText)!;
-                serve = int.tryParse(serveText)!;
-
-                buttonAction(
-                    context, "Forehand Groundstroke", forehandGroundstroke);
-                buttonAction(context, "Forehand Volley", forehandVolley);
-                buttonAction(context, "Overhead", overhead);
-                buttonAction(context, "Serve", serve).then((newTarget) {
-                  var appState = Provider.of<AppState>(context, listen: false);
-
-                  appState.sqfl.grip_strength_targets().then((targets) {
-                    print("Targets: ");
-                    for (Target target in targets) {
-                      print(
-                          "Stroke: ${target.stroke}: ${target.grip_strength}");
-                    }
-                    var state = Provider.of<AppState>(context, listen: false);
-                    if (state.target != null) {}
-                    context.pop();
-                  });
-                });
-              },
-              style: ElevatedButton.styleFrom(
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.zero, // Make the button square
-                ),
-              ),
-              child: const Text(
-                'Confirm',
-                style:
-                    TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-              ),
-            )
-          ],
-        ),
-      ])),
       drawer: const GripFixerDrawer(),
     );
+  }
+
+  Widget _buildInputRow(String label, Function(String) onChanged) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 2,
+          child: Text(
+            label,
+            style: const TextStyle(fontSize: 25),
+          ),
+        ),
+        Expanded(
+          flex: 1,
+          child: SizedBox(
+            height: 32,
+            child: TextField(
+              onChanged: onChanged,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.zero,
+                  borderSide: BorderSide(color: Colors.black, width: 5.0),
+                ),
+                contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
+              ),
+              style: const TextStyle(fontSize: 20.0),
+              keyboardType: TextInputType.number,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _handleConfirm(BuildContext context) {
+    forehandGroundstroke = int.tryParse(forehandGroundstrokeText) ?? 0;
+    forehandVolley = int.tryParse(forehandVolleyText) ?? 0;
+    overhead = int.tryParse(overheadText) ?? 0;
+    serve = int.tryParse(serveText) ?? 0;
+
+    buttonAction(context, "Forehand Groundstroke", forehandGroundstroke);
+    buttonAction(context, "Forehand Volley", forehandVolley);
+    buttonAction(context, "Overhead", overhead);
+    buttonAction(context, "Serve", serve).then((newTarget) {
+      var appState = Provider.of<AppState>(context, listen: false);
+
+      appState.sqfl.grip_strength_targets().then((targets) {
+        print("Targets: ");
+        for (Target target in targets) {
+          print("Stroke: ${target.stroke}: ${target.grip_strength}");
+        }
+        var state = Provider.of<AppState>(context, listen: false);
+        if (state.target != null) {}
+        context.pop();
+      });
+    });
   }
 }

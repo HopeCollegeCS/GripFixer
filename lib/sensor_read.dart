@@ -47,22 +47,16 @@ class SensorReadScreenState extends State<SensorReadScreen> {
   void subscribeToCharacteristic(BluetoothDevice device) {
     late int receivedValue;
     device.discoverServices().then((services) {
-      var service = services
-          .where((s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214"))
-          .first;
-      var requestCharacteristic = service.characteristics
-          .where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1215"))
-          .first;
-      responseCharacteristic = service.characteristics
-          .where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216"))
-          .first;
+      var service = services.where((s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214")).first;
+      var requestCharacteristic =
+          service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1215")).first;
+      responseCharacteristic =
+          service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216")).first;
 
       responseCharacteristic!.onValueReceived.listen((value) {
         if (!isStarted) {
-          receivedValue = (value[0] & 0xFF |
-              ((value[1] & 0xFF) << 8) |
-              ((value[2] & 0xFF) << 16) |
-              ((value[3] & 0xFF) << 24));
+          receivedValue =
+              (value[0] & 0xFF | ((value[1] & 0xFF) << 8) | ((value[2] & 0xFF) << 16) | ((value[3] & 0xFF) << 24));
           if (!isPaused && mounted) {
             setState(() {
               isConnectedToBluetooth = true; // bluetooth connected
@@ -81,9 +75,6 @@ class SensorReadScreenState extends State<SensorReadScreen> {
   Widget build(BuildContext context) {
     int calculatedIncomingStrength = currentValue.toInt();
     strengthQueue.add(calculatedIncomingStrength);
-    // if (strengthQueue.length > 10) {
-    //   strengthQueue.removeFirst();
-    // }
     setState(() {
       values = strengthQueue.toList();
     });
@@ -153,13 +144,16 @@ class SensorReadScreenState extends State<SensorReadScreen> {
             child: Container(
               margin: const EdgeInsets.only(left: 12, right: 12, top: 10),
               child: Column(children: [
+                const SizedBox(height: 20),
                 const Align(
                   alignment: Alignment.topLeft,
                   child: Text(
                     "Test sensor functionality",
-                    style: TextStyle(fontSize: 25),
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
                   ),
                 ),
+                const SizedBox(height: 20),
                 const Align(
                   alignment: Alignment.topLeft,
                   child: Text(
@@ -167,7 +161,6 @@ class SensorReadScreenState extends State<SensorReadScreen> {
                     style: TextStyle(fontSize: 15),
                   ),
                 ),
-                const SizedBox(height: 20),
                 const SizedBox(height: 20),
                 Row(children: [
                   const Text(
@@ -186,12 +179,21 @@ class SensorReadScreenState extends State<SensorReadScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF5482ab),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero,
+                        ),
+                      ),
                       onPressed: () {
                         setState(() {
                           isPaused = !isPaused;
                         });
                       },
-                      child: Text(isPaused ? 'Resume' : 'Pause'),
+                      child: Text(
+                        isPaused ? 'Resume' : 'Pause',
+                        style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
+                      ),
                     ),
                   ],
                 ),
