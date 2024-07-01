@@ -21,140 +21,122 @@ class _SelectSession extends State<SelectSession> {
   @override
   Widget build(BuildContext context) {
     if (!isLoaded) {
-      // getting the state
       var state = Provider.of<AppState>(context);
-      // getting the database from the state
       var db = state.sqfl;
-      // // getting the list from the database
-
       db.sessions().then((sessionList) {
-        final sessions = [
-          // ... (the spread operator) to create a new list that includes all the elements from playerList and New Player... at the end
-          ...sessionList,
-        ];
+        final sessions = [...sessionList];
         setState(() {
           this.sessions = sessions;
           isLoaded = true;
         });
       });
     }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF5482ab),
         leading: IconButton(
-          color: (const Color(0xFFFFFFFF)),
-          onPressed: () {
-            context.pop();
-          },
+          color: const Color(0xFFFFFFFF),
+          onPressed: () => context.pop(),
           icon: const Icon(Icons.arrow_back),
         ),
-        title: SizedBox(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              const SizedBox(width: 24),
-              const Text('Grip Strength Tool',
-                  style: TextStyle(
-                    color: Color(0xFFFFFFFF),
-                  )),
-              const SizedBox(width: 45),
-              Builder(
-                builder: (context) {
-                  return IconButton(
-                    icon: const Icon(Icons.sports_tennis),
-                    color: (const Color(0xFFFFFFFF)),
-                    onPressed: () {
-                      Scaffold.of(context).openDrawer();
-                    },
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const SizedBox(height: 60.0),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(width: 10),
-                Text(
-                  'Available Sessions',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(width: 16.0),
-              ],
-            ),
-
-            //start on video stuff
-            SizedBox(
-              child: DataTable(
-                columnSpacing: 13,
-                columns: const [
-                  //DataColumn(label: SizedBox(width: 20)),
-                  DataColumn(label: Text('Session Date')),
-                  DataColumn(label: Text('Player')),
-                  DataColumn(label: Text('Shot')),
-                ],
-                border: TableBorder.all(),
-                rows: sessions?.map((session) {
-                      final formattedDate = session.session_date != null
-                          ? DateFormat('MMM d').format(
-                              DateTime.fromMillisecondsSinceEpoch(
-                                  session.session_date),
-                            )
-                          : 'N/A';
-                      return DataRow(
-                        selected: sessions?.indexOf(session) == selectedValue,
-                        onSelectChanged: (val) {
-                          setState(() {
-                            selectedValue = sessions?.indexOf(session);
-                          });
-                        },
-                        cells: [
-                          DataCell(Text(formattedDate)),
-                          DataCell(Text('${session.player_id}')),
-                          DataCell(Text('${session.shot_type}')),
-                        ],
-                      );
-                    }).toList() ??
-                    [],
+            const Text('Grip Strength Tool', style: TextStyle(color: Color(0xFFFFFFFF))),
+            Builder(
+              builder: (context) => IconButton(
+                icon: const Icon(Icons.sports_tennis),
+                color: const Color(0xFFFFFFFF),
+                onPressed: () => Scaffold.of(context).openDrawer(),
               ),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const SizedBox(width: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    context.push("/AnalyzePage");
-                    var state = Provider.of<AppState>(context, listen: false);
-                    int value = selectedValue!;
-                    state.session = sessions?[value];
-                    //check if video exists?
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero,
-                    ),
-                  ),
-                  child: const Text(
-                    'Analyze',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ],
             ),
           ],
         ),
+      ),
+      body: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          return SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 60.0),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Available Sessions',
+                          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  DataTable(
+                    columnSpacing: 13,
+                    columns: const [
+                      DataColumn(label: Text('Date')),
+                      DataColumn(label: Text('Player')),
+                      DataColumn(label: Text('Shot')),
+                    ],
+                    rows: sessions?.map((session) {
+                          final formattedDate = session.session_date != null
+                              ? DateFormat('MMM d').format(
+                                  DateTime.fromMillisecondsSinceEpoch(session.session_date),
+                                )
+                              : 'N/A';
+                          return DataRow(
+                            selected: sessions?.indexOf(session) == selectedValue,
+                            onSelectChanged: (val) {
+                              setState(() {
+                                selectedValue = sessions?.indexOf(session);
+                              });
+                            },
+                            cells: [
+                              DataCell(Text(formattedDate)),
+                              DataCell(Text('${session.firstName}')),
+                              DataCell(Text('${session.shot_type}')),
+                            ],
+                          );
+                        }).toList() ??
+                        [],
+                  ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Row(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            context.push("/AnalyzePage");
+                            var state = Provider.of<AppState>(context, listen: false);
+                            int value = selectedValue!;
+                            state.session = sessions?[value];
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.zero,
+                            ),
+                          ),
+                          child: const Text(
+                            'Analyze',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
       drawer: const GripFixerDrawer(),
     );

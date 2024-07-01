@@ -129,13 +129,10 @@ class TargetShotSelection extends State<TargetShotSelectionPage> {
                 //rows: appState.targetMap.keys.toList() ?? [],
                 rows: appState.targetMap.keys.toList().map((target) {
                   return DataRow(
-                    selected:
-                        appState.targetMap.keys.toList().indexOf(target) ==
-                            selectedValue,
+                    selected: appState.targetMap.keys.toList().indexOf(target) == selectedValue,
                     onSelectChanged: (val) {
                       setState(() {
-                        selectedValue =
-                            appState.targetMap.keys.toList().indexOf(target);
+                        selectedValue = appState.targetMap.keys.toList().indexOf(target);
                       });
                     },
                     cells: [
@@ -166,9 +163,7 @@ class TargetShotSelection extends State<TargetShotSelectionPage> {
                 ElevatedButton(
                   onPressed: () {
                     //use SQFlite class to insert new player, async so call .then and context.go goes inside
-                    buttonAction(context,
-                            appState.targetMap.keys.toList()[selectedValue])
-                        .then((newSessionId) {
+                    buttonAction(context, appState.targetMap.keys.toList()[selectedValue]).then((newSessionId) {
                       appState.session?.session_id = newSessionId;
                       context.push("/MatchingPage");
                     });
@@ -180,8 +175,7 @@ class TargetShotSelection extends State<TargetShotSelectionPage> {
                   ),
                   child: const Text(
                     'Let\'s Hit!',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.black),
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                   ),
                 )
               ],

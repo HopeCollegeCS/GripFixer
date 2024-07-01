@@ -40,6 +40,6 @@ class Session {
   // each player when using the print statement.
   @override
   String toString() {
-    return 'Session{session_id: $session_id, player_id: $player_id, session_date: $session_date, shot_type: $shot_type, violations: $violations,}';
+    return 'Session{session_id: $session_id, player_id: $player_id, session_date: $session_date, shot_type: $shot_type, violations: $violations}';
   }
 }
