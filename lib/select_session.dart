@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:grip_fixer/grip_fixer_drawer.dart';
-import 'package:grip_fixer/person.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
 import 'package:grip_fixer/session.dart';
@@ -17,32 +16,31 @@ class SelectSession extends StatefulWidget {
 class _SelectSession extends State<SelectSession> {
   int? selectedValue = 0;
   List<Session>? sessions = []; // stores the list of sessions
-  List<Person> players = [];
-  bool isLoadedSession = false;
-  bool isLoadedPlayer = false;
+  bool isLoaded = false;
 
   @override
   Widget build(BuildContext context) {
-    var state = Provider.of<AppState>(context);
-    var db = state.sqfl;
-    if (!isLoadedSession) {
-      db.sessions().then((sessionList) {
-        final sessions = [...sessionList];
+    if (!isLoaded) {
+      var state = Provider.of<AppState>(context);
+      var db = state.sqfl;
+      db.getSessionsWithPlayerNames().then((sessionList) {
+        final sessions = sessionList
+            .map((session) => Session(
+                  session_id: session['session_id'],
+                  player_id: session['player_id'],
+                  session_date: session['session_date'],
+                  shot_type: session['shot_type'],
+                  violations: session['violations'],
+                  playerName: session['firstName'],
+                ))
+            .toList();
         setState(() {
           this.sessions = sessions;
-          isLoadedSession = true;
+          isLoaded = true;
         });
       });
     }
-    if (!isLoadedPlayer) {
-      db.players().then((playerList) {
-        final players = [...playerList];
-        setState(() {
-          this.players = players;
-          isLoadedPlayer = true;
-        });
-      });
-    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF5482ab),
@@ -72,22 +70,19 @@ class _SelectSession extends State<SelectSession> {
             child: ConstrainedBox(
               constraints: BoxConstraints(minHeight: constraints.maxHeight),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 60.0),
+                  const SizedBox(height: 40.0),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(
-                      children: [
-                        Text(
-                          'Available Sessions',
-                          style: TextStyle(
-                              fontSize: 28, fontWeight: FontWeight.bold),
-                        ),
-                      ],
+                    child: Text(
+                      'Available Sessions',
+                      style:
+                          TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 4),
                   DataTable(
                     columnSpacing: 13,
                     columns: const [
@@ -112,8 +107,7 @@ class _SelectSession extends State<SelectSession> {
                             },
                             cells: [
                               DataCell(Text(formattedDate)),
-                              //Currently treats player id as an index and throws an error
-                              DataCell(Text('${session.player_id}')),
+                              DataCell(Text(session.playerName ?? 'Unknown')),
                               DataCell(Text('${session.shot_type}')),
                             ],
                           );
@@ -123,30 +117,27 @@ class _SelectSession extends State<SelectSession> {
                   const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            context.push("/AnalyzePage");
-                            var state =
-                                Provider.of<AppState>(context, listen: false);
-                            int value = selectedValue!;
-                            state.session = sessions?[value];
-                          },
-                          style: ElevatedButton.styleFrom(
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.zero,
-                            ),
-                          ),
-                          child: const Text(
-                            'Analyze',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        context.push("/AnalyzePage");
+                        var state =
+                            Provider.of<AppState>(context, listen: false);
+                        int value = selectedValue!;
+                        state.session = sessions?[value];
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF5482ab),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero,
                         ),
-                      ],
+                      ),
+                      child: const Text(
+                        'Analyze',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 16),
+                      ),
                     ),
                   ),
                 ],

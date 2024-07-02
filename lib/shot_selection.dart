@@ -56,17 +56,11 @@ Future<int> buttonAction(BuildContext context, String gripTarget) {
 }
 
 class ShotSelection extends State<ShotSelectionPage> {
-  void writeToTargetGripPercentageCharacteristic(
-      AppState state, String shot) async {
-    final targetGripPercentageCharacteristic =
-        state.targetGripPercentageCharacteristic;
+  void writeToTargetGripPercentageCharacteristic(AppState state, String shot) async {
+    final targetGripPercentageCharacteristic = state.targetGripPercentageCharacteristic;
     int shotStrength = state.targetMap[shot]!;
-    await targetGripPercentageCharacteristic?.write([
-      shotStrength & 0xFF,
-      (shotStrength >> 8) & 0xFF,
-      (shotStrength >> 16) & 0xFF,
-      (shotStrength >> 24) & 0xFF
-    ]);
+    await targetGripPercentageCharacteristic?.write(
+        [shotStrength & 0xFF, (shotStrength >> 8) & 0xFF, (shotStrength >> 16) & 0xFF, (shotStrength >> 24) & 0xFF]);
     print('got here to send $shotStrength characteristic');
   }
 
@@ -75,12 +69,8 @@ class ShotSelection extends State<ShotSelectionPage> {
     final strength = state.person?.strength;
 
     if (maxGripStrengthCharacteristic != null && strength != null) {
-      await maxGripStrengthCharacteristic.write([
-        strength & 0xFF,
-        (strength >> 8) & 0xFF,
-        (strength >> 16) & 0xFF,
-        (strength >> 24) & 0xFF
-      ]);
+      await maxGripStrengthCharacteristic
+          .write([strength & 0xFF, (strength >> 8) & 0xFF, (strength >> 16) & 0xFF, (strength >> 24) & 0xFF]);
       print('Sent $strength characteristic');
     } else {
       print('Failed to send characteristic');
@@ -90,15 +80,11 @@ class ShotSelection extends State<ShotSelectionPage> {
   void writeToSensorNumberCharacteristic(AppState state) async {
     final sensorNumberCharacteristic = state.sensorNumberCharacteristic;
     int sensorNumber = 0;
-    if ((state.person?.hand == 'Right' &&
-            state.person?.forehandGrip == 'Continental') ||
-        (state.person?.hand == 'Left' &&
-            state.person?.forehandGrip == 'Semi-Western')) {
+    if ((state.person?.hand == 'Right' && state.person?.forehandGrip == 'Continental') ||
+        (state.person?.hand == 'Left' && state.person?.forehandGrip == 'Semi-Western')) {
       sensorNumber = 2;
-    } else if ((state.person?.hand == 'Right' &&
-            state.person?.forehandGrip == 'Semi-Western') ||
-        (state.person?.hand == 'Left' &&
-            state.person?.forehandGrip == 'Continental')) {
+    } else if ((state.person?.hand == 'Right' && state.person?.forehandGrip == 'Semi-Western') ||
+        (state.person?.hand == 'Left' && state.person?.forehandGrip == 'Continental')) {
       sensorNumber = 1;
     }
     await sensorNumberCharacteristic!.write([sensorNumber]);
@@ -152,9 +138,7 @@ class ShotSelection extends State<ShotSelectionPage> {
             const Row(
               children: [
                 SizedBox(width: 20.0),
-                Text('Select shot:',
-                    style:
-                        TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+                Text('Select shot:', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
               ],
             ),
             const SizedBox(height: 1.0),
@@ -162,40 +146,20 @@ class ShotSelection extends State<ShotSelectionPage> {
               child: DataTable(
                 columnSpacing: 13,
                 columns: const [
-                  //DataColumn(label: SizedBox(width: 20)),
                   DataColumn(
-                      label: Text('Shots', style: TextStyle(fontSize: 20))),
+                    label: Text('Shots', style: TextStyle(fontSize: 20)),
+                  ),
                 ],
                 rows: appState.targetMap.keys.toList().map((target) {
                   return DataRow(
-                    selected:
-                        appState.targetMap.keys.toList().indexOf(target) ==
-                            selectedValue,
+                    selected: appState.targetMap.keys.toList().indexOf(target) == selectedValue,
                     onSelectChanged: (val) {
                       setState(() {
-                        selectedValue =
-                            appState.targetMap.keys.toList().indexOf(target);
+                        selectedValue = appState.targetMap.keys.toList().indexOf(target);
                       });
                     },
                     cells: [
-                      // DataCell(
-                      //   SizedBox(
-                      //     width: 3,
-                      //     child: Radio(
-                      //       groupValue: selectedValue,
-                      //       value: appState.targetMap.keys
-                      //           .toList()
-                      //           .indexOf(target),
-                      //       onChanged: (value) {
-                      //         setState(() {
-                      //           selectedValue = value!;
-                      //         });
-                      //       },
-                      //     ),
-                      //   ),
-                      // ),
-                      DataCell(Text('$target',
-                          style: const TextStyle(fontSize: 20))),
+                      DataCell(Text('$target', style: const TextStyle(fontSize: 20))),
                     ],
                   );
                 }).toList(),
@@ -209,13 +173,11 @@ class ShotSelection extends State<ShotSelectionPage> {
                 ElevatedButton(
                   onPressed: () {
                     //use SQFlite class to insert new player, async so call .then and context.go goes inside
-                    buttonAction(context,
-                            appState.targetMap.keys.toList()[selectedValue])
-                        .then((newSessionId) {
+                    buttonAction(context, appState.targetMap.keys.toList()[selectedValue]).then((newSessionId) {
                       appState.session?.session_id = newSessionId;
                       print(appState.person.toString());
-                      writeToTargetGripPercentageCharacteristic(appState,
-                          appState.targetMap.keys.toList()[selectedValue]);
+                      writeToTargetGripPercentageCharacteristic(
+                          appState, appState.targetMap.keys.toList()[selectedValue]);
                       writeToMaxGripStrengthCharacteristic(appState);
                       writeToSensorNumberCharacteristic(appState);
 
@@ -230,10 +192,7 @@ class ShotSelection extends State<ShotSelectionPage> {
                   ),
                   child: const Text(
                     'Let\'s Hit!',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 18),
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
                   ),
                 )
               ],

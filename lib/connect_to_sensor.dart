@@ -205,7 +205,7 @@ class _ConnectToSensor extends State<ConnectToSensor> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Stack(
-                    alignment: Alignment.center, // Center the CircularProgressIndicator
+                    alignment: Alignment.center,
                     children: [
                       Align(
                         alignment: Alignment.centerLeft,
@@ -230,9 +230,9 @@ class _ConnectToSensor extends State<ConnectToSensor> {
                               borderRadius: BorderRadius.zero,
                             ),
                           ),
-                          child: const Text(
-                            'Connect',
-                            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
+                          child: Text(
+                            state.bluetoothDevice != null ? 'Continue' : 'Connect',
+                            style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
                           ),
                         ),
                       ),
