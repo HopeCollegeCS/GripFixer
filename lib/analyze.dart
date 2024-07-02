@@ -17,6 +17,7 @@ class AnalyzeScreen extends StatefulWidget {
 
 int excess = 0;
 int seconds = 0;
+var personStrength;
 
 Future<void> showMyDialog(BuildContext context) async {
   return showDialog<void>(
@@ -86,6 +87,9 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
 
   Widget build(BuildContext context) {
     var state = Provider.of<AppState>(context, listen: false);
+    state.sqfl.getPlayerfromSession().then((player) {
+      personStrength = player.keys[10];
+    });
     List? numbers = state.session!.violations;
     return Scaffold(
       appBar: AppBar(
@@ -138,9 +142,12 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
             margin: const EdgeInsets.only(left: 12),
             child: Row(
               children: [
-                const Text('Practicing', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Text('Practicing',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(width: 10.0),
-                Text('${state.session?.shot_type}', style: const TextStyle(fontSize: 18))
+                Text('${state.session?.shot_type}',
+                    style: const TextStyle(fontSize: 18))
               ],
             ),
           ),
@@ -148,9 +155,12 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
             margin: const EdgeInsets.only(left: 12),
             child: Row(
               children: [
-                const Text('Target Grip Strength', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Text('Target Grip Strength',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(width: 10.0),
-                Text('${state.person?.strength}', style: const TextStyle(fontSize: 18))
+                Text('${state.person?.strength}',
+                    style: const TextStyle(fontSize: 18))
               ],
             ),
           ),
@@ -158,21 +168,26 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
             margin: const EdgeInsets.only(left: 12),
             child: Row(
               children: [
-                const Text('Show violations only', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Text('Show violations only',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 Switch(
                   // This bool value toggles the switch.
                   value: watchViolations,
                   activeColor: Colors.black,
                   onChanged: (value) {
-                    if (state.session?.violations?.isEmpty == true || state.session?.violations == null) {
+                    if (state.session?.violations?.isEmpty == true ||
+                        state.session?.violations == null) {
                       showDialog(
                           context: context,
                           builder: (_) => AlertDialog(
                                 title: const Text('No available violations'),
-                                content: const Text('There are no violations associated with this session'),
+                                content: const Text(
+                                    'There are no violations associated with this session'),
                                 actions: <Widget>[
                                   TextButton(
-                                    onPressed: () => Navigator.pop(context, 'OK'),
+                                    onPressed: () =>
+                                        Navigator.pop(context, 'OK'),
                                     child: const Text('OK'),
                                   ),
                                 ],
@@ -217,7 +232,8 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
                         late int newTime;
 
                         for (int i = 0; i < numbers!.length; i++) {
-                          if (currentPosition.inSeconds >= numbers[numbers.length - 1]) {
+                          if (currentPosition.inSeconds >=
+                              numbers[numbers.length - 1]) {
                             newTime = numbers[numbers.length - 2];
                             break;
                           }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:grip_fixer/grip_fixer_drawer.dart';
+import 'package:grip_fixer/person.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
 import 'package:grip_fixer/session.dart';
@@ -16,22 +17,32 @@ class SelectSession extends StatefulWidget {
 class _SelectSession extends State<SelectSession> {
   int? selectedValue = 0;
   List<Session>? sessions = []; // stores the list of sessions
-  bool isLoaded = false;
+  List<Person> players = [];
+  bool isLoadedSession = false;
+  bool isLoadedPlayer = false;
 
   @override
   Widget build(BuildContext context) {
-    if (!isLoaded) {
-      var state = Provider.of<AppState>(context);
-      var db = state.sqfl;
+    var state = Provider.of<AppState>(context);
+    var db = state.sqfl;
+    if (!isLoadedSession) {
       db.sessions().then((sessionList) {
         final sessions = [...sessionList];
         setState(() {
           this.sessions = sessions;
-          isLoaded = true;
+          isLoadedSession = true;
         });
       });
     }
-
+    if (!isLoadedPlayer) {
+      db.players().then((playerList) {
+        final players = [...playerList];
+        setState(() {
+          this.players = players;
+          isLoadedPlayer = true;
+        });
+      });
+    }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF5482ab),
@@ -43,7 +54,8 @@ class _SelectSession extends State<SelectSession> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('Grip Strength Tool', style: TextStyle(color: Color(0xFFFFFFFF))),
+            const Text('Grip Strength Tool',
+                style: TextStyle(color: Color(0xFFFFFFFF))),
             Builder(
               builder: (context) => IconButton(
                 icon: const Icon(Icons.sports_tennis),
@@ -69,7 +81,8 @@ class _SelectSession extends State<SelectSession> {
                       children: [
                         Text(
                           'Available Sessions',
-                          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 28, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -85,11 +98,13 @@ class _SelectSession extends State<SelectSession> {
                     rows: sessions?.map((session) {
                           final formattedDate = session.session_date != null
                               ? DateFormat('MMM d').format(
-                                  DateTime.fromMillisecondsSinceEpoch(session.session_date),
+                                  DateTime.fromMillisecondsSinceEpoch(
+                                      session.session_date),
                                 )
                               : 'N/A';
                           return DataRow(
-                            selected: sessions?.indexOf(session) == selectedValue,
+                            selected:
+                                sessions?.indexOf(session) == selectedValue,
                             onSelectChanged: (val) {
                               setState(() {
                                 selectedValue = sessions?.indexOf(session);
@@ -97,7 +112,8 @@ class _SelectSession extends State<SelectSession> {
                             },
                             cells: [
                               DataCell(Text(formattedDate)),
-                              DataCell(Text('${session.firstName}')),
+                              //Currently treats player id as an index and throws an error
+                              DataCell(Text('${session.player_id}')),
                               DataCell(Text('${session.shot_type}')),
                             ],
                           );
@@ -112,7 +128,8 @@ class _SelectSession extends State<SelectSession> {
                         ElevatedButton(
                           onPressed: () {
                             context.push("/AnalyzePage");
-                            var state = Provider.of<AppState>(context, listen: false);
+                            var state =
+                                Provider.of<AppState>(context, listen: false);
                             int value = selectedValue!;
                             state.session = sessions?[value];
                           },

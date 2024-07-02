@@ -203,7 +203,8 @@ class SqfliteClass {
     final db = await database;
 
     // Query the table for all the players.
-    final List<Map<String, Object?>> sessionMeasurementMaps = await db.query('sessionMeasurements');
+    final List<Map<String, Object?>> sessionMeasurementMaps =
+        await db.query('sessionMeasurements');
 
     // Convert the list of each player's fields into a list of `Person` objects.
     return [
@@ -220,12 +221,21 @@ class SqfliteClass {
     ];
   }
 
-  Future<int> insertSessionMeasurement(SessionMeasurements sessionMeasurement) async {
+  getPlayerfromSession() async {
+    final db = await database;
+
+    return await db.rawQuery(
+        "SELECT * FROM sessions JOIN players ON sessions.player_id=players.player_id");
+  }
+
+  Future<int> insertSessionMeasurement(
+      SessionMeasurements sessionMeasurement) async {
     // Get a reference to the database.
     final db = await database;
 
     bool tableExists = await db
-            .rawQuery("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='session_measurements'")
+            .rawQuery(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='session_measurements'")
             .then((value) => Sqflite.firstIntValue(value) ?? 0) >
         0;
     if (!tableExists) {
