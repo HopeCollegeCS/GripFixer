@@ -244,4 +244,16 @@ class SqfliteClass {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
+
+  Future<List<Map<String, dynamic>>> getSessionsWithPlayerNames() async {
+    final db = await database;
+
+    final List<Map<String, dynamic>> result = await db.rawQuery('''
+    SELECT s.*, p.firstName
+    FROM sessions s
+    INNER JOIN players p ON s.player_id = p.player_id
+  ''');
+
+    return result;
+  }
 }

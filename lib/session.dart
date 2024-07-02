@@ -6,14 +6,10 @@ class Session {
   int session_date;
   String? shot_type;
   List? violations;
+  String? playerName;
 
-  Session({
-    this.session_id,
-    this.player_id,
-    required this.session_date,
-    this.shot_type,
-    this.violations,
-  });
+  Session(
+      {this.session_id, this.player_id, required this.session_date, this.shot_type, this.violations, this.playerName});
 
   Session setSession(Session session) {
     session_id = session.session_id;

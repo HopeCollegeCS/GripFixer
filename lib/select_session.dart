@@ -23,8 +23,17 @@ class _SelectSession extends State<SelectSession> {
     if (!isLoaded) {
       var state = Provider.of<AppState>(context);
       var db = state.sqfl;
-      db.sessions().then((sessionList) {
-        final sessions = [...sessionList];
+      db.getSessionsWithPlayerNames().then((sessionList) {
+        final sessions = sessionList
+            .map((session) => Session(
+                  session_id: session['session_id'],
+                  player_id: session['player_id'],
+                  session_date: session['session_date'],
+                  shot_type: session['shot_type'],
+                  violations: session['violations'],
+                  playerName: session['firstName'],
+                ))
+            .toList();
         setState(() {
           this.sessions = sessions;
           isLoaded = true;
@@ -60,21 +69,18 @@ class _SelectSession extends State<SelectSession> {
             child: ConstrainedBox(
               constraints: BoxConstraints(minHeight: constraints.maxHeight),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 60.0),
+                  const SizedBox(height: 40.0),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(
-                      children: [
-                        Text(
-                          'Available Sessions',
-                          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-                        ),
-                      ],
+                    child: Text(
+                      'Available Sessions',
+                      style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 4),
                   DataTable(
                     columnSpacing: 13,
                     columns: const [
@@ -97,7 +103,7 @@ class _SelectSession extends State<SelectSession> {
                             },
                             cells: [
                               DataCell(Text(formattedDate)),
-                              DataCell(Text('${session.player_id}')),
+                              DataCell(Text(session.playerName ?? 'Unknown')),
                               DataCell(Text('${session.shot_type}')),
                             ],
                           );
@@ -107,29 +113,23 @@ class _SelectSession extends State<SelectSession> {
                   const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            context.push("/AnalyzePage");
-                            var state = Provider.of<AppState>(context, listen: false);
-                            int value = selectedValue!;
-                            state.session = sessions?[value];
-                          },
-                          style: ElevatedButton.styleFrom(
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.zero,
-                            ),
-                          ),
-                          child: const Text(
-                            'Analyze',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        context.push("/AnalyzePage");
+                        var state = Provider.of<AppState>(context, listen: false);
+                        int value = selectedValue!;
+                        state.session = sessions?[value];
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF5482ab),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero,
                         ),
-                      ],
+                      ),
+                      child: const Text(
+                        'Analyze',
+                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16),
+                      ),
                     ),
                   ),
                 ],
