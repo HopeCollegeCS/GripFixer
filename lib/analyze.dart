@@ -17,7 +17,6 @@ class AnalyzeScreen extends StatefulWidget {
 
 int excess = 0;
 int seconds = 0;
-var personStrength;
 
 Future<void> showMyDialog(BuildContext context) async {
   return showDialog<void>(
@@ -87,9 +86,7 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
 
   Widget build(BuildContext context) {
     var state = Provider.of<AppState>(context, listen: false);
-    state.sqfl.getPlayerfromSession().then((player) {
-      personStrength = player.keys[10];
-    });
+
     List? numbers = state.session!.violations;
     return Scaffold(
       appBar: AppBar(
