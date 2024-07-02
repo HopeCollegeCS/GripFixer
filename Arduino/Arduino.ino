@@ -28,9 +28,9 @@ BLEBoolCharacteristic enableFeedbackCharacteristic(deviceServiceEnableFeedbackCh
 BLEIntCharacteristic sensorNumberCharacteristic(deviceServiceSensorNumberCharacteristicUuid, BLEWrite | BLERead); // New characteristic for sensor number
 
 //2 sensors - buzz on and off until loosen and displays force values
-int forceSensorPin1 = A0; // Define the analog pin for the first force sensor
+int forceSensorPin1 = A4; // Define the analog pin for the first force sensor
 const int buzzerPin = A7; //Define the analog pin for the buzzer pin
-const int motorPin = A6; // Define the digital pin for the motor
+const int motorPin = A0; // Define the digital pin for the motor
 int threshold = 0; // Define the threshold value for the force sensor
 
 float maxGripStrength = 2000.0; // Variable to store the player's maximum grip strength

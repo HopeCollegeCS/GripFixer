@@ -97,7 +97,7 @@ class _SelectSession extends State<SelectSession> {
                             },
                             cells: [
                               DataCell(Text(formattedDate)),
-                              DataCell(Text('${session.firstName}')),
+                              DataCell(Text('${session.player_id}')),
                               DataCell(Text('${session.shot_type}')),
                             ],
                           );
