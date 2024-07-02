@@ -33,7 +33,7 @@ class _PlayerSelection extends State<PlayerSelection> {
           // ... (the spread operator) to create a new list that includes all the elements from playerList and New Player... at the end
           ...playerList,
           //Person(firstName: 'Chris'),
-          Person(firstName: 'New Player')
+          Person(firstName: 'New Player...')
         ];
         setState(() {
           this.newPlayersList = newPlayersList;
@@ -125,7 +125,7 @@ class _PlayerSelection extends State<PlayerSelection> {
                 ElevatedButton(
                   onPressed: selectedPlayer == null
                       ? null
-                      : selectedPlayer?.firstName == 'New Player'
+                      : selectedPlayer?.firstName == 'New Player...'
                           ? () {
                               context.push("/NewPlayerPage");
                             }

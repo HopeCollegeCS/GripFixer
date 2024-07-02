@@ -298,13 +298,27 @@ class _NewPlayer extends State<NewPlayerPage> {
                 const SizedBox(width: 20.0), // Add some spacing
                 ElevatedButton(
                   onPressed: () {
-                    age = int.tryParse(placeholderAge)!;
-                    //use SQFlite class to insert new player, async so call .then and context.go goes inside
-                    buttonAction(context).then((newPlayerId) {
-                      var appState = Provider.of<AppState>(context, listen: false);
-                      appState.person?.player_id = newPlayerId;
-                      context.push("/MeasurePage");
-                    });
+                    if (firstName.isNotEmpty && lastName.isNotEmpty && placeholderAge.isNotEmpty) {
+                      age = int.tryParse(placeholderAge)!;
+                      buttonAction(context).then((newPlayerId) {
+                        var appState = Provider.of<AppState>(context, listen: false);
+                        appState.person?.player_id = newPlayerId;
+                        context.push("/MeasurePage");
+                      });
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'All fields are required',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          backgroundColor: Color(0xFF5482ab),
+                        ),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF5482ab),
