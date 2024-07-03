@@ -156,7 +156,7 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(width: 10.0),
-                Text('${state.person?.strength}',
+                Text('${state.target?.grip_strength}',
                     style: const TextStyle(fontSize: 18))
               ],
             ),

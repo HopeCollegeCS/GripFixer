@@ -221,13 +221,6 @@ class SqfliteClass {
     ];
   }
 
-  getPlayerfromSession() async {
-    final db = await database;
-
-    return await db.rawQuery(
-        "SELECT * FROM sessions JOIN players ON sessions.player_id=players.player_id");
-  }
-
   Future<int> insertSessionMeasurement(
       SessionMeasurements sessionMeasurement) async {
     // Get a reference to the database.

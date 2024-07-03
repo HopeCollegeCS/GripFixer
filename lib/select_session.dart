@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:grip_fixer/grip_fixer_drawer.dart';
+import 'package:grip_fixer/grip_target.dart';
+import 'package:grip_fixer/person.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
 import 'package:grip_fixer/session.dart';
@@ -52,7 +54,8 @@ class _SelectSession extends State<SelectSession> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text('Grip Strength Tool', style: TextStyle(color: Color(0xFFFFFFFF))),
+            const Text('Grip Strength Tool',
+                style: TextStyle(color: Color(0xFFFFFFFF))),
             Builder(
               builder: (context) => IconButton(
                 icon: const Icon(Icons.sports_tennis),
@@ -77,7 +80,8 @@ class _SelectSession extends State<SelectSession> {
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Text(
                       'Available Sessions',
-                      style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -91,11 +95,13 @@ class _SelectSession extends State<SelectSession> {
                     rows: sessions?.map((session) {
                           final formattedDate = session.session_date != null
                               ? DateFormat('MMM d').format(
-                                  DateTime.fromMillisecondsSinceEpoch(session.session_date),
+                                  DateTime.fromMillisecondsSinceEpoch(
+                                      session.session_date),
                                 )
                               : 'N/A';
                           return DataRow(
-                            selected: sessions?.indexOf(session) == selectedValue,
+                            selected:
+                                sessions?.indexOf(session) == selectedValue,
                             onSelectChanged: (val) {
                               setState(() {
                                 selectedValue = sessions?.indexOf(session);
@@ -116,9 +122,18 @@ class _SelectSession extends State<SelectSession> {
                     child: ElevatedButton(
                       onPressed: () {
                         context.push("/AnalyzePage");
-                        var state = Provider.of<AppState>(context, listen: false);
+                        var state =
+                            Provider.of<AppState>(context, listen: false);
                         int value = selectedValue!;
                         state.session = sessions?[value];
+                        for (int i = 0; i < state.targetMap.length; i++) {
+                          if (state.session?.shot_type ==
+                              state.targetMap.keys.toList()[i]) {
+                            state.target = Target(
+                                grip_strength:
+                                    state.targetMap.values.toList()[i]);
+                          }
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF5482ab),
@@ -128,7 +143,10 @@ class _SelectSession extends State<SelectSession> {
                       ),
                       child: const Text(
                         'Analyze',
-                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 16),
                       ),
                     ),
                   ),
