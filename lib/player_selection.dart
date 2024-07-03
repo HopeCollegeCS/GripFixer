@@ -111,7 +111,6 @@ class _PlayerSelection extends State<PlayerSelection> {
                     }).toList(),
                     isExpanded: true,
                     underline: const SizedBox(),
-                    // end of DropDownButtonItem
                   ),
                 )
               ],
@@ -121,7 +120,6 @@ class _PlayerSelection extends State<PlayerSelection> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 const SizedBox(width: 125.0),
-                // stays the same
                 ElevatedButton(
                   onPressed: selectedPlayer == null
                       ? null

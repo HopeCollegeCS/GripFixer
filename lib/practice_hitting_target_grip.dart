@@ -47,22 +47,16 @@ class _MatchingScreen extends State<MatchingScreen> {
   void subscribeToCharacteristic(BluetoothDevice device) {
     late int receivedValue;
     device.discoverServices().then((services) {
-      var service = services
-          .where((s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214"))
-          .first;
-      var requestCharacteristic = service.characteristics
-          .where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1215"))
-          .first;
-      responseCharacteristic = service.characteristics
-          .where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216"))
-          .first;
+      var service = services.where((s) => s.uuid == Guid("19b10000-e8f2-537e-4f6c-d104768a1214")).first;
+      var requestCharacteristic =
+          service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1215")).first;
+      responseCharacteristic =
+          service.characteristics.where((s) => s.uuid == Guid("19b10001-e8f2-537e-4f6c-d104768a1216")).first;
 
       responseCharacteristic!.onValueReceived.listen((value) {
         if (!isStarted) {
-          receivedValue = (value[0] & 0xFF |
-              ((value[1] & 0xFF) << 8) |
-              ((value[2] & 0xFF) << 16) |
-              ((value[3] & 0xFF) << 24));
+          receivedValue =
+              (value[0] & 0xFF | ((value[1] & 0xFF) << 8) | ((value[2] & 0xFF) << 16) | ((value[3] & 0xFF) << 24));
           if (!isPaused && mounted) {
             setState(() {
               isConnectedToBluetooth = true; // bluetooth connected
@@ -79,14 +73,12 @@ class _MatchingScreen extends State<MatchingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    int calculatedIncomingStrength =
-        selectedPlayer != null && selectedPlayer!.strength != 0
-            ? (((min(currentValue, selectedPlayer!.strength!.toDouble())) /
-                            selectedPlayer!.strength!.toDouble()) *
-                        (10 - 1) +
-                    1)
-                .round()
-            : 0;
+    int calculatedIncomingStrength = selectedPlayer != null && selectedPlayer!.strength != 0
+        ? (((min(currentValue, selectedPlayer!.strength!.toDouble())) / selectedPlayer!.strength!.toDouble()) *
+                    (10 - 1) +
+                1)
+            .round()
+        : 0;
     strengthQueue.add(calculatedIncomingStrength);
     if (strengthQueue.length > 10) {
       strengthQueue.removeFirst();
@@ -172,8 +164,7 @@ class _MatchingScreen extends State<MatchingScreen> {
                   children: [
                     const Text(
                       'Player',
-                      style:
-                          TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(width: 10.0),
                     Container(
@@ -208,8 +199,7 @@ class _MatchingScreen extends State<MatchingScreen> {
                   children: [
                     const Text(
                       'Shot',
-                      style:
-                          TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(width: 29.0),
                     Container(
@@ -256,8 +246,7 @@ class _MatchingScreen extends State<MatchingScreen> {
                   minimum: 0,
                   maximum: 10,
                   markerPointers: [
-                    LinearShapePointer(
-                        value: shots[selectedShot]?.toDouble() ?? 0.0),
+                    LinearShapePointer(value: shots[selectedShot]?.toDouble() ?? 0.0),
                   ],
                   barPointers: [
                     LinearBarPointer(

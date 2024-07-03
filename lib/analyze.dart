@@ -31,13 +31,6 @@ Future<void> showMyDialog(BuildContext context) async {
           child: Form(
             child: Column(
               children: <Widget>[
-                // Row(
-                //   children: [
-                //     const Text(
-                //         'Show times when recorded tension exceeds target by '),
-                //     TextField(),
-                //   ],
-                // ),
                 TextFormField(),
               ],
             ),
@@ -125,7 +118,6 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
       body: SingleChildScrollView(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           const SizedBox(height: 40.0),
-
           const Align(
             alignment: Alignment.center,
             child: Text(
@@ -134,17 +126,13 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
             ),
           ),
           const SizedBox(height: 10.0),
-
           Container(
             margin: const EdgeInsets.only(left: 12),
             child: Row(
               children: [
-                const Text('Practicing',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Text('Practicing', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(width: 10.0),
-                Text('${state.session?.shot_type}',
-                    style: const TextStyle(fontSize: 18))
+                Text('${state.session?.shot_type}', style: const TextStyle(fontSize: 18))
               ],
             ),
           ),
@@ -152,12 +140,9 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
             margin: const EdgeInsets.only(left: 12),
             child: Row(
               children: [
-                const Text('Target Grip Strength',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Text('Target Grip Strength', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 const SizedBox(width: 10.0),
-                Text('${state.target?.grip_strength}',
-                    style: const TextStyle(fontSize: 18))
+                Text('${state.target?.grip_strength}', style: const TextStyle(fontSize: 18))
               ],
             ),
           ),
@@ -165,26 +150,21 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
             margin: const EdgeInsets.only(left: 12),
             child: Row(
               children: [
-                const Text('Show violations only',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Text('Show violations only', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 Switch(
                   // This bool value toggles the switch.
                   value: watchViolations,
                   activeColor: Colors.black,
                   onChanged: (value) {
-                    if (state.session?.violations?.isEmpty == true ||
-                        state.session?.violations == null) {
+                    if (state.session?.violations?.isEmpty == true || state.session?.violations == null) {
                       showDialog(
                           context: context,
                           builder: (_) => AlertDialog(
                                 title: const Text('No available violations'),
-                                content: const Text(
-                                    'There are no violations associated with this session'),
+                                content: const Text('There are no violations associated with this session'),
                                 actions: <Widget>[
                                   TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(context, 'OK'),
+                                    onPressed: () => Navigator.pop(context, 'OK'),
                                     child: const Text('OK'),
                                   ),
                                 ],
@@ -194,7 +174,6 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
                         watchViolations = value;
                       });
                     }
-                    // This is called when the user toggles the switch.
                   },
                 ),
                 IconButton(
@@ -203,9 +182,7 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
                         content: const Text('Yay! A SnackBar!'),
                         action: SnackBarAction(
                           label: 'Undo',
-                          onPressed: () {
-                            // Some code to undo the change.
-                          },
+                          onPressed: () {},
                         ),
                       );
 
@@ -229,8 +206,7 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
                         late int newTime;
 
                         for (int i = 0; i < numbers!.length; i++) {
-                          if (currentPosition.inSeconds >=
-                              numbers[numbers.length - 1]) {
+                          if (currentPosition.inSeconds >= numbers[numbers.length - 1]) {
                             newTime = numbers[numbers.length - 2];
                             break;
                           }
@@ -270,9 +246,6 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
               ),
             ],
           ),
-
-// Use a FutureBuilder to display a loading spinner while waiting for the
-          // VideoPlayerController to finish initializing.
           SizedBox(
             height: 550.0,
             child: AspectRatio(

@@ -19,16 +19,6 @@ int session_date = 1;
 String shot_type = "";
 int selectedValue = 0;
 int? now = DateTime.now().millisecondsSinceEpoch;
-//String _selectedValue = ;
-
-// const Map<String, int> shots = <String, int>{
-//   'Forehand Groundstroke': 4,
-//   'Backhand Groundstroke': 5,
-//   'Forehand Volley': 6,
-//   'Backhand Volley': 7,
-//   'Serve': 8,
-//   'Other': 0
-// };
 
 Future<int> buttonAction(BuildContext context, String gripTarget) {
   var state = Provider.of<AppState>(context, listen: false);
@@ -58,7 +48,6 @@ class TargetShotSelection extends State<TargetShotSelectionPage> {
   @override
   Widget build(BuildContext context) {
     var appState = Provider.of<AppState>(context, listen: false);
-    //String selectedValue = appState.targetMap.keys.first;
 
     return Scaffold(
       appBar: AppBar(
@@ -73,12 +62,12 @@ class TargetShotSelection extends State<TargetShotSelectionPage> {
         title: SizedBox(
           child: Row(
             children: [
-              const Text('Grip Strength Tool'),
-              const SizedBox(width: 10),
-              // const Icon(
-              //   Icons.sports_tennis,
-              // ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 24),
+              const Text('Grip Strength Tool',
+                  style: TextStyle(
+                    color: Color(0xFFFFFFFF),
+                  )),
+              const SizedBox(width: 45),
               Builder(
                 builder: (context) {
                   return IconButton(
@@ -122,11 +111,8 @@ class TargetShotSelection extends State<TargetShotSelectionPage> {
               child: DataTable(
                 columnSpacing: 13,
                 columns: const [
-                  //DataColumn(label: SizedBox(width: 20)),
                   DataColumn(label: Text('Shots')),
                 ],
-                //border: TableBorder.all(),
-                //rows: appState.targetMap.keys.toList() ?? [],
                 rows: appState.targetMap.keys.toList().map((target) {
                   return DataRow(
                     selected: appState.targetMap.keys.toList().indexOf(target) == selectedValue,
@@ -136,20 +122,6 @@ class TargetShotSelection extends State<TargetShotSelectionPage> {
                       });
                     },
                     cells: [
-                      // DataCell(
-                      //   SizedBox(
-                      //     width: 3,
-                      //     child: Radio(
-                      //       value: appState.targetMap.keys.toList().indexOf(target),
-                      //       groupValue: selectedValue,
-                      //       onChanged: (value) {
-                      //         setState(() {
-                      //           selectedValue = value!;
-                      //         });
-                      //       },
-                      //     ),
-                      //   ),
-                      // ),
                       DataCell(Text('$target')),
                     ],
                   );

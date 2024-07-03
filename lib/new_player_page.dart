@@ -295,7 +295,7 @@ class _NewPlayer extends State<NewPlayerPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(width: 20.0), // Add some spacing
+                const SizedBox(width: 20.0),
                 ElevatedButton(
                   onPressed: () {
                     if (firstName.isNotEmpty && lastName.isNotEmpty && placeholderAge.isNotEmpty) {

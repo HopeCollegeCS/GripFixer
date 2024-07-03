@@ -1,7 +1,5 @@
 // ignore_for_file: non_constant_identifier_names
 
-//Add a field called strength which will hold the grip strength of the player. Changes every time
-
 import 'package:grip_fixer/state.dart';
 
 class Person {

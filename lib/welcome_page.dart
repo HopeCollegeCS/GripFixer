@@ -3,8 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:grip_fixer/grip_fixer_drawer.dart';
 import 'package:grip_fixer/state.dart';
 import 'package:provider/provider.dart';
-// import 'package:grip_fixer/state.dart';
-// import 'package:provider/provider.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -166,10 +164,7 @@ class _WelcomePage extends State<WelcomePage> {
                   ),
                   child: const Text(
                     'Get Started',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 18),
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
                   ),
                 )
               ],

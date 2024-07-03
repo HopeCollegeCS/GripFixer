@@ -19,16 +19,6 @@ int session_date = 1;
 String shot_type = "";
 int selectedValue = 0;
 int? now = DateTime.now().millisecondsSinceEpoch;
-//String _selectedValue = ;
-
-// const Map<String, int> shots = <String, int>{
-//   'Forehand Groundstroke': 4,
-//   'Backhand Groundstroke': 5,
-//   'Forehand Volley': 6,
-//   'Backhand Volley': 7,
-//   'Serve': 8,
-//   'Other': 0
-// };
 
 Future<int> buttonAction(BuildContext context, String gripTarget) {
   var state = Provider.of<AppState>(context, listen: false);
@@ -93,7 +83,6 @@ class ShotSelection extends State<ShotSelectionPage> {
   @override
   Widget build(BuildContext context) {
     var appState = Provider.of<AppState>(context, listen: false);
-    //String selectedValue = appState.targetMap.keys.first;
 
     return Scaffold(
       appBar: AppBar(

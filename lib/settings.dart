@@ -34,7 +34,6 @@ Future<int> buttonAction(BuildContext context, String stroke, int strokeValue) {
     state.setTarget(newTarget);
   }
   state.setTargetMap(stroke, strokeValue);
-  //state.setTarget(newTarget);
   var db = state.sqfl;
   return db.updateTarget(newTarget);
 }

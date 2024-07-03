@@ -29,8 +29,8 @@ BLEIntCharacteristic sensorNumberCharacteristic(deviceServiceSensorNumberCharact
 
 //2 sensors - buzz on and off until loosen and displays force values
 int forceSensorPin1 = A0; // Define the analog pin for the first force sensor
-const int buzzerPin = A7; //Define the analog pin for the buzzer pin
-const int motorPin = A6; // Define the digital pin for the motor
+const int buzzerPin = A6; //Define the analog pin for the buzzer pin
+const int motorPin = A7; // Define the digital pin for the motor
 int threshold = 0; // Define the threshold value for the force sensor
 
 float maxGripStrength = 2000.0; // Variable to store the player's maximum grip strength
