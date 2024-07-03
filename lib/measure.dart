@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:go_router/go_router.dart';
@@ -23,6 +22,7 @@ class _MeasureScreenState extends State<MeasureScreen> {
   BluetoothCharacteristic? responseCharacteristic;
   late bool isConnectedToBluetooth;
   late bool timerStarted;
+  late bool strengthMeasured;
 
   @override
   void initState() {
@@ -31,6 +31,7 @@ class _MeasureScreenState extends State<MeasureScreen> {
     remainingTime = 5;
     isConnectedToBluetooth = false;
     timerStarted = false;
+    strengthMeasured = false;
   }
 
   @override
@@ -84,6 +85,7 @@ class _MeasureScreenState extends State<MeasureScreen> {
           db.updatePlayer(state.person!);
           values.clear();
           responseCharacteristic!.setNotifyValue(false);
+          strengthMeasured = true;
         }
       });
     });
@@ -135,13 +137,7 @@ class _MeasureScreenState extends State<MeasureScreen> {
                 margin: const EdgeInsets.only(left: 12, right: 12, top: 20),
                 child: Column(
                   children: [
-                    const Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        "Grip Strength Tool",
-                        style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
-                      ),
-                    ),
+                    const SizedBox(height: 20),
                     Align(
                       alignment: Alignment.topLeft,
                       child: Text(
@@ -189,19 +185,21 @@ class _MeasureScreenState extends State<MeasureScreen> {
                     ),
                     const SizedBox(height: 30),
                     ElevatedButton(
-                      onPressed: () {
-                        print(state.person.toString());
-                        context.push("/ShotSelectionPage");
-                      },
+                      onPressed: strengthMeasured
+                          ? () {
+                              print(state.person.toString());
+                              context.push("/ShotSelectionPage");
+                            }
+                          : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF5482ab),
+                        backgroundColor: strengthMeasured ? const Color(0xFF5482ab) : Colors.grey,
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.zero,
                         ),
                       ),
-                      child: Text(
-                        timerStarted && strength > 0 ? 'Continue' : 'Measure',
-                        style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
+                      child: const Text(
+                        'Continue',
+                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18),
                       ),
                     ),
                   ],
