@@ -117,25 +117,36 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
       ),
       body: SingleChildScrollView(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          const SizedBox(height: 40.0),
-          const Align(
-            alignment: Alignment.center,
-            child: Text(
-              "Grip Strength Tool",
-              style: TextStyle(fontSize: 42, fontWeight: FontWeight.bold),
-            ),
-          ),
           const SizedBox(height: 10.0),
           Container(
             margin: const EdgeInsets.only(left: 12),
             child: Row(
               children: [
-                const Text('Practicing',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const Text('Practicing:', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                 const SizedBox(width: 10.0),
-                Text('${state.session?.shot_type}',
-                    style: const TextStyle(fontSize: 18))
+                Text('${state.session?.shot_type}', style: const TextStyle(fontSize: 22))
+              ],
+            ),
+          ),
+          const SizedBox(height: 5),
+          Container(
+            margin: const EdgeInsets.only(left: 12),
+            child: Row(
+              children: [
+                const Text('Target Grip Strength:', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                const SizedBox(width: 10.0),
+                Text('${state.target?.grip_strength}', style: const TextStyle(fontSize: 22))
+              ],
+            ),
+          ),
+          const SizedBox(height: 5),
+          Container(
+            margin: const EdgeInsets.only(left: 12),
+            child: Row(
+              children: [
+                const Text('Number of Violations:', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                const SizedBox(width: 10.0),
+                Text('${numbers?.length ?? 0}', style: const TextStyle(fontSize: 22))
               ],
             ),
           ),
@@ -143,78 +154,35 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
             margin: const EdgeInsets.only(left: 12),
             child: Row(
               children: [
-                const Text('Target Grip Strength',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                const SizedBox(width: 10.0),
-                Text('${state.target?.grip_strength}',
-                    style: const TextStyle(fontSize: 18))
-              ],
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(left: 12),
-            child: Row(
-              children: [
-                const Text('Number of Violations',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                const SizedBox(width: 10.0),
-                Text('${numbers?.length ?? 0}',
-                    style: const TextStyle(fontSize: 18))
-              ],
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(left: 12),
-            child: Row(
-              children: [
-                const Text('Show violations only',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                Switch(
-                  // This bool value toggles the switch.
-                  value: watchViolations,
-                  activeColor: Colors.black,
-                  onChanged: (value) {
-                    if (state.session?.violations?.isEmpty == true ||
-                        state.session?.violations == null) {
-                      showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                                title: const Text('No available violations'),
-                                content: const Text(
-                                    'There are no violations associated with this session'),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(context, 'OK'),
-                                    child: const Text('OK'),
-                                  ),
-                                ],
-                              ));
-                    } else {
-                      setState(() {
-                        watchViolations = value;
-                      });
-                    }
-                  },
-                ),
-                IconButton(
-                    onPressed: () {
-                      final snackBar = SnackBar(
-                        content: const Text('Yay! A SnackBar!'),
-                        action: SnackBarAction(
-                          label: 'Undo',
-                          onPressed: () {},
-                        ),
-                      );
-
-                      // Find the ScaffoldMessenger in the widget tree
-                      // and use it to show a SnackBar.
-                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                const Text('Show violations only:', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                const SizedBox(width: 10),
+                Transform.scale(
+                  scale: 0.8,
+                  child: Switch(
+                    value: watchViolations,
+                    activeColor: Colors.black,
+                    onChanged: (value) {
+                      if (state.session?.violations?.isEmpty == true || state.session?.violations == null) {
+                        showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                                  title: const Text('No available violations'),
+                                  content: const Text('There are no violations associated with this session'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context, 'OK'),
+                                      child: const Text('OK'),
+                                    ),
+                                  ],
+                                ));
+                      } else {
+                        setState(() {
+                          watchViolations = value;
+                        });
+                      }
                     },
-                    icon: const Icon(Icons.settings)),
+                  ),
+                ),
               ],
             ),
           ),
@@ -230,8 +198,7 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
                         late int newTime;
 
                         for (int i = 0; i < numbers!.length; i++) {
-                          if (currentPosition.inSeconds >=
-                              numbers[numbers.length - 1]) {
+                          if (currentPosition.inSeconds >= numbers[numbers.length - 1]) {
                             newTime = numbers[numbers.length - 2];
                             break;
                           }
@@ -296,6 +263,7 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
               ),
             ),
           ),
+          const SizedBox(height: 10),
           FloatingActionButton(
             onPressed: () {
               // Wrap the play or pause in a call to `setState`. This ensures the
@@ -313,6 +281,7 @@ class _AnalyzeScreen extends State<AnalyzeScreen> {
                 // _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
                 Icons.play_arrow),
           ),
+          const SizedBox(height: 10),
         ]),
       ),
       drawer: const GripFixerDrawer(),
