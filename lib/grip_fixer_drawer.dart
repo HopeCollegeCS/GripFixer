@@ -65,6 +65,12 @@ class GripFixerDrawerState extends State<GripFixerDrawer> {
             child: Text(''),
           ),
           ListTile(
+            title: const Text('Home'),
+            onTap: () {
+              context.push("/WelcomePage");
+            },
+          ),
+          ListTile(
             title: const Text('Settings'),
             onTap: () {
               context.push("/Settings");
