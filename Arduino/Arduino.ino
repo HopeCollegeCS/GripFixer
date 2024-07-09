@@ -164,6 +164,22 @@ void loop() {
         IMU.readAcceleration(x, y, z);
         displayImpact();
       }
+
+      // Check if the sensor number characteristic has been written to
+      //if (sensorNumberCharacteristic.written()) {
+        //int sensorNumber = sensorNumberCharacteristic.value();
+        //switch(sensorNumber) {
+          //case 1:
+            //forceSensorPin1 = A2;
+            //break;
+          //case 2:
+            //forceSensorPin1 = A1;
+            //break;
+          //default:
+          //forceSensorPin1 = A0; // Default to A0 if an invalid number is received
+      //}
+      //Serial.print("Switched to sensor pin: ");
+      //Serial.println(forceSensorPin1);
       
       int sensorValue1 = analogRead(forceSensorPin1); // Read the analog value from the first force sensor
  
