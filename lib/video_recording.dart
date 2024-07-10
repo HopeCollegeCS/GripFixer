@@ -146,13 +146,21 @@ class _VideoRecorderScreenState extends State<VideoRecorderScreen> {
 
   void saveToDatabase(AppState state) {
     int id = state.session?.session_id ?? 0;
+
     SessionMeasurements sessionMeasurements = createSessionMeasurements(id);
-    if (sessionMeasurements.value! > state.target!.grip_strength!.toInt() &&
-        violating == false) {
-      sessionData.add((sessionMeasurements.timestamp! - start) ~/ 1000);
-      violating = true;
-    } else if (sessionMeasurements.value! <
-            state.target!.grip_strength!.toInt() &&
+    double strengthMeasure = (state.person!.strength! *
+        (state.target!.grip_strength!.toDouble() / 10));
+    if ((sessionMeasurements.value! > strengthMeasure) &&
+        _isRecording &&
+        !violating) {
+      if (!sessionData
+          .contains((sessionMeasurements.timestamp! - start) ~/ 1000)) {
+        sessionData.add((sessionMeasurements.timestamp! - start) ~/ 1000);
+        violating = true;
+      }
+    } else if ((sessionMeasurements.value! <
+            (state.person!.strength! *
+                (state.target!.grip_strength!.toInt() / 100))) &&
         violating == true) {
       violating = false;
     }
