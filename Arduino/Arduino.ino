@@ -24,7 +24,6 @@ BLEIntCharacteristic targetGripPercentageCharacteristic(deviceServiceTargetGripP
 BLEBoolCharacteristic enableFeedbackCharacteristic(deviceServiceEnableFeedbackCharacteristicUuid, BLEWrite | BLERead); // New characteristic for enabling feedback
 BLEIntCharacteristic sensorNumberCharacteristic(deviceServiceSensorNumberCharacteristicUuid, BLEWrite | BLERead); // New characteristic for sensor number
 
-//2 sensors - buzz on and off until loosen and displays force values
 int forceSensorPin1 = A0; // Define the analog pin for the first force sensor
 const int buzzerPin = A6; //Define the analog pin for the buzzer pin
 const int motorPin = A7; // Define the digital pin for the motor
