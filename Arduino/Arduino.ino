@@ -162,20 +162,21 @@ void loop() {
       }
 
       // Check if the sensor number characteristic has been written to
-      //if (sensorNumberCharacteristic.written()) {
-        //int sensorNumber = sensorNumberCharacteristic.value();
-        //switch(sensorNumber) {
-          //case 1:
-            //forceSensorPin1 = A2;
-            //break;
-          //case 2:
-            //forceSensorPin1 = A1;
-            //break;
-          //default:
-          //forceSensorPin1 = A0; // Default to A0 if an invalid number is received
-      //}
-      //Serial.print("Switched to sensor pin: ");
-      //Serial.println(forceSensorPin1);
+      if (sensorNumberCharacteristic.written()) {
+        int sensorNumber = sensorNumberCharacteristic.value();
+        switch(sensorNumber) {
+          if(sensorNumber == 2){
+            forceSensorPin1 = A1; // bevel 2
+            break;
+          } else if (sensorNumber == 1){
+            forceSensorPin1 = A2; // bevel 4
+            break;
+          } else {
+          forceSensorPin1 = A0; // bevel 3
+          }
+      }
+      Serial.print("Switched to sensor pin: ");
+      Serial.println(forceSensorPin1);
       
       int sensorValue1 = analogRead(forceSensorPin1); // Read the analog value from the first force sensor
  
