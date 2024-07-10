@@ -57,7 +57,6 @@ class ShotSelection extends State<ShotSelectionPage> {
   void writeToMaxGripStrengthCharacteristic(AppState state) async {
     final maxGripStrengthCharacteristic = state.maxGripStrengthCharacteristic;
     final strength = state.person?.strength;
-
     if (maxGripStrengthCharacteristic != null && strength != null) {
       await maxGripStrengthCharacteristic
           .write([strength & 0xFF, (strength >> 8) & 0xFF, (strength >> 16) & 0xFF, (strength >> 24) & 0xFF]);
@@ -65,19 +64,6 @@ class ShotSelection extends State<ShotSelectionPage> {
     } else {
       print('Failed to send characteristic');
     }
-  }
-
-  void writeToSensorNumberCharacteristic(AppState state) async {
-    final sensorNumberCharacteristic = state.sensorNumberCharacteristic;
-    int sensorNumber = 0;
-    if ((state.person?.hand == 'Right' && state.person?.forehandGrip == 'Continental') ||
-        (state.person?.hand == 'Left' && state.person?.forehandGrip == 'Semi-Western')) {
-      sensorNumber = 2;
-    } else if ((state.person?.hand == 'Right' && state.person?.forehandGrip == 'Semi-Western') ||
-        (state.person?.hand == 'Left' && state.person?.forehandGrip == 'Continental')) {
-      sensorNumber = 1;
-    }
-    await sensorNumberCharacteristic!.write([sensorNumber]);
   }
 
   @override
@@ -168,8 +154,6 @@ class ShotSelection extends State<ShotSelectionPage> {
                       writeToTargetGripPercentageCharacteristic(
                           appState, appState.targetMap.keys.toList()[selectedValue]);
                       writeToMaxGripStrengthCharacteristic(appState);
-                      writeToSensorNumberCharacteristic(appState);
-
                       context.push("/RecordingPage");
                     });
                   },

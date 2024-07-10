@@ -56,17 +56,4 @@ class Person {
   String toString() {
     return 'Person{player_id: $player_id, firstName: $firstName, lastName: $lastName, age: $age, gender: $gender, hand: $hand, strength: $strength, forehandGrip: $forehandGrip}';
   }
-
-  static void writeToSensorNumberCharacteristic(AppState state) async {
-    final sensorNumberCharacteristic = state.sensorNumberCharacteristic;
-    int sensorNumber = 0;
-    if ((state.person?.hand == 'Right' && state.person?.forehandGrip == 'Continental') ||
-        (state.person?.hand == 'Left' && state.person?.forehandGrip == 'Semi-Western')) {
-      sensorNumber = 2;
-    } else if ((state.person?.hand == 'Right' && state.person?.forehandGrip == 'Semi-Western') ||
-        (state.person?.hand == 'Left' && state.person?.forehandGrip == 'Continental')) {
-      sensorNumber = 1;
-    }
-    await sensorNumberCharacteristic!.write([sensorNumber]);
-  }
 }

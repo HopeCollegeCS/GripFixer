@@ -41,6 +41,20 @@ Future<int> buttonAction(BuildContext context) {
   return db.insertPlayer(newPerson);
 }
 
+void writeToSensorNumberCharacteristic(AppState state) async {
+  final sensorNumberCharacteristic = state.sensorNumberCharacteristic;
+  int sensorNumber = 0;
+  if ((state.person?.hand == 'Right' && state.person?.forehandGrip == 'Continental') ||
+      (state.person?.hand == 'Left' && state.person?.forehandGrip == 'Semi-Western')) {
+    sensorNumber = 1;
+  } else if ((state.person?.hand == 'Right' && state.person?.forehandGrip == 'Semi-Western') ||
+      (state.person?.hand == 'Left' && state.person?.forehandGrip == 'Continental')) {
+    sensorNumber = 2;
+  }
+  await sensorNumberCharacteristic!.write([sensorNumber & 0xFF, (sensorNumber >> 8) & 0xFF]);
+  print(sensorNumber);
+}
+
 class _NewPlayer extends State<NewPlayerPage> {
   @override
   Widget build(BuildContext context) {
@@ -303,6 +317,7 @@ class _NewPlayer extends State<NewPlayerPage> {
                       buttonAction(context).then((newPlayerId) {
                         var appState = Provider.of<AppState>(context, listen: false);
                         appState.person?.player_id = newPlayerId;
+                        writeToSensorNumberCharacteristic(appState);
                         context.push("/MeasurePage");
                       });
                     } else {

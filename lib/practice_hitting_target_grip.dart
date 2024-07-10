@@ -71,6 +71,21 @@ class _MatchingScreen extends State<MatchingScreen> {
     });
   }
 
+  void writeToSensorNumberCharacteristic(AppState state) async {
+    final sensorNumberCharacteristic = state.sensorNumberCharacteristic;
+    int sensorNumber = 0;
+    if ((state.person?.hand == 'Right' && state.person?.forehandGrip == 'Continental') ||
+        (state.person?.hand == 'Left' && state.person?.forehandGrip == 'Semi-Western')) {
+      sensorNumber = 1;
+    } else if ((state.person?.hand == 'Right' && state.person?.forehandGrip == 'Semi-Western') ||
+        (state.person?.hand == 'Left' && state.person?.forehandGrip == 'Continental')) {
+      sensorNumber = 2;
+    }
+    await sensorNumberCharacteristic!.write(
+        [sensorNumber & 0xFF, (sensorNumber >> 8) & 0xFF, (sensorNumber >> 16) & 0xFF, (sensorNumber >> 24) & 0xFF]);
+    print(sensorNumber);
+  }
+
   @override
   Widget build(BuildContext context) {
     int calculatedIncomingStrength = selectedPlayer != null && selectedPlayer!.strength != 0
@@ -177,7 +192,8 @@ class _MatchingScreen extends State<MatchingScreen> {
                       child: DropdownButton<Person>(
                         value: selectedPlayer,
                         onChanged: (Person? newValue) {
-                          Person.writeToSensorNumberCharacteristic(state);
+                          state.person = newValue;
+                          writeToSensorNumberCharacteristic(state);
                           setState(() {
                             selectedPlayer = newValue;
                           });
