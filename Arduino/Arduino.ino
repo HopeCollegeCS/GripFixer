@@ -6,9 +6,6 @@
 // for IMU
 #include <Arduino_LSM6DS3.h>
 
-/*  This code sets up a Bluetooth Low Energy (BLE) peripheral device using the ArduinoBLE library. 
-It defines a BLE service and two characteristics: one for receiving requests and one for sending responses. */
-
 // define the UUIDS for the BLE service and characteristics
 const char * deviceServiceUuid = "19b10000-e8f2-537e-4f6c-d104768a1214";
 const char * deviceServiceRequestCharacteristicUuid = "19b10001-e8f2-537e-4f6c-d104768a1215"; 
@@ -27,7 +24,6 @@ BLEIntCharacteristic targetGripPercentageCharacteristic(deviceServiceTargetGripP
 BLEBoolCharacteristic enableFeedbackCharacteristic(deviceServiceEnableFeedbackCharacteristicUuid, BLEWrite | BLERead); // New characteristic for enabling feedback
 BLEIntCharacteristic sensorNumberCharacteristic(deviceServiceSensorNumberCharacteristicUuid, BLEWrite | BLERead); // New characteristic for sensor number
 
-//2 sensors - buzz on and off until loosen and displays force values
 int forceSensorPin1 = A0; // Define the analog pin for the first force sensor
 const int buzzerPin = A6; //Define the analog pin for the buzzer pin
 const int motorPin = A7; // Define the digital pin for the motor
@@ -164,6 +160,22 @@ void loop() {
         IMU.readAcceleration(x, y, z);
         displayImpact();
       }
+
+      // Check if the sensor number characteristic has been written to
+      //if (sensorNumberCharacteristic.written()) {
+        //int sensorNumber = sensorNumberCharacteristic.value();
+        //switch(sensorNumber) {
+          //case 1:
+            //forceSensorPin1 = A2;
+            //break;
+          //case 2:
+            //forceSensorPin1 = A1;
+            //break;
+          //default:
+          //forceSensorPin1 = A0; // Default to A0 if an invalid number is received
+      //}
+      //Serial.print("Switched to sensor pin: ");
+      //Serial.println(forceSensorPin1);
       
       int sensorValue1 = analogRead(forceSensorPin1); // Read the analog value from the first force sensor
  

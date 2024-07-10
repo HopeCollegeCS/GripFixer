@@ -21,6 +21,7 @@ String getButtonPath(int value) {
   }
 }
 
+// fixed spacing for iphone specifically
 class _WelcomePage extends State<WelcomePage> {
   int? _selectedValue = 1;
   @override
@@ -63,7 +64,7 @@ class _WelcomePage extends State<WelcomePage> {
             const SizedBox(height: 140),
             const Row(
               children: [
-                SizedBox(width: 20.0),
+                SizedBox(width: 4.0),
                 Text(
                   'What do you want to do?',
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
